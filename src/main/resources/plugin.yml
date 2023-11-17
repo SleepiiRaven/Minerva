@@ -1,0 +1,8 @@
+name: Minerva
+version: '${project.version}'
+main: net.minervamc.minerva.Minerva
+api-version: '1.18'
+commands:
+  mskills:
+    description: Minerva commands that relate to skills, heritage, and ancestry.
+    usage: "\u00A76Correct usage: /mskills [option]"
