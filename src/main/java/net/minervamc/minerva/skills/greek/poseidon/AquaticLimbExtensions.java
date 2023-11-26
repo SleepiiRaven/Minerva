@@ -35,12 +35,61 @@ public class AquaticLimbExtensions extends Skill {
             waterBlocks.put(player.getUniqueId(), new ArrayList<>());
         }
         double distanceNormal = 5;
-        double distanceExtended = 15;
-        int maxPunchingTicks = 5; // Takes twice as long to do a full punch
-        long punchCooldown = (maxPunchingTicks * 2) * 50;
-        long durationTicks = maxPunchingTicks * 20;
-        long cooldown = durationTicks*50 + 9000;
-        double damage = 5;
+        double distanceExtended;
+        int maxPunches;
+        int maxPunchingTicks; // Takes twice as long to do a full punch
+        long punchCooldown;
+        long durationTicks;
+        long cooldown;
+        double damage;
+
+        switch (level) {
+            default -> {
+                distanceExtended = 10;
+                maxPunchingTicks = 5; // Takes twice as long to do a full punch
+                punchCooldown = (maxPunchingTicks * 2) * 50;
+                maxPunches = 5;
+                durationTicks = maxPunchingTicks * 4 * maxPunches;
+                cooldown = durationTicks*50 + 9000;
+                damage = 5;
+            }
+            case 2 -> {
+                distanceExtended = 12.5;
+                maxPunchingTicks = 5; // Takes twice as long to do a full punch
+                punchCooldown = (maxPunchingTicks * 2) * 50;
+                maxPunches = 7;
+                durationTicks = maxPunchingTicks * 4 * maxPunches;
+                cooldown = durationTicks * 50 + 8000;
+                damage = 7.5;
+            }
+            case 3 -> {
+                distanceExtended = 15;
+                maxPunchingTicks = 5; // Takes twice as long to do a full punch
+                punchCooldown = (maxPunchingTicks * 2) * 50;
+                maxPunches = 8;
+                durationTicks = maxPunchingTicks * 4 * maxPunches;
+                cooldown = durationTicks * 50 + 8000;
+                damage = 10;
+            }
+            case 4 -> {
+                distanceExtended = 15;
+                maxPunchingTicks = 5; // Takes twice as long to do a full punch
+                punchCooldown = (maxPunchingTicks * 2) * 50;
+                maxPunches = 9;
+                durationTicks = maxPunchingTicks * 4 * maxPunches;
+                cooldown = durationTicks * 50 + 8000;
+                damage = 12.5;
+            }
+            case 5 -> {
+                distanceExtended = 17.5;
+                maxPunchingTicks = 5; // Takes twice as long to do a full punch
+                punchCooldown = (maxPunchingTicks * 2) * 50;
+                maxPunches = 10;
+                durationTicks = maxPunchingTicks * 4 * maxPunches;
+                cooldown = durationTicks * 50 + 6000;
+                damage = 15;
+            }
+        }
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "aquaticLimbExtensions")) {
             onCooldown(player);

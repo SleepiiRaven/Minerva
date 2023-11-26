@@ -26,9 +26,37 @@ import org.bukkit.util.Vector;
 public class TidalWave extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-        int tickDuration = 40;
-        long cooldown = 6500 + (tickDuration*50);
-        double damage = 2.5;
+        int tickDuration;
+        long cooldown;
+        double damage;
+
+        switch (level) {
+            default -> {
+                tickDuration = 20;
+                cooldown = 10000 + (tickDuration*50);
+                damage = 0.5;
+            }
+            case 2 -> {
+                tickDuration = 30;
+                cooldown = 9000 + (tickDuration*50);
+                damage = 1;
+            }
+            case 3 -> {
+                tickDuration = 40;
+                cooldown = 8000 + (tickDuration*50);
+                damage = 2;
+            }
+            case 4 -> {
+                tickDuration = 50;
+                cooldown = 7000 + (tickDuration*50);
+                damage = 2.5;
+            }
+            case 5 -> {
+                tickDuration = 60;
+                cooldown = 8000 + (tickDuration*50);
+                damage = 3;
+            }
+        }
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "tidalWave")) {
             onCooldown(player);

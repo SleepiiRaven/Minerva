@@ -35,6 +35,19 @@ public abstract class Skill {
             case "oceansSurge" -> Skills.OCEANS_SURGE;
             case "tidalWave" -> Skills.TIDAL_WAVE;
             case "aquaticLimbExtensions" -> Skills.AQUATIC_LIMB_EXTENSIONS;
+            case "lifeSteal" -> Skills.LIFE_STEAL;
+            case "oceansEmbrace" -> Skills.OCEANS_EMBRACE;
+            case "protectiveCloud" -> Skills.PROTECTIVE_CLOUD;
+            case "apollosHymn" -> Skills.APOLLOS_HYMN;
+            case "arrowsOfTheSun" -> Skills.ARROWS_OF_THE_SUN;
+            case "burningLight" -> Skills.BURNING_LIGHT;
+            case "enhancedArchery" -> Skills.ENHANCED_ARCHERY;
+            case "plagueVolley" -> Skills.PLAGUE_VOLLEY;
+            case "callOfTheWild" -> Skills.CALL_OF_THE_WILD;
+            case "huntressAgility" -> Skills.HUNTRESS_AGILITY;
+            case "quickDraw" -> Skills.QUICK_DRAW;
+            case "superCharged" -> Skills.SUPER_CHARGED;
+            case "sharpshooter" -> Skills.SHARPSHOOTER;
             default -> Skills.DEFAULT;
         };
     }
@@ -45,7 +58,7 @@ public abstract class Skill {
             @Override
             public void run() {
                 if (player.isOnline()) {
-                    ItemUtils.sendItemMessage(player, ChatColor.GREEN + abilityName + " is no longer on cooldown!");
+                    //ItemUtils.sendItemMessage(player, ChatColor.GREEN + abilityName + " is no longer on cooldown!");
                 }
             }
         }.runTaskLater(Minerva.getInstance(), cooldownTimeInTicks);

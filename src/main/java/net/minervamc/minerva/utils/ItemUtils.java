@@ -19,12 +19,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class ItemUtils {
 
     public static void sendItemMessage(Player player, String message) {
-
         ItemStack item = player.getInventory().getItemInMainHand();
-        sendItemMessage(player, message, item);
-    }
-
-    public static void sendItemMessage(Player player, String message, ItemStack item) {
         ItemMeta itemMeta = item.getItemMeta();
         if (item.getType().isAir()) return;
         String oldName = itemMeta.getDisplayName();

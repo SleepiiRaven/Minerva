@@ -3,6 +3,7 @@ package net.minervamc.minerva.guis;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.types.HeritageType;
 import net.minervamc.minerva.utils.ItemUtils;
+import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -146,7 +147,7 @@ public class RomanGodsGUI {
                 break;
             case backSlot:
                 AncestryGUI.openGUI((Player) event.getWhoClicked());
-                event.getWhoClicked().getWorld().playSound(event.getWhoClicked().getLocation(), Sound.ENTITY_ITEM_PICKUP, 1f, 1f);
+                ((Player) event.getWhoClicked()).playSound(event.getWhoClicked(), Sound.ENTITY_ITEM_PICKUP, 1f, 1f);
                 break;
         }
     }
@@ -156,6 +157,7 @@ public class RomanGodsGUI {
         stats.save();
         player.sendMessage(ChatColor.GREEN + "You are now a " + youAreNowABlank + "!");
         player.playSound(player, Sound.BLOCK_NOTE_BLOCK_CHIME, 1.0f, 1.0f);
+        SkillUtils.setDefaultSkills(type, player);
         player.closeInventory();
     }
 }

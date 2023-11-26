@@ -26,7 +26,37 @@ import org.bukkit.util.Vector;
 public class OceansSurge extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-        long cooldown = 6000;
+        long cooldown;
+        double damage;
+        double push;
+
+        switch (level) {
+            default -> {
+                cooldown = 8000;
+                damage = 0.001;
+                push = 0.5;
+            }
+            case 2 -> {
+                cooldown = 7000;
+                damage = 0.5;
+                push = 1;
+            }
+            case 3 -> {
+                cooldown = 6500;
+                damage = 1;
+                push = 1.5;
+            }
+            case 4 -> {
+                cooldown = 6000;
+                damage = 3;
+                push = 2;
+            }
+            case 5 -> {
+                cooldown = 5000;
+                damage = 5;
+                push = 3;
+            }
+        }
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "oceansSurge")) {
             onCooldown(player);
@@ -54,8 +84,8 @@ public class OceansSurge extends Skill {
                     player.getWorld().spawnParticle(Particle.CRIT_MAGIC, loc, 1, 0, 0, 0, 0);
                     for (Entity entity : loc.getNearbyEntities(0.5, 2, 0.5)) {
                         if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Horse)) {
-                            livingEntity.damage(0.001, player);
-                            livingEntity.setVelocity(ParticleUtils.getDirection(player.getLocation(), livingEntity.getLocation()));
+                            livingEntity.damage(damage, player);
+                            livingEntity.setVelocity(ParticleUtils.getDirection(player.getLocation(), livingEntity.getLocation()).multiply(push));
                         }
                     }
                     loc.subtract(x,y,z);
@@ -84,8 +114,8 @@ public class OceansSurge extends Skill {
                     player.getWorld().spawnParticle(Particle.CRIT_MAGIC, loc, 1, 0, 0, 0, 0);
                     for (Entity entity : loc.getNearbyEntities(0.5, 2, 0.5)) {
                         if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Horse)) {
-                            livingEntity.damage(0.001, player);
-                            livingEntity.setVelocity(ParticleUtils.getDirection(player.getLocation(), livingEntity.getLocation()));
+                            livingEntity.damage(damage, player);
+                            livingEntity.setVelocity(ParticleUtils.getDirection(player.getLocation(), livingEntity.getLocation()).multiply(push));
                         }
                     }
                     loc.subtract(x,y,z);

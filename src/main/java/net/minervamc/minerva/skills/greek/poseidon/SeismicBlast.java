@@ -9,8 +9,6 @@ import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -21,15 +19,56 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
 
 public class SeismicBlast extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-        long cooldown = 5000;
+        long cooldown;
+        double radius;
+        long delay;
+        double knock;
+        double damage;
+
+        switch (level) {
+            default -> {
+                cooldown = 10000;
+                radius = 3;
+                delay = 10;
+                knock = 1;
+                damage = 0.5;
+            }
+            case 2 -> {
+                cooldown = 9000;
+                radius = 4;
+                delay = 15;
+                knock = 1.2;
+                damage = 1;
+            }
+            case 3 -> {
+                cooldown = 8500;
+                radius = 5;
+                delay = 15;
+                knock = 1.5;
+                damage = 1.5;
+            }
+            case 4 -> {
+                cooldown = 8000;
+                radius = 7.5;
+                delay = 20;
+                knock = 2;
+                damage = 2;
+            }
+            case 5 -> {
+                cooldown = 7500;
+                radius = 10;
+                delay = 20;
+                knock = 2;
+                damage = 3;
+            }
+        }
+
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "seismicBlast")) {
             onCooldown(player);
@@ -39,12 +78,9 @@ public class SeismicBlast extends Skill {
         cooldownManager.setCooldownFromNow(player.getUniqueId(), "seismicBlast", cooldown);
         cooldownAlarm(player, cooldown, "Seismic Blast");
 
-        double radius = 5;
-        long delay = 15;
-        Vector knockUp = new Vector(0, 1.5, 0);
-        Vector knockDown = new Vector(0, -1.5, 0);
-
         player.setVelocity(new Vector(0, 0.25, 0));
+        Vector knockUp = new Vector(0, knock, 0);
+        Vector knockDown = new Vector(0, -knock, 0);
 
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WITHER_BREAK_BLOCK, 1f, 0.5f);
 
@@ -61,7 +97,7 @@ public class SeismicBlast extends Skill {
         for (Entity entity : player.getNearbyEntities(radius, 2, radius)) {
             if (!(entity instanceof LivingEntity livingEntity)) continue;
             if (livingEntity == player) continue;
-            livingEntity.damage(1, player);
+            livingEntity.damage(damage, player);
             livingEntity.setVelocity(knockUp);
             caughtLivingEntities.add(livingEntity);
         }

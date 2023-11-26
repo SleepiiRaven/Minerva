@@ -36,6 +36,7 @@ public class PlayerStats {
     private int rllLevel = 1;
     private int rrlLevel = 1;
     private int passiveLevel = 1;
+    private int maxLevel = 1;
     private int maxPoints = 0;
     private int points = 0;
 
@@ -58,6 +59,7 @@ public class PlayerStats {
     public int getRLLLevel() { return rllLevel; }
     public int getRRLLevel() { return rrlLevel; }
     public int getPassiveLevel() { return passiveLevel; }
+    public int getMaxLevel() { return maxLevel; }
     public int getPoints() { return points; }
     public int getMaxPoints() { return maxPoints; }
     public void setHeritage(HeritageType heritage) { this.heritage = heritage; }
@@ -76,6 +78,7 @@ public class PlayerStats {
     public void setRLLLevel(int level) { rllLevel = level; }
     public void setRRLLevel(int level) { rrlLevel = level; }
     public void setPassiveLevel(int level) { passiveLevel = level; }
+    public void setMaxLevel(int maxLevel) { this.maxLevel = maxLevel; }
     public void setPoints(int points) { this.points = points; }
     public void setMaxPoints(int points) { maxPoints = points; }
 

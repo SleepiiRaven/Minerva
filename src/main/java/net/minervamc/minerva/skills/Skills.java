@@ -3,6 +3,16 @@ package net.minervamc.minerva.skills;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.List;
+import net.minervamc.minerva.skills.greek.apollo.ApollosHymn;
+import net.minervamc.minerva.skills.greek.apollo.ArrowsOfTheSun;
+import net.minervamc.minerva.skills.greek.apollo.BurningLight;
+import net.minervamc.minerva.skills.greek.apollo.EnhancedArchery;
+import net.minervamc.minerva.skills.greek.apollo.PlagueVolley;
+import net.minervamc.minerva.skills.greek.artemis.CallOfTheWild;
+import net.minervamc.minerva.skills.greek.artemis.HuntressAgility;
+import net.minervamc.minerva.skills.greek.artemis.QuickDraw;
+import net.minervamc.minerva.skills.greek.artemis.Sharpshooter;
+import net.minervamc.minerva.skills.greek.artemis.SuperCharged;
 import net.minervamc.minerva.skills.greek.hades.ChannelingOfTartarus;
 import net.minervamc.minerva.skills.greek.hades.LifeSteal;
 import net.minervamc.minerva.skills.greek.hades.ShadowTravel;
@@ -36,12 +46,16 @@ public interface Skills {
     Skill LIFE_STEAL = new LifeSteal();
     Skill OCEANS_EMBRACE = new OceansEmbrace();
     Skill PROTECTIVE_CLOUD = new ProtectiveCloud();
+    Skill APOLLOS_HYMN = new ApollosHymn();
+    Skill ARROWS_OF_THE_SUN = new ArrowsOfTheSun();
+    Skill BURNING_LIGHT = new BurningLight();
+    Skill PLAGUE_VOLLEY = new PlagueVolley();
+    Skill ENHANCED_ARCHERY = new EnhancedArchery();
     Skill DEFAULT_PASSIVE = new DefaultSkill();
-    Skill[] PASSIVES = {
-            LIFE_STEAL,
-            OCEANS_EMBRACE,
-            PROTECTIVE_CLOUD,
-            DEFAULT_PASSIVE
-    };
+    Skill CALL_OF_THE_WILD = new CallOfTheWild();
+    Skill HUNTRESS_AGILITY = new HuntressAgility();
+    Skill QUICK_DRAW = new QuickDraw();
+    Skill SHARPSHOOTER = new Sharpshooter();
+    Skill SUPER_CHARGED = new SuperCharged();
     Skill DEFAULT = new DefaultSkill();
 }

@@ -20,13 +20,61 @@ import org.bukkit.util.Vector;
 public class WindWall extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-        double wallWidth = 8;
-        double wallHeight = 5; // Adjust the height as needed
-        double distance = 3;
-        double damage = 3;
-        double maxTriggers = 20;
-        long ticksBetweenTriggers = 10;
-        long cooldown = 15000;
+        double wallWidth;
+        double wallHeight;
+        double distance;
+        double damage;
+        double maxTriggers;
+        long ticksBetweenTriggers;
+        long cooldown;
+
+        switch (level) {
+            default -> {
+                wallWidth = 8;
+                wallHeight = 5;
+                distance = 3;
+                damage = 2;
+                maxTriggers = 15;
+                ticksBetweenTriggers = 10;
+                cooldown = 15000;
+            }
+            case 2 -> {
+                wallWidth = 8;
+                wallHeight = 5;
+                distance = 3;
+                damage = 3;
+                maxTriggers = 17;
+                ticksBetweenTriggers = 10;
+                cooldown = 14000;
+            }
+            case 3 -> {
+                wallWidth = 10;
+                wallHeight = 6;
+                distance = 3;
+                damage = 3.5;
+                maxTriggers = 20;
+                ticksBetweenTriggers = 10;
+                cooldown = 13000;
+            }
+            case 4 -> {
+                wallWidth = 12;
+                wallHeight = 8;
+                distance = 3;
+                damage = 4;
+                maxTriggers = 20;
+                ticksBetweenTriggers = 10;
+                cooldown = 12500;
+            }
+            case 5 -> {
+                wallWidth = 15;
+                wallHeight = 10;
+                distance = 3;
+                damage = 5;
+                maxTriggers = 20;
+                ticksBetweenTriggers = 10;
+                cooldown = 12500;
+            }
+        }
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "windWall")) {
             onCooldown(player);

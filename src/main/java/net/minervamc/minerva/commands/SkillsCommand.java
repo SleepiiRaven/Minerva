@@ -4,7 +4,9 @@ import java.util.Arrays;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.guis.AncestryGUI;
 import net.minervamc.minerva.skills.Skills;
+import net.minervamc.minerva.types.HeritageType;
 import net.minervamc.minerva.types.Skill;
+import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -16,22 +18,18 @@ import org.jetbrains.annotations.NotNull;
 public class SkillsCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if (args.length == 0) {
-            if (commandSender instanceof Player player) {
+        if (args.length == 0) { // If the argument length is zero... /mskills
+            if (commandSender instanceof Player player) { // If the sender is a player
                 AncestryGUI.openGUI(player);
-            } else {
+            } else { // /mskills with no
                 commandSender.sendMessage(ChatColor.RED + "Invalid command for non-player. Correct usage to open GUI for player that isn't you: /mskills [gui] [player]");
             }
             return true;
         }
-        if (args[0].equals("default")) {
-            if (args.length > 2 && Bukkit.getPlayer(args[2]) != null) {
-                commandSender.sendMessage("Currently working on this command.");
-            } else if (commandSender instanceof Player player) {
-                switch (args[1].toLowerCase()) {
-                    case "hades" -> setSkills(player, Skills.SHADOW_TRAVEL, Skills.UMBRAKINESIS_HADES, Skills.CHANNELING_OF_TARTARUS, Skills.SKELETAL_HANDS, Skills.LIFE_STEAL, commandSender, "Hades");
-                    case "zeus" -> setSkills(player, Skills.SOAR, Skills.LIGHTNING_TOSS, Skills.STORMS_EMBRACE, Skills.WIND_WALL, Skills.PROTECTIVE_CLOUD, commandSender, "Zeus");
-                    case "poseidon" -> setSkills(player, Skills.TIDAL_WAVE, Skills.AQUATIC_LIMB_EXTENSIONS, Skills.SEISMIC_BLAST, Skills.OCEANS_SURGE, Skills.OCEANS_EMBRACE, commandSender, "Poseidon");
+        if (args.length >= 3 && args[0].equals("set")) {
+            if (args[1].equals("maxLevel") && commandSender instanceof Player player && player.hasPermission("minerva.skills.set")) {
+                if (1 <= Integer.parseInt(args[2]) && Integer.parseInt(args[2]) <= 5) {
+                    PlayerStats.getStats(player.getUniqueId()).setMaxLevel(Integer.parseInt(args[2]));
                 }
             }
         }

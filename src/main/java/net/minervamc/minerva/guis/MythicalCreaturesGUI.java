@@ -3,6 +3,7 @@ package net.minervamc.minerva.guis;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.types.HeritageType;
 import net.minervamc.minerva.utils.ItemUtils;
+import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -65,6 +66,7 @@ public class MythicalCreaturesGUI {
         stats.save();
         player.sendMessage(ChatColor.GREEN + "You are now a " + youAreNowABlank + "!");
         player.playSound(player, Sound.BLOCK_NOTE_BLOCK_CHIME, 1.0f, 1.0f);
+        SkillUtils.setDefaultSkills(type, player);
         player.closeInventory();
     }
 }

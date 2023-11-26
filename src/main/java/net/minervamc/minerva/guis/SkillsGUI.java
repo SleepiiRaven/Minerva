@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class SkillsGUI {
     public static final String invName = "Choose or upgrade your skills...";
+    private static final int drachmaeCost = 50;
     private static final ItemStack rrrOnItem = ItemUtils.getItem(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.GREEN + "" + ChatColor.BOLD + "[R-R-R]", ChatColor.GREEN + "Click to toggle this skill.");
     private static final ItemStack rlrOnItem = ItemUtils.getItem(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.GREEN + "" + ChatColor.BOLD + "[R-L-R]", ChatColor.GREEN + "Click to toggle this skill.");
     private static final ItemStack rllOnItem = ItemUtils.getItem(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.GREEN + "" + ChatColor.BOLD + "[R-L-L]", ChatColor.GREEN + "Click to toggle this skill.");
@@ -29,6 +30,8 @@ public class SkillsGUI {
     private static final ItemStack rllOffItem = ItemUtils.getItem(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.RED + "" + ChatColor.BOLD + "[R-L-L]", ChatColor.GREEN + "Click to toggle this skill.");
     private static final ItemStack rrlOffItem = ItemUtils.getItem(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.RED + "" + ChatColor.BOLD + "[R-R-L]", ChatColor.GREEN + "Click to toggle this skill.");
     private static final ItemStack passiveOffItem = ItemUtils.getItem(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.RED + "" + ChatColor.BOLD + "[PASSIVE]", ChatColor.GREEN + "Click to toggle this skill.");
+    private static final ItemStack resetItem = ItemUtils.getItem(new ItemStack(Material.NETHER_STAR), ChatColor.DARK_RED + "" + ChatColor.BOLD + "Reset Skills. This costs " + drachmaeCost + " drachmæ.");
+    private static final ItemStack back = ItemUtils.getItem(new ItemStack(Material.ARROW), ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "Back");
     private static final int rrrSlot = 2;
     private static final int rlrSlot = 11;
     private static final int rllSlot = 20;
@@ -39,6 +42,8 @@ public class SkillsGUI {
     private static final int rllToggleSlot = 19;
     private static final int rrlToggleSlot = 28;
     private static final int passiveToggleSlot = 37;
+    private static final int backSlot = 45;
+    private static final int resetSlot = 53;
     private static final int[] levelItemLocations = {
             3, 4, 5, 6, 7,
             12, 13, 14, 15, 16,
@@ -90,6 +95,8 @@ public class SkillsGUI {
         } else {
             inv.setItem(passiveToggleSlot, passiveOffItem);
         }
+        inv.setItem(resetSlot, resetItem);
+        inv.setItem(backSlot, back);
 
 
         List<ItemStack> levelItems = getAllLevelItems(stats);
@@ -100,28 +107,28 @@ public class SkillsGUI {
         player.openInventory(inv);
     }
 
-    private static List<ItemStack> getAllLevelItems(PlayerStats playerStats) {
+    private static List<ItemStack> getAllLevelItems(PlayerStats stats) {
         List<ItemStack> levelItems = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
-            Skill currentSkill = playerStats.getSkillRRR();
-            int level = playerStats.getRRRLevel();
+            Skill currentSkill = stats.getSkillRRR();
+            int level = stats.getRRRLevel();
             switch (i) {
                 case 1 -> {
-                    level = playerStats.getRLRLevel();
-                    currentSkill = playerStats.getSkillRLR();
+                    level = stats.getRLRLevel();
+                    currentSkill = stats.getSkillRLR();
                 }
                 case 2 -> {
-                    level = playerStats.getRLLLevel();
-                    currentSkill = playerStats.getSkillRLL();
+                    level = stats.getRLLLevel();
+                    currentSkill = stats.getSkillRLL();
                 }
                 case 3 -> {
-                    level = playerStats.getRRLLevel();
-                    currentSkill = playerStats.getSkillRRL();
+                    level = stats.getRRLLevel();
+                    currentSkill = stats.getSkillRRL();
                 }
                 case 4 -> {
-                    level = playerStats.getPassiveLevel();
-                    currentSkill = playerStats.getPassive();
+                    level = stats.getPassiveLevel();
+                    currentSkill = stats.getPassive();
                 }
             }
             for (int j = 0; j < 5; j++) {
@@ -166,6 +173,27 @@ public class SkillsGUI {
         Player player = (Player) event.getWhoClicked();
         PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
         switch (event.getSlot()) {
+            // Switches
+            case backSlot -> {
+                AncestryGUI.openGUI(player);
+                player.playSound(player, Sound.ENTITY_ITEM_PICKUP, 1f, 1f);
+            }
+            case resetSlot -> {
+                stats.setRRRLevel(1);
+                stats.setRLRLevel(1);
+                stats.setRLLLevel(1);
+                stats.setRRLLevel(1);
+                stats.setPassiveLevel(1);
+                stats.setRRRActive(true);
+                stats.setRLRActive(true);
+                stats.setRLLActive(true);
+                stats.setRRLActive(true);
+                stats.setPassiveActive(true);
+                stats.setPoints(stats.getMaxPoints());
+                stats.save();
+                player.playSound(player, Sound.EVENT_RAID_HORN, 0.7f, 1f);
+                openGUI(player);
+            }
             // Toggles
             case rrrToggleSlot -> {
                 stats.setRRRActive(!stats.getRRRActive());
@@ -218,12 +246,28 @@ public class SkillsGUI {
     }
 
     public static void levelUp(SkillType type, int level, Player player, PlayerStats stats) {
+        if (level > stats.getMaxLevel()) return;
         switch (type) {
-            case RRR -> stats.setRRRLevel(level);
-            case RLR -> stats.setRLRLevel(level);
-            case RLL -> stats.setRLLLevel(level);
-            case RRL -> stats.setRRLLevel(level);
-            case PASSIVE -> stats.setPassiveLevel(level);
+            case RRR -> {
+                if (level != stats.getRRRLevel() + 1) return;
+                stats.setRRRLevel(level);
+            }
+            case RLR -> {
+                if (level != stats.getRLRLevel() + 1) return;
+                stats.setRLRLevel(level);
+            }
+            case RLL -> {
+                if (level != stats.getRLLLevel() + 1) return;
+                stats.setRLLLevel(level);
+            }
+            case RRL -> {
+                if (level != stats.getRRLLevel() + 1) return;
+                stats.setRRLLevel(level);
+            }
+            case PASSIVE -> {
+                if (level != stats.getPassiveLevel() + 1) return;
+                stats.setPassiveLevel(level);
+            }
         }
         player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
     }

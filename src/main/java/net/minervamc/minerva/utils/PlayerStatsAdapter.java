@@ -34,6 +34,7 @@ public class PlayerStatsAdapter implements JsonSerializer<PlayerStats>, JsonDese
         object.addProperty("rllLevel", data.getRLLLevel());
         object.addProperty("rrlLevel", data.getRRLLevel());
         object.addProperty("passiveLevel", data.getPassiveLevel());
+        object.addProperty("maxLevel", data.getMaxLevel());
         object.addProperty("points", data.getPoints());
         object.addProperty("maxPoints", data.getMaxPoints());
         return object;
@@ -61,6 +62,7 @@ public class PlayerStatsAdapter implements JsonSerializer<PlayerStats>, JsonDese
             playerDataJSON.setRLLLevel(object.get("rllLevel").getAsInt());
             playerDataJSON.setRRLLevel(object.get("rrlLevel").getAsInt());
             playerDataJSON.setPassiveLevel(object.get("passiveLevel").getAsInt());
+            playerDataJSON.setMaxLevel(object.get("maxLevel").getAsInt());
             playerDataJSON.setPoints(object.get("points").getAsInt());
             playerDataJSON.setMaxPoints(object.get("maxPoints").getAsInt());
             return playerDataJSON;

@@ -23,12 +23,55 @@ import org.bukkit.util.Vector;
 public class StormsEmbrace extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-        int maxEntitiesDamaged = 5;
-        double radius = Math.sqrt(3); // Change the middle.
-        double damage = 6;
-        long triggers = 20;
-        long timeBetweenTriggers = 5;
-        long cooldown = 10000;
+        int maxEntitiesDamaged;
+        double radius; // Change the middle.
+        double damage;
+        long triggers;
+        long timeBetweenTriggers;
+        long cooldown;
+
+        switch (level) {
+            default -> {
+                maxEntitiesDamaged = 5;
+                radius = Math.sqrt(3); // Change the middle.
+                damage = 6;
+                triggers = 20;
+                timeBetweenTriggers = 5;
+                cooldown = 10000;
+            }
+            case 2 -> {
+                maxEntitiesDamaged = 7;
+                radius = Math.sqrt(3); // Change the middle.
+                damage = 10;
+                triggers = 30;
+                timeBetweenTriggers = 5;
+                cooldown = 9500;
+            }
+            case 3 -> {
+                maxEntitiesDamaged = 10;
+                radius = Math.sqrt(5); // Change the middle.
+                damage = 12;
+                triggers = 30;
+                timeBetweenTriggers = 5;
+                cooldown = 9000;
+            }
+            case 4 -> {
+                maxEntitiesDamaged = 15;
+                radius = Math.sqrt(9); // Change the middle.
+                damage = 15;
+                triggers = 30;
+                timeBetweenTriggers = 5;
+                cooldown = 8500;
+            }
+            case 5 -> {
+                maxEntitiesDamaged = 20;
+                radius = Math.sqrt(16); // Change the middle.
+                damage = 20;
+                triggers = 30;
+                timeBetweenTriggers = 5;
+                cooldown = 8000;
+            }
+        }
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "stormsEmbrace")) {
             onCooldown(player);

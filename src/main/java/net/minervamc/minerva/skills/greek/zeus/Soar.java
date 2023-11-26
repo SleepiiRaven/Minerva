@@ -17,8 +17,30 @@ import org.bukkit.util.Vector;
 public class Soar extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-        long cooldown = 12000;
-        int duration = 30;
+        long cooldown;
+        int duration;
+        switch (level) {
+            default -> {
+                cooldown = 12000;
+                duration = 20;
+            }
+            case 2 -> {
+                cooldown = 11000;
+                duration = 25;
+            }
+            case 3 -> {
+                cooldown = 10000;
+                duration = 30;
+            }
+            case 4 -> {
+                cooldown = 9500;
+                duration = 35;
+            }
+            case 5 -> {
+                cooldown = 8000;
+                duration = 40;
+            }
+        }
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "soar")) {
             onCooldown(player);

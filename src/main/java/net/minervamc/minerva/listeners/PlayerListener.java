@@ -23,6 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
@@ -112,17 +113,17 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void playerOpenInventory(InventoryOpenEvent event) {
-        ItemUtils.resetItemDisplayName(event.getPlayer().getItemInHand());
+        //ItemUtils.resetItemDisplayName(event.getPlayer().getItemInHand());
     }
 
     @EventHandler
     public void playerDropItem(PlayerDropItemEvent event) {
-        ItemUtils.resetItemDisplayName(event.getItemDrop().getItemStack());
+        //ItemUtils.resetItemDisplayName(event.getItemDrop().getItemStack());
     }
 
     @EventHandler
     public void playerSwapSlots(PlayerItemHeldEvent event) {
-        ItemStack previousItem = event.getPlayer().getInventory().getItem(event.getPreviousSlot());
-        if (previousItem != null) ItemUtils.resetItemDisplayName(previousItem);
+        //ItemStack previousItem = event.getPlayer().getInventory().getItem(event.getPreviousSlot());
+        //if (previousItem != null) ItemUtils.resetItemDisplayName(previousItem);
     }
 }

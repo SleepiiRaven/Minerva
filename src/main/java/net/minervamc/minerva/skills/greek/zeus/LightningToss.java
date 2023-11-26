@@ -23,10 +23,42 @@ import org.bukkit.util.Vector;
 public class LightningToss extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-        int maxDistance = 15;
-        int maxBranches = 5;
-        double damage = 6;
-        long cooldown = 2000;
+        int maxDistance;
+        int maxBranches;
+        double damage;
+        long cooldown;
+        switch (level) {
+            default -> {
+                maxDistance = 10;
+                maxBranches = 5;
+                damage = 12;
+                cooldown = 4000;
+            }
+            case 2 -> {
+                maxDistance = 12;
+                maxBranches = 5;
+                damage = 14;
+                cooldown = 2750;
+            }
+            case 3 -> {
+                maxDistance = 15;
+                maxBranches = 6;
+                damage = 15;
+                cooldown = 2000;
+            }
+            case 4 -> {
+                maxDistance = 17;
+                maxBranches = 10;
+                damage = 20;
+                cooldown = 2000;
+            }
+            case 5 -> {
+                maxDistance = 20;
+                maxBranches = 12;
+                damage = 25;
+                cooldown = 1500;
+            }
+        }
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "lightningToss")) {
             onCooldown(player);

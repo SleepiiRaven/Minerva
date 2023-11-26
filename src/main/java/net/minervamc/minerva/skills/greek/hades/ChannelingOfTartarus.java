@@ -214,7 +214,7 @@ public class ChannelingOfTartarus extends Skill {
     private void blast(Player player, int range, double damage, int height, double radius, int time) {
         player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 0.2f, 2f);
         player.playSound(player.getLocation(), Sound.BLOCK_BELL_RESONATE, 2f, 2f);
-        player.sendMessage(ChatColor.RED + "You have hit all three of your missiles. Aim at an enemy or at a block within " + range + " blocks of you!");
+        player.sendMessage(ChatColor.RED + "You have hit all three of your missiles. Aim at a block within " + range + " blocks of you!");
         player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, time, 1));
         new BukkitRunnable() {
 
@@ -228,15 +228,8 @@ public class ChannelingOfTartarus extends Skill {
                     return;
                 }
                 Location effectLocation;
-                assert result != null;
                 try {
-                    if (result.getHitEntity() != null) {
-                        player.sendMessage("Found entity.");
-                        effectLocation = result.getHitEntity().getLocation();
-                    } else {
-                        player.sendMessage("Found block.");
-                        effectLocation = result.getHitBlock().getLocation();
-                    }
+                    effectLocation = result.getHitBlock().getLocation();
                 } catch (Exception e) {
                     effectLocation = null;
                 }
