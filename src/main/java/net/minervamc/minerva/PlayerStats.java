@@ -18,6 +18,8 @@ public class PlayerStats {
     public static Map<UUID, PlayerStats> playerStats = new HashMap<>();
     private static final Path STORAGE_FOLDER = Minerva.getInstance().getDataFolder().toPath().resolve("PlayerData");
     private final Path storage;
+
+    //region Stats
     private final UUID uuid;
     public SkillTriggers skillTriggers;
     private HeritageType heritage = HeritageType.NONE;
@@ -39,7 +41,9 @@ public class PlayerStats {
     private int maxLevel = 1;
     private int maxPoints = 0;
     private int points = 0;
+    //endregion
 
+    //region Getters
     public UUID getUuid() {
         return uuid;
     }
@@ -62,6 +66,9 @@ public class PlayerStats {
     public int getMaxLevel() { return maxLevel; }
     public int getPoints() { return points; }
     public int getMaxPoints() { return maxPoints; }
+    //endregion
+
+    //region Setters
     public void setHeritage(HeritageType heritage) { this.heritage = heritage; }
     public void setSkillRRR(Skill skillRRR) { this.skillRRR = skillRRR; }
     public void setSkillRLR(Skill skillRLR) { this.skillRLR = skillRLR; }
@@ -81,6 +88,7 @@ public class PlayerStats {
     public void setMaxLevel(int maxLevel) { this.maxLevel = maxLevel; }
     public void setPoints(int points) { this.points = points; }
     public void setMaxPoints(int points) { maxPoints = points; }
+    //endregion
 
     public PlayerStats(UUID uuid) {
         this.uuid = uuid;
@@ -88,6 +96,7 @@ public class PlayerStats {
         this.skillTriggers = new SkillTriggers(Bukkit.getPlayer(uuid));
     }
 
+    //region JSON Stuff
     public static PlayerStats getStats(UUID uuid) {
         PlayerStats data = playerStats.getOrDefault(uuid, null);
         if (data == null) {
@@ -113,7 +122,6 @@ public class PlayerStats {
     public void createJSON() throws IOException {
         if (!Files.exists(this.storage)) {
             if (!Files.exists(this.storage.getParent())) {
-                Bukkit.getServer().getConsoleSender().sendMessage(Minerva.getInstance().getDataFolder() + "/PlayerData");
                 Files.createDirectory(Paths.get(Minerva.getInstance().getDataFolder() + "/PlayerData"));
             }
             Files.createFile(this.storage);
@@ -137,4 +145,5 @@ public class PlayerStats {
         save();
         playerStats.remove(uuid, this);
     }
+    //endregion
 }

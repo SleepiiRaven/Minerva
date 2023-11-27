@@ -1,7 +1,5 @@
 package net.minervamc.minerva.listeners;
 
-import com.google.common.eventbus.DeadEvent;
-import java.util.Objects;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.guis.AncestryGUI;
@@ -10,32 +8,22 @@ import net.minervamc.minerva.guis.MythicalCreaturesGUI;
 import net.minervamc.minerva.guis.RomanGodsGUI;
 import net.minervamc.minerva.guis.SkillsGUI;
 import net.minervamc.minerva.guis.TitansGUI;
-import net.minervamc.minerva.skills.Skills;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
-import net.minervamc.minerva.types.HeritageType;
-import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
-import net.minervamc.minerva.utils.PlayerStatsAdapter;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
-import org.bukkit.event.player.PlayerChangedMainHandEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class PlayerListener implements Listener {
     private final Minerva plugin = Minerva.getInstance();
@@ -90,24 +78,12 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void inventoryClick(InventoryClickEvent event) {
         switch (ChatColor.stripColor(event.getView().getTitle())) {
-            case SkillsGUI.invName:
-                SkillsGUI.clickedGUI(event);
-                break;
-            case AncestryGUI.invName:
-                AncestryGUI.clickedGUI(event);
-                break;
-            case GreekGodsGUI.invName:
-                GreekGodsGUI.clickedGUI(event);
-                break;
-            case RomanGodsGUI.invName:
-                RomanGodsGUI.clickedGUI(event);
-                break;
-            case TitansGUI.invName:
-                TitansGUI.clickedGUI(event);
-                break;
-            case MythicalCreaturesGUI.invName:
-                MythicalCreaturesGUI.clickedGUI(event);
-                break;
+            case SkillsGUI.invName -> SkillsGUI.clickedGUI(event);
+            case AncestryGUI.invName -> AncestryGUI.clickedGUI(event);
+            case GreekGodsGUI.invName -> GreekGodsGUI.clickedGUI(event);
+            case RomanGodsGUI.invName -> RomanGodsGUI.clickedGUI(event);
+            case TitansGUI.invName -> TitansGUI.clickedGUI(event);
+            case MythicalCreaturesGUI.invName -> MythicalCreaturesGUI.clickedGUI(event);
         }
     }
 

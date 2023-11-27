@@ -69,6 +69,6 @@ public class ApollosHymn extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.ALLIUM), ChatColor.BOLD + "" + ChatColor.LIGHT_PURPLE + "Apollo's Hymn", ChatColor.GRAY + "You sing one of Apollo's hymns, blessing the ground,", "healing those that stand on the sacred earth.");
+        return ItemUtils.getItem(new ItemStack(Material.ALLIUM), ChatColor.BOLD + "" + ChatColor.LIGHT_PURPLE + "Apollo's Hymn", ChatColor.GRAY + "You sing one of Apollo's hymns, blessing the ground,", ChatColor.GRAY + "healing those that stand on the sacred earth.");
     }
 }

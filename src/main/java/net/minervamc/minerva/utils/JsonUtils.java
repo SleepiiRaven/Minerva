@@ -5,7 +5,8 @@ import com.google.gson.GsonBuilder;
 import net.minervamc.minerva.PlayerStats;
 
 public class JsonUtils {
-    private static GsonBuilder BUILDER = new GsonBuilder().registerTypeAdapter(PlayerStats.class, new PlayerStatsAdapter()).disableHtmlEscaping();
+    private static GsonBuilder BUILDER = new GsonBuilder().registerTypeAdapter(PlayerStats.class, new PlayerStatsAdapter())
+            .disableHtmlEscaping();
     public static Gson GSON;
 
     static {

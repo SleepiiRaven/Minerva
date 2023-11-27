@@ -48,22 +48,14 @@ public class AncestryGUI {
         event.setCancelled(true);
         ((Player) event.getWhoClicked()).updateInventory();
         switch (event.getSlot()) {
-            case mythicalSlot:
-                MythicalCreaturesGUI.openGUI((Player) event.getWhoClicked());
-                break;
-            case greekSlot:
-                GreekGodsGUI.openGUI((Player) event.getWhoClicked());
-                break;
-            case romanSlot:
-                RomanGodsGUI.openGUI((Player) event.getWhoClicked());
-                break;
-            case titanSlot:
-                TitansGUI.openGUI((Player) event.getWhoClicked());
-                break;
-            case mortalSlot:
+            case mythicalSlot -> MythicalCreaturesGUI.openGUI((Player) event.getWhoClicked());
+            case greekSlot -> GreekGodsGUI.openGUI((Player) event.getWhoClicked());
+            case romanSlot -> RomanGodsGUI.openGUI((Player) event.getWhoClicked());
+            case titanSlot -> TitansGUI.openGUI((Player) event.getWhoClicked());
+            case mortalSlot -> {
                 event.getWhoClicked().sendMessage(ChatColor.RED + "This option has not been unlocked yet.");
                 ((Player) event.getWhoClicked()).playSound(event.getWhoClicked(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
-                break;
+            }
         }
     }
 }
