@@ -3,11 +3,13 @@ package net.minervamc.minerva.skills.greek.poseidon;
 import java.util.ArrayList;
 import java.util.List;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.skills.greek.zeus.LightningToss;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
+import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -33,7 +35,7 @@ public class OceansSurge extends Skill {
         switch (level) {
             default -> {
                 cooldown = 8000;
-                damage = 0.001;
+                damage = 20;
                 push = 0.5;
             }
             case 2 -> {
@@ -83,8 +85,8 @@ public class OceansSurge extends Skill {
                     loc.add(x,y,z);
                     player.getWorld().spawnParticle(Particle.CRIT_MAGIC, loc, 1, 0, 0, 0, 0);
                     for (Entity entity : loc.getNearbyEntities(0.5, 2, 0.5)) {
-                        if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Horse)) {
-                            livingEntity.damage(damage, player);
+                        if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Horse) && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
+                            SkillUtils.damage(livingEntity, damage, player);
                             livingEntity.setVelocity(ParticleUtils.getDirection(player.getLocation(), livingEntity.getLocation()).multiply(push));
                         }
                     }
@@ -113,8 +115,8 @@ public class OceansSurge extends Skill {
                     loc.add(x,y,z);
                     player.getWorld().spawnParticle(Particle.CRIT_MAGIC, loc, 1, 0, 0, 0, 0);
                     for (Entity entity : loc.getNearbyEntities(0.5, 2, 0.5)) {
-                        if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Horse)) {
-                            livingEntity.damage(damage, player);
+                        if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Horse) && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
+                            SkillUtils.damage(livingEntity, damage, player);
                             livingEntity.setVelocity(ParticleUtils.getDirection(player.getLocation(), livingEntity.getLocation()).multiply(push));
                         }
                     }

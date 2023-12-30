@@ -34,6 +34,6 @@ public class ProtectiveCloud extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.PHANTOM_MEMBRANE), ChatColor.GRAY + "" + ChatColor.BOLD + "[Protective Cloud]", "Take no fall damage.");
+        return ItemUtils.getItem(new ItemStack(Material.PHANTOM_MEMBRANE), ChatColor.GRAY + "" + ChatColor.BOLD + "[Protective Cloud]", ChatColor.GRAY + "Take no fall damage.");
     }
 }

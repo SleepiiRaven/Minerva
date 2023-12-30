@@ -57,7 +57,7 @@ public class Soar extends Skill {
             int ticks = 0;
             @Override
             public void run() {
-                if (ticks >= duration) {
+                if (player.isDead() || !player.isOnline() || ticks >= duration) {
                     if (!(player.getGameMode() == GameMode.CREATIVE)) {
                         player.setAllowFlight(false);
                     }

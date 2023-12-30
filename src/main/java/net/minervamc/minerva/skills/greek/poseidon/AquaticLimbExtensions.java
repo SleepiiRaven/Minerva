@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
+import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,7 +36,7 @@ public class AquaticLimbExtensions extends Skill {
         if (!waterBlocks.containsKey(player.getUniqueId())) {
             waterBlocks.put(player.getUniqueId(), new ArrayList<>());
         }
-        double distanceNormal = 5;
+        double distanceNormal = 3;
         double distanceExtended;
         int maxPunches;
         int maxPunchingTicks; // Takes twice as long to do a full punch
@@ -45,13 +47,13 @@ public class AquaticLimbExtensions extends Skill {
 
         switch (level) {
             default -> {
-                distanceExtended = 10;
+                distanceExtended = 5;
                 maxPunchingTicks = 5; // Takes twice as long to do a full punch
                 punchCooldown = (maxPunchingTicks * 2) * 50;
                 maxPunches = 5;
                 durationTicks = maxPunchingTicks * 4 * maxPunches;
                 cooldown = durationTicks*50 + 9000;
-                damage = 5;
+                damage = 100;
             }
             case 2 -> {
                 distanceExtended = 12.5;
@@ -112,7 +114,7 @@ public class AquaticLimbExtensions extends Skill {
 
             @Override
             public void run() {
-                if (ticks >= durationTicks || !player.isOnline()) {
+                if (player.isDead() || !player.isOnline() || ticks >= durationTicks || !player.isOnline()) {
                     player.getWorld().playSound(player.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 1f, 1f);
                     reset(player);
                     this.cancel();
@@ -202,8 +204,8 @@ public class AquaticLimbExtensions extends Skill {
                 waterBlocks.get(player.getUniqueId()).add(block);
 
                 for (Entity entity : effectLocation.getNearbyEntities(1, 2, 1)) {
-                    if (damage != 0 && entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Horse)) {
-                        livingEntity.damage(damage, player);
+                    if (damage != 0 && entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Horse) && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
+                        SkillUtils.damage(livingEntity, damage, player);
                         livingEntity.setVelocity(direction.clone().multiply(0.5));
                     }
                 }

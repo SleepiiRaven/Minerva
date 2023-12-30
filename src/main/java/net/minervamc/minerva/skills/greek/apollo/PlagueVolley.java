@@ -8,8 +8,10 @@ import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
@@ -26,6 +28,7 @@ public class PlagueVolley extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
         long cooldown = 5000;
+        double damage = 5;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "plagueVolley")) {
             onCooldown(player);
@@ -35,7 +38,7 @@ public class PlagueVolley extends Skill {
         cooldownManager.setCooldownFromNow(player.getUniqueId(), "plagueVolley", cooldown);
         cooldownAlarm(player, cooldown, "Plague Volley");
 
-        Location location = player.getLocation();
+        Location location = player.getEyeLocation();
         Vector direction = location.getDirection();
 
         location.getWorld().playSound(location, Sound.ITEM_CROSSBOW_SHOOT, 1.6f, 1f);
@@ -61,22 +64,32 @@ public class PlagueVolley extends Skill {
 
         List<Arrow> arrows = new ArrayList<>();
         for (Vector arrowDirection : arrowDirections) {
-            Arrow arrow = (Arrow) player.getWorld().spawnEntity(location.add(arrowDirection).setDirection(arrowDirection), EntityType.ARROW);
+            Arrow arrow = player.getWorld().spawnArrow(location.clone().add(arrowDirection).setDirection(arrowDirection), arrowDirection.clone().multiply(0.8), 1f, 0f);
+            arrow.setShooter(player);
             arrow.setVelocity(arrowDirection.clone().multiply(3));
             arrow.setBasePotionData(new PotionData(PotionType.POISON));
+            arrow.setDamage(damage);
             arrows.add(arrow);
         }
 
         new BukkitRunnable() {
+            int ticks = 0;
             @Override
             public void run() {
                 boolean allDead = true;
                 for (Arrow arrow : arrows) {
                     if (arrow.isDead() || arrow.isOnGround()) {
                         arrow.remove();
+                        continue;
                     } else {
                         allDead = false;
                     }
+
+                    List<Vector> spiralPoints = ParticleUtils.getVerticalCirclePoints(1, arrow.getLocation().getPitch(), arrow.getLocation().getYaw(), 10);
+                    if (ticks >= 10) ticks = 0;
+                    Location particleLoc = arrow.getLocation().add(spiralPoints.get(ticks));
+                    particleLoc.getWorld().spawnParticle(Particle.REDSTONE, particleLoc, 0, 0, 0, 0, 0, new Particle.DustOptions(Color.GREEN, 1f));
+                    ticks++;
                 }
                 if (allDead) this.cancel();
             }

@@ -3,11 +3,13 @@ package net.minervamc.minerva.skills.greek.hades;
 import java.util.Collection;
 import java.util.concurrent.ThreadLocalRandom;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.FastUtils;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
+import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -30,7 +32,7 @@ public class ShadowTravel extends Skill {
     public void cast(Player player, CooldownManager cooldownManager, int level) {
         long cooldown;
         double distance;
-        int range;
+        int range = 3;
         double damage;
         double kb;
 
@@ -39,31 +41,26 @@ public class ShadowTravel extends Skill {
             default -> {
                 cooldown = 10000;
                 distance = 7;
-                range = 1;
-                damage = 0.1;
+                damage = 50;
             }
             case 2 -> {
                 cooldown = 9000;
                 distance = 8;
-                range = 1;
                 damage = 0.1;
             }
             case 3 -> {
                 cooldown = 8000;
                 distance = 10;
-                range = 1;
                 damage = 0.1;
             }
             case 4 -> {
                 cooldown = 8000;
                 distance = 12;
-                range = 1;
                 damage = 0.1;
             }
             case 5 -> {
                 cooldown = 8000;
                 distance = 15;
-                range = 1;
                 damage = 0.1;
             }
         }
@@ -80,6 +77,7 @@ public class ShadowTravel extends Skill {
 
         cooldownManager.setCooldownFromNow(player.getUniqueId(), "shadowTravel", cooldown);
         cooldownAlarm(player, cooldown, "Shadow Travel");
+
         player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20, 0));
         player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20, 100));
         player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 0));
@@ -126,14 +124,16 @@ public class ShadowTravel extends Skill {
                 // make sure it's a living entity, not an armor stand or something, continue skips the current loop
                 if (!(closebyMonster instanceof LivingEntity) || (closebyMonster == player)) continue;
                 LivingEntity livingMonster = (LivingEntity) closebyMonster;
-                // Get the entity's collision box
-                BoundingBox monsterBoundingBox = livingMonster.getBoundingBox();
-                BoundingBox collisionBox = BoundingBox.of(location, range, range, range);
-                if (!(monsterBoundingBox.overlaps(collisionBox))) continue;
-                livingMonster.damage(damage, player);
-                Vector viewNormalized = ParticleUtils.getDirection(location, livingMonster.getLocation()).normalize().multiply(kb);
-                livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 0));
-                livingMonster.setVelocity(viewNormalized);
+                if (!(livingMonster instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
+                    // Get the entity's collision box
+                    BoundingBox monsterBoundingBox = livingMonster.getBoundingBox();
+                    BoundingBox collisionBox = BoundingBox.of(location, range, range, range);
+                    if (!(monsterBoundingBox.overlaps(collisionBox))) continue;
+                    SkillUtils.damage(livingMonster, damage, player);
+                    Vector viewNormalized = ParticleUtils.getDirection(location, livingMonster.getLocation()).normalize().multiply(kb);
+                    livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 0));
+                    livingMonster.setVelocity(viewNormalized);
+                }
             }
         }
     }

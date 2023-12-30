@@ -7,28 +7,83 @@ import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 public class ParticleUtils {
+    public static List<Vector> getStarPoints(int vertices, double starSize, double starHeaviness, int interpolationCount) {
+        Vector[] polygonVertices = new Vector[2 * vertices];
+
+        for (int i = 0; i < vertices; i++) {
+            double angle = 2 * i * Math.PI / vertices;
+            polygonVertices[2 * i] = new Vector(FastUtils.sin(angle), 0, FastUtils.cos(angle)).multiply(starSize);
+            polygonVertices[2 * i + 1] = new Vector(FastUtils.sin(angle + Math.PI / vertices), 0, FastUtils.cos(angle + Math.PI / vertices)).multiply(starHeaviness * starSize);
+        }
+
+        List<Vector> starFull = new ArrayList<>();
+        float step = 1.0f / (float) (interpolationCount + 1);
+        for (int starPointIterator = 0; starPointIterator < polygonVertices.length; starPointIterator++) {
+            starFull.add(polygonVertices[starPointIterator]);
+            for (int i = 1; i <= interpolationCount; i++) {
+                float t = step * i;
+                starFull.add(
+                        polygonVertices[starPointIterator == polygonVertices.length - 1 ? 0 : starPointIterator + 1].clone()
+                                .subtract(polygonVertices[starPointIterator].clone())
+                                .multiply(t)
+                                .add(polygonVertices[starPointIterator].clone())
+                );
+            }
+        }
+        return starFull;
+    }
+
+    public static List<Vector> getLinePoints(Vector direction, double distance, double step) {
+        List<Vector> points = new ArrayList<>();
+
+        for (double i = 0; i < distance; i += step) {
+            Vector point = direction.clone().multiply(i);
+            points.add(point);
+        }
+
+        return points;
+    }
+
     public static List<Vector> getCirclePoints(double radius) {
         List<Vector> points = new ArrayList<>();
-        for (int d = 0; d < 90; d += 1) {
+        for (int d = 0; d < 20; d += 1) {
+            double angle = (2*Math.PI*d)/20;
             // Cosine for X
-            Vector vector = new Vector(Math.cos(d) * radius, 0, Math.sin(d) * radius);
+            Vector vector = new Vector(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
             points.add(vector);
         }
 
         return points;
     }
-
-    public static List<Vector> getSpiralPoints(double radius, double radiusIncrease) {
+    public static List<Vector> getVerticalCirclePoints(double radius, float pitch, float yaw, int particles) {
         List<Vector> points = new ArrayList<>();
-        for (int d = 0; d <= 60; d += 1) {
-            radius += radiusIncrease;
-            Vector vector = new Vector(Math.cos(d) * radius, 0, Math.sin(d) * radius);
+        for (int i = 0; i < particles; i++) {
+            double theta = i * 2 * Math.PI / particles;
+            double x = radius * Math.sin(theta);
+            double y = radius * Math.cos(theta);
 
-            points.add(vector);
+            Vector point = new Vector(x, y, 0);
+            point = rotateXAxis(point, pitch);
+            point = rotateYAxis(point, yaw);
+
+            points.add(point);
         }
-
         return points;
     }
+
+        public static List<Vector> getSpiralPoints(double radius, double radiusIncrease, double maxY) {
+            List<Vector> points = new ArrayList<>();
+            for (int d = 0; d <= 60; d += 1) {
+                radius += radiusIncrease;
+                double y = 0;
+                if (maxY != 0) y = d/(60/maxY);
+                Vector vector = new Vector(Math.cos(d) * radius, d/(60/maxY), Math.sin(d) * radius);
+
+                points.add(vector);
+            }
+
+            return points;
+        }
 
     public static List<Vector> getFilledCirclePoints(double radius, double pointCount) {
         List<Vector> points = new ArrayList<>();
@@ -77,10 +132,10 @@ public class ParticleUtils {
         return points;
     }
 
-    public static List<Vector> getSpherePoints(double radius) {
+    public static List<Vector> getSpherePoints(double radius, int particles) {
         List<Vector> points = new ArrayList<>();
 
-        double increment = Math.PI / 20;
+        double increment = Math.PI / particles;
         for (double theta = 0; theta <= Math.PI; theta += increment) {
             double sinTheta = Math.sin(theta);
             double cosTheta = Math.cos(theta);

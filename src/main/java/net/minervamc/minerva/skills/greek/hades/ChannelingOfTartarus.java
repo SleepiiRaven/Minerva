@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
+import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -46,19 +48,19 @@ public class ChannelingOfTartarus extends Skill {
         switch (level) {
             default -> {
                 cooldown = 12000;
-                distance = 15;
+                distance = 5;
                 range = 1.5;
                 burstDistance = 30;
                 burstRadius = 3; // Radius of giant burst cyllander
                 burstHeight = 20; // Goes down half the height and up half the height
-                missileDamage = 1;
-                burstDamage = 15;
+                missileDamage = 80;
+                burstDamage = 400;
                 timeBetweenMissiles = 10;
                 burstWindUpTime = 30;
             }
             case 2 -> {
                 cooldown = 11000;
-                distance = 15;
+                distance = 6;
                 range = 1.5;
                 burstDistance = 30;
                 burstRadius = 4; // Radius of giant burst cyllander
@@ -70,7 +72,7 @@ public class ChannelingOfTartarus extends Skill {
             }
             case 3 -> {
                 cooldown = 11000;
-                distance = 15;
+                distance = 7;
                 range = 1.5;
                 burstDistance = 30;
                 burstRadius = 4.5; // Radius of giant burst cyllander
@@ -82,7 +84,7 @@ public class ChannelingOfTartarus extends Skill {
             }
             case 4 -> {
                 cooldown = 11000;
-                distance = 17.5;
+                distance = 8;
                 range = 1.5;
                 burstDistance = 30;
                 burstRadius = 4.5; // Radius of giant burst cyllander
@@ -94,7 +96,7 @@ public class ChannelingOfTartarus extends Skill {
             }
             case 5 -> {
                 cooldown = 10000;
-                distance = 20;
+                distance = 10;
                 range = 1.5;
                 burstDistance = 30;
                 burstRadius = 5; // Radius of giant burst cyllander
@@ -138,6 +140,12 @@ public class ChannelingOfTartarus extends Skill {
                 Vector beamControl;
                 Vector beamEnd;
                 Vector viewDir = player.getEyeLocation().getDirection();
+
+                if (player.isDead() || !player.isOnline()) {
+                    this.cancel();
+                    return;
+                }
+
                 switch (dir) {
                     case LEFT:
                         beamStart = ParticleUtils.rotateYAxis(viewDir, -90);
@@ -183,7 +191,7 @@ public class ChannelingOfTartarus extends Skill {
     private boolean beam(Vector start, Vector control, Vector end, Player player, double damage, double range) {
         player.getWorld().playSound(player.getLocation(), Sound.ITEM_TRIDENT_RIPTIDE_2, 0.5f, 0.3f);
         boolean foundEnemy = false;
-        for (Vector vector : ParticleUtils.getQuadraticBezierPoints(start, control, end, 20)) {
+        for (Vector vector : ParticleUtils.getQuadraticBezierPoints(start, control, end, 10)) {
             Location particleLoc = player.getEyeLocation().add(vector);
             particleLoc.getWorld().spawnParticle(Particle.REDSTONE, particleLoc, 10, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(32, 32, 40), 2));
             particleLoc.getWorld().spawnParticle(Particle.REDSTONE, particleLoc, 10, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(54, 55, 66), 2));
@@ -198,7 +206,7 @@ public class ChannelingOfTartarus extends Skill {
                 BoundingBox monsterBoundingBox = livingMonster.getBoundingBox();
                 BoundingBox collisionBox = BoundingBox.of(particleLoc, range, range, range);
                 if (!(monsterBoundingBox.overlaps(collisionBox))) continue;
-                livingMonster.damage(damage, player);
+                SkillUtils.damage(livingMonster, damage, player);
                 livingMonster.getLocation().getWorld().playSound(livingMonster.getLocation(), Sound.PARTICLE_SOUL_ESCAPE, 1f, 0.5f);
                 livingMonster.getWorld().spawnParticle(Particle.SOUL, livingMonster.getLocation(), 2, 0, 0, 0);
                 foundEnemy = true;
@@ -220,22 +228,32 @@ public class ChannelingOfTartarus extends Skill {
 
             @Override
             public void run() {
-                RayTraceResult result = player.rayTraceBlocks(range);
-                if (result == null || (result.getHitBlock() == null && result.getHitEntity() == null)) {
-                    player.sendMessage(ChatColor.RED + "You were not looking at a block within " + range + " blocks of you.");
+                RayTraceResult resultBlocks = player.rayTraceBlocks(range);
+                RayTraceResult resultEntities = player.getWorld().rayTraceEntities(player.getLocation(), player.getLocation().getDirection(), range);
+                Location effectLocation;
+                if (resultBlocks != null && resultBlocks.getHitBlock() != null && !player.isDead() && player.isOnline()) {
+                    try {
+                        effectLocation = resultBlocks.getHitBlock().getLocation();
+                    } catch (Exception e) {
+                        effectLocation = null;
+                    }
+                }
+                else if (resultEntities != null && resultEntities.getHitEntity() != null && !player.isDead() && player.isOnline()) {
+                    try {
+                        effectLocation = resultEntities.getHitEntity().getLocation();
+                    } catch (Exception e) {
+                        effectLocation = null;
+                    }
+                } else {
+                    player.sendMessage(ChatColor.RED + "You were not looking at a block or an entity within " + range + " blocks of you.");
                     player.playSound(player.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 0.2f, 2f);
                     this.cancel();
                     return;
                 }
-                Location effectLocation;
-                try {
-                    effectLocation = result.getHitBlock().getLocation();
-                } catch (Exception e) {
-                    effectLocation = null;
-                }
                 if (effectLocation == null) {
                     this.cancel();
                     run();
+
                 }
                 Collection<Entity> closebyEntities = effectLocation.getWorld().getNearbyEntities(effectLocation, 3, height, 3);
                 for (Vector point : ParticleUtils.getCylinderPoints(radius, height)) {
@@ -244,8 +262,9 @@ public class ChannelingOfTartarus extends Skill {
                     particleLoc.getWorld().spawnParticle(Particle.REDSTONE, particleLoc, 3, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(74, 149, 150), 2));
                 }
                 for (Entity entity : closebyEntities) {
-                    if (!(entity instanceof LivingEntity enemy) || entity == player) continue;
-                    enemy.damage(damage, player);
+                    if (entity instanceof LivingEntity enemy && entity != player && !(enemy instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
+                        SkillUtils.damage(enemy, damage, player);
+                    }
                 }
 
             }

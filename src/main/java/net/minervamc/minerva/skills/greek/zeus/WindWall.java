@@ -1,10 +1,12 @@
 package net.minervamc.minerva.skills.greek.zeus;
 
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
+import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -33,7 +35,7 @@ public class WindWall extends Skill {
                 wallWidth = 8;
                 wallHeight = 5;
                 distance = 3;
-                damage = 2;
+                damage = 90;
                 maxTriggers = 15;
                 ticksBetweenTriggers = 10;
                 cooldown = 15000;
@@ -98,7 +100,7 @@ public class WindWall extends Skill {
 
             @Override
             public void run() {
-                if (triggers >= maxTriggers) {
+                if (player.isDead() || !player.isOnline() || triggers >= maxTriggers) {
                     this.cancel();
                 }
 
@@ -108,9 +110,9 @@ public class WindWall extends Skill {
                         Location pointLocation = playerLocation.clone().add(point);
                         player.getWorld().spawnParticle(Particle.CLOUD, pointLocation, 1, 0, 0, 0, 0);
                         for (Entity entity : (pointLocation).getNearbyEntities(1, 1, 1)) {
-                            if (entity instanceof LivingEntity livingEntity && livingEntity != player) {
-                                livingEntity.damage(damage, player);
-                                livingEntity.setVelocity(playerDirection.clone().multiply(0.3));
+                            if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
+                                SkillUtils.damage(livingEntity, damage, player);
+                                livingEntity.setVelocity(livingEntity.getLocation().getDirection().setY(0).multiply(-1));
                             }
                         }
                     }

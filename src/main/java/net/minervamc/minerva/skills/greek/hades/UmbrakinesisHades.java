@@ -5,10 +5,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
+import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -30,7 +32,7 @@ public class UmbrakinesisHades extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
         long cooldown;
-        double range; // How far away from particles can a particle hurt an enemy?
+        double range = 1.5; // How far away from particles can a particle hurt an enemy?
         double distance; // How long each beam is
         double damage; // Damage
         double kb; // KB
@@ -41,18 +43,16 @@ public class UmbrakinesisHades extends Skill {
         switch (level) {
             default -> {
                 cooldown = 8000;
-                range = 1.5;
-                distance = 5;
-                damage = 3;
+                distance = 10;
+                damage = 100;
                 kb = ThreadLocalRandom.current().nextDouble(0.3, 0.5);
                 intervalBetweenTriggers = 10L;
                 maxTriggers = 4;
-                velocityMultiplier = 1;
+                velocityMultiplier = 2;
             }
             case 2 -> {
                 cooldown = 7000;
-                range = 1.5;
-                distance = 7.5;
+                distance = 15;
                 damage = 3.5;
                 kb = ThreadLocalRandom.current().nextDouble(0.3, 0.5);
                 intervalBetweenTriggers = 10L;
@@ -61,8 +61,7 @@ public class UmbrakinesisHades extends Skill {
             }
             case 3 -> {
                 cooldown = 7000;
-                range = 1.5;
-                distance = 7.5;
+                distance = 17.5;
                 damage = 4;
                 kb = ThreadLocalRandom.current().nextDouble(0.5, 1);
                 intervalBetweenTriggers = 8L;
@@ -71,8 +70,7 @@ public class UmbrakinesisHades extends Skill {
             }
             case 4 -> {
                 cooldown = 6000;
-                range = 1.5;
-                distance = 10;
+                distance = 20;
                 damage = 5;
                 kb = ThreadLocalRandom.current().nextDouble(0.5, 1);
                 intervalBetweenTriggers = 8L;
@@ -81,7 +79,6 @@ public class UmbrakinesisHades extends Skill {
             }
             case 5 -> {
                 cooldown = 5000;
-                range = 1.5;
                 distance = 12;
                 damage = 6;
                 kb = ThreadLocalRandom.current().nextDouble(0.7, 1.2);
@@ -117,7 +114,11 @@ public class UmbrakinesisHades extends Skill {
 
             @Override
             public void run() {
-                if (cooldownManager.isCooldownDone(player.getUniqueId(), "umbrakinesisDuration")) {
+                if (player.isDead() || !player.isOnline()) {
+                    this.cancel();
+                    return;
+                }
+                else if (cooldownManager.isCooldownDone(player.getUniqueId(), "umbrakinesisDuration")) {
                     this.cancel();
                     cooldownManager.setCooldownFromNow(player.getUniqueId(), "umbrakinesis", cooldown);
                     cooldownAlarm(player, cooldown, "Umbrakinesis");
@@ -128,9 +129,9 @@ public class UmbrakinesisHades extends Skill {
                 Vector viewDir = player.getEyeLocation().getDirection();
 
                 if (leftArm) {
-                    viewPos.add(ParticleUtils.rotateYAxis(viewDir.clone().multiply(2), -90));
+                    viewPos.add(ParticleUtils.rotateYAxis(viewDir.clone(), -90));
                 } else {
-                    viewPos.add(ParticleUtils.rotateYAxis(viewDir.clone().multiply(2), 90));
+                    viewPos.add(ParticleUtils.rotateYAxis(viewDir.clone(), 90));
                 }
 
                 player.getWorld().playSound(player.getLocation(), Sound.PARTICLE_SOUL_ESCAPE, 1f, 1f);
@@ -147,10 +148,13 @@ public class UmbrakinesisHades extends Skill {
                     player.getWorld().spawnParticle(Particle.REDSTONE, viewPos, 1, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(32, 32, 32), 2));
                     player.getWorld().spawnParticle(Particle.REDSTONE, viewPos, 1, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(40, 40, 40), 2));
                     player.getWorld().spawnParticle(Particle.END_ROD, viewPos, 1, 0, 0, 0);
-                    Collection<Entity> closebyMonsters = player.getWorld().getNearbyEntities(viewPos, range, range, range);
+                    double rX = range - x;
+                    double rY = range - y;
+                    double rZ = range - z;
+                    Collection<Entity> closebyMonsters = player.getWorld().getNearbyEntities(viewPos, rX, rY, rZ);
                     for (Entity closebyMonster : closebyMonsters) {
-                        if (!(closebyMonster instanceof LivingEntity livingMonster) || (closebyMonster == player)) continue;
-                        livingMonster.damage(damage, player);
+                        if (!(closebyMonster instanceof LivingEntity livingMonster) || (closebyMonster == player) || (closebyMonster instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) continue;
+                        SkillUtils.damage(livingMonster, damage, player);
                         Vector viewNormalized = (viewDir.normalize()).multiply(kb);
                         livingMonster.setVelocity(viewNormalized);
                     }
@@ -183,9 +187,10 @@ public class UmbrakinesisHades extends Skill {
             int ticks = 0;
             @Override
             public void run() {
-                if (ticks > 5 && player.isOnGround()) {
+                if (player.isDead() || !player.isOnline() || ticks > 5 && player.isOnGround()) {
                     this.cancel();
                     cooldownManager.setCooldownFromNow(player.getUniqueId(), "umbrakinesis", cooldown);
+                    cooldownAlarm(player, cooldown, "Umbrakinesis");
                     return;
                 }
                 Location pos = player.getLocation();

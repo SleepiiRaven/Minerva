@@ -38,7 +38,7 @@ public class EnhancedArchery extends Skill {
             @Override
             public void run() {
                 Location location = player.getLocation();
-                if (ticks++ >= effectDuration || location.getWorld() == null) {
+                if (player.isDead() || !player.isOnline() || ticks++ >= effectDuration || location.getWorld() == null) {
                     player.removeScoreboardTag("homingApollo");
                     this.cancel();
                     player.getWorld().playSound(player.getLocation(), Sound.ENTITY_BLAZE_HURT, 0.5f, 2f);

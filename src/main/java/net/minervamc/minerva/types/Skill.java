@@ -3,7 +3,6 @@ package net.minervamc.minerva.types;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.skills.Skills;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
-import net.minervamc.minerva.utils.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -45,9 +44,14 @@ public abstract class Skill {
             case "plagueVolley" -> Skills.PLAGUE_VOLLEY;
             case "callOfTheWild" -> Skills.CALL_OF_THE_WILD;
             case "huntressAgility" -> Skills.HUNTRESS_AGILITY;
-            case "quickDraw" -> Skills.QUICK_DRAW;
+            case "nimbleDash" -> Skills.NIMBLE_DASH;
             case "superCharged" -> Skills.SUPER_CHARGED;
             case "sharpshooter" -> Skills.SHARPSHOOTER;
+            case "drunkenRevelry" -> Skills.DRUNKEN_REVELRY;
+            case "frenziedDance" -> Skills.FRENZIED_DANCE;
+            case "grapeShot" -> Skills.GRAPE_SHOT;
+            case "vineWhip" -> Skills.VINE_WHIP;
+            case "madGodsDrink" -> Skills.MAD_GODS_DRINK;
             default -> Skills.DEFAULT;
         };
     }
@@ -58,7 +62,7 @@ public abstract class Skill {
             @Override
             public void run() {
                 if (player.isOnline()) {
-                    //ItemUtils.sendItemMessage(player, ChatColor.GREEN + abilityName + " is no longer on cooldown!");
+                    player.sendActionBar(ChatColor.YELLOW + abilityName + " is no longer on cooldown!");
                 }
             }
         }.runTaskLater(Minerva.getInstance(), cooldownTimeInTicks);

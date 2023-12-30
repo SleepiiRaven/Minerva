@@ -1,8 +1,5 @@
 package net.minervamc.minerva.skills;
 
-import java.lang.reflect.WildcardType;
-import java.util.ArrayList;
-import java.util.List;
 import net.minervamc.minerva.skills.greek.apollo.ApollosHymn;
 import net.minervamc.minerva.skills.greek.apollo.ArrowsOfTheSun;
 import net.minervamc.minerva.skills.greek.apollo.BurningLight;
@@ -10,9 +7,14 @@ import net.minervamc.minerva.skills.greek.apollo.EnhancedArchery;
 import net.minervamc.minerva.skills.greek.apollo.PlagueVolley;
 import net.minervamc.minerva.skills.greek.artemis.CallOfTheWild;
 import net.minervamc.minerva.skills.greek.artemis.HuntressAgility;
-import net.minervamc.minerva.skills.greek.artemis.QuickDraw;
+import net.minervamc.minerva.skills.greek.artemis.NimbleDash;
 import net.minervamc.minerva.skills.greek.artemis.Sharpshooter;
 import net.minervamc.minerva.skills.greek.artemis.SuperCharged;
+import net.minervamc.minerva.skills.greek.dionysus.DrunkenRevelry;
+import net.minervamc.minerva.skills.greek.dionysus.FrenziedDance;
+import net.minervamc.minerva.skills.greek.dionysus.GrapeShot;
+import net.minervamc.minerva.skills.greek.dionysus.VineWhip;
+import net.minervamc.minerva.skills.greek.dionysus.MadGodsDrink;
 import net.minervamc.minerva.skills.greek.hades.ChannelingOfTartarus;
 import net.minervamc.minerva.skills.greek.hades.LifeSteal;
 import net.minervamc.minerva.skills.greek.hades.ShadowTravel;
@@ -54,8 +56,13 @@ public interface Skills {
     Skill DEFAULT_PASSIVE = new DefaultSkill();
     Skill CALL_OF_THE_WILD = new CallOfTheWild();
     Skill HUNTRESS_AGILITY = new HuntressAgility();
-    Skill QUICK_DRAW = new QuickDraw();
+    Skill NIMBLE_DASH = new NimbleDash();
     Skill SHARPSHOOTER = new Sharpshooter();
     Skill SUPER_CHARGED = new SuperCharged();
+    Skill DRUNKEN_REVELRY = new DrunkenRevelry();
+    Skill FRENZIED_DANCE = new FrenziedDance();
+    Skill GRAPE_SHOT = new GrapeShot();
+    Skill VINE_WHIP = new VineWhip();
+    Skill MAD_GODS_DRINK = new MadGodsDrink();
     Skill DEFAULT = new DefaultSkill();
 }

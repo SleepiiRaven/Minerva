@@ -1,9 +1,7 @@
 package net.minervamc.minerva.guis;
 
-import it.unimi.dsi.fastutil.Pair;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.types.SkillType;
@@ -18,7 +16,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class SkillsGUI {
-    public static final String invName = "Choose or upgrade your skills...";
+    public static final String invName = "View and upgrade your skills.";
     private static final int drachmaeCost = 50;
     private static final ItemStack rrrOnItem = ItemUtils.getItem(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.GREEN + "" + ChatColor.BOLD + "[R-R-R]", ChatColor.GREEN + "Click to toggle this skill.");
     private static final ItemStack rlrOnItem = ItemUtils.getItem(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.GREEN + "" + ChatColor.BOLD + "[R-L-R]", ChatColor.GREEN + "Click to toggle this skill.");
@@ -30,7 +28,7 @@ public class SkillsGUI {
     private static final ItemStack rllOffItem = ItemUtils.getItem(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.RED + "" + ChatColor.BOLD + "[R-L-L]", ChatColor.GREEN + "Click to toggle this skill.");
     private static final ItemStack rrlOffItem = ItemUtils.getItem(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.RED + "" + ChatColor.BOLD + "[R-R-L]", ChatColor.GREEN + "Click to toggle this skill.");
     private static final ItemStack passiveOffItem = ItemUtils.getItem(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.RED + "" + ChatColor.BOLD + "[PASSIVE]", ChatColor.GREEN + "Click to toggle this skill.");
-    private static final ItemStack resetItem = ItemUtils.getItem(new ItemStack(Material.NETHER_STAR), ChatColor.DARK_RED + "" + ChatColor.BOLD + "Reset Skills. This costs " + drachmaeCost + " drachmæ.");
+    private static final ItemStack resetItem = ItemUtils.getItem(new ItemStack(Material.NETHER_STAR), ChatColor.DARK_RED + "" + ChatColor.BOLD + "Reset skills and regain points spent.");
     private static final ItemStack back = ItemUtils.getItem(new ItemStack(Material.ARROW), ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "Back");
     private static final int rrrSlot = 2;
     private static final int rlrSlot = 11;
@@ -61,7 +59,7 @@ public class SkillsGUI {
         ItemStack rrlItem = stats.getSkillRRL().getItem();
         ItemStack passiveItem = stats.getPassive().getItem();
 
-        Inventory inv = Bukkit.createInventory(player, 9 * 6, invName);
+        Inventory inv = Bukkit.createInventory(player, 9 * 6, invName + " you currently have " + stats.getPoints() + " points and your level cap is at " + stats.getMaxLevel());
         for (int i = 0; i < 54; i++) {
             inv.setItem(i, ItemUtils.getItem(new ItemStack(Material.BLACK_STAINED_GLASS_PANE), " "));
         }
@@ -96,7 +94,7 @@ public class SkillsGUI {
             inv.setItem(passiveToggleSlot, passiveOffItem);
         }
         inv.setItem(resetSlot, resetItem);
-        inv.setItem(backSlot, back);
+        //inv.setItem(backSlot, back);
 
 
         List<ItemStack> levelItems = getAllLevelItems(stats);
@@ -157,9 +155,9 @@ public class SkillsGUI {
                         break;
                 }
                 if (j < level) {
-                    levelItems.add(ItemUtils.getItem(new ItemStack(type), name, currentSkill.getLevelDescription(j)));
+                    levelItems.add(ItemUtils.getItem(new ItemStack(type), name, ChatColor.GRAY + currentSkill.getLevelDescription(j)));
                 } else if (j == level) {
-                    levelItems.add(ItemUtils.getItem(new ItemStack(Material.STONE_BUTTON), ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "[Upgrade for 1 skill point to gain these perks:]", currentSkill.getLevelDescription(j)));
+                    levelItems.add(ItemUtils.getItem(new ItemStack(Material.STONE_BUTTON), ChatColor.DARK_AQUA + "" + "Upgrade for 1 skill point to gain these perks:", ChatColor.GRAY + currentSkill.getLevelDescription(j)));
                 } else {
                     levelItems.add(ItemUtils.getItem(new ItemStack(Material.POLISHED_BLACKSTONE_BUTTON), ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "[Locked]"));
                 }
@@ -175,8 +173,10 @@ public class SkillsGUI {
         switch (event.getSlot()) {
             // Switches
             case backSlot -> {
+                /**
                 AncestryGUI.openGUI(player);
                 player.playSound(player, Sound.ENTITY_ITEM_PICKUP, 1f, 1f);
+                return;**/
             }
             case resetSlot -> {
                 stats.setRRRLevel(1);

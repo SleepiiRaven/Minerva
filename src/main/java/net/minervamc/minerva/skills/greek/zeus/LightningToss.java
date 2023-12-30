@@ -2,11 +2,13 @@ package net.minervamc.minerva.skills.greek.zeus;
 
 import java.util.Random;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.FastUtils;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
+import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -31,7 +33,7 @@ public class LightningToss extends Skill {
             default -> {
                 maxDistance = 10;
                 maxBranches = 5;
-                damage = 12;
+                damage = 160;
                 cooldown = 4000;
             }
             case 2 -> {
@@ -93,8 +95,8 @@ public class LightningToss extends Skill {
             player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, location.clone().add(direction.clone().multiply(i)), 0);
             player.getWorld().spawnParticle(Particle.REDSTONE, location.clone().add(direction.clone().multiply(i)), 0, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(254, 191, 16), 2));
             for (Entity entity : location.clone().add(direction.clone().multiply(i)).getNearbyEntities(1, 1, 1)) {
-                if (entity instanceof LivingEntity livingEntity && livingEntity != player) {
-                    livingEntity.damage(damage, player);
+                if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
+                    SkillUtils.damage(livingEntity, damage, player);
                     livingEntity.setVelocity(direction.multiply(0.3));
                     return;
                 }

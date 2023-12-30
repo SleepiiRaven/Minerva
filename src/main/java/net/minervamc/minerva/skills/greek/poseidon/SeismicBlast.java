@@ -3,10 +3,12 @@ package net.minervamc.minerva.skills.greek.poseidon;
 import java.util.ArrayList;
 import java.util.List;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
+import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -33,11 +35,11 @@ public class SeismicBlast extends Skill {
 
         switch (level) {
             default -> {
-                cooldown = 10000;
-                radius = 3;
+                cooldown = 9000;
+                radius = 5;
                 delay = 10;
                 knock = 1;
-                damage = 0.5;
+                damage = 100;
             }
             case 2 -> {
                 cooldown = 9000;
@@ -97,9 +99,11 @@ public class SeismicBlast extends Skill {
         for (Entity entity : player.getNearbyEntities(radius, 2, radius)) {
             if (!(entity instanceof LivingEntity livingEntity)) continue;
             if (livingEntity == player) continue;
-            livingEntity.damage(damage, player);
-            livingEntity.setVelocity(knockUp);
-            caughtLivingEntities.add(livingEntity);
+            if (!(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
+                SkillUtils.damage(livingEntity, damage, player);
+                livingEntity.setVelocity(knockUp);
+                caughtLivingEntities.add(livingEntity);
+            }
         }
 
         if (caughtLivingEntities.size() < 1) return;

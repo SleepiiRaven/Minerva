@@ -66,8 +66,7 @@ public class ItemUtils {
 
         List<String> lores = new ArrayList<>();
         for (String s : lore) {
-            if (s == null)
-            lores.add(ChatColor.translateAlternateColorCodes('&', s));
+            if (s != null) lores.add(ChatColor.translateAlternateColorCodes('&', s));
         }
 
         meta.setLore(lores);
@@ -76,6 +75,7 @@ public class ItemUtils {
 
         return item;
     }
+
     public static final Set<Material> weapons = EnumSet.of (
             Material.WOODEN_AXE,
             Material.STONE_AXE,
@@ -101,6 +101,7 @@ public class ItemUtils {
             Material.IRON_HOE,
             Material.DIAMOND_HOE,
             Material.NETHERITE_HOE,
-            Material.SHEARS
+            Material.SHEARS,
+            Material.BOW
     );
 }

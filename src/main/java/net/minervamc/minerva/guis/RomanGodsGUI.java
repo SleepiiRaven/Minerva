@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class RomanGodsGUI {
     public static final String invName = "Choose a Roman God...";
+    private static final ItemStack comingSoon = ItemUtils.getItem(new ItemStack(Material.ENDER_EYE), ChatColor.BLACK + "" + ChatColor.MAGIC + "" + ChatColor.BOLD + "[Clear Sight Mortal]", ChatColor.GRAY + "Coming soon...");
     private static final ItemStack jupiter = ItemUtils.getItem(new ItemStack(Material.GOLDEN_HELMET), ChatColor.RED + "" + ChatColor.BOLD + "Jupiter", ChatColor.GRAY + "Become a child of Jupiter, god of the sky. (Requires Donator Rank)");
     private static final ItemStack neptune = ItemUtils.getItem(new ItemStack(Material.TRIDENT), ChatColor.RED + "" + ChatColor.BOLD + "Neptune", ChatColor.GRAY + "Become a child of Neptune, god of the sea. (Requires Donator Rank)");
     private static final ItemStack pluto = ItemUtils.getItem(new ItemStack(Material.DIAMOND), ChatColor.RED + "" + ChatColor.BOLD + "Pluto", ChatColor.GRAY + "Become a child of Pluto, god of the dead. (Requires Donator Rank)");
@@ -45,16 +46,16 @@ public class RomanGodsGUI {
     private static final int psycheSlot = 28;
     private static final int mercurySlot = 29;
     private static final int dianaSlot = 30;
-    private static final int marsSlot = 31;
-    private static final int vulcanSlot = 32;
+    private static final int marsSlot = 40;
+    private static final int vulcanSlot = 42;
     private static final int ceresSlot = 33;
     private static final int vestaSlot = 34;
     private static final int arceSlot = 35;
     private static final int janusSlot = 38;
     private static final int bellonaSlot = 39;
-    private static final int bacchusSlot = 40;
+    private static final int bacchusSlot = 31;
     private static final int venusSlot = 41;
-    private static final int apolloSlot = 42;
+    private static final int apolloSlot = 32;
     private static final int backSlot = 45;
     public static void openGUI(Player player) {
         Inventory inv = Bukkit.createInventory(player, 9 * 6, invName);
@@ -64,21 +65,21 @@ public class RomanGodsGUI {
         inv.setItem(jupiterSlot, jupiter);
         inv.setItem(neptuneSlot, neptune);
         inv.setItem(plutoSlot, pluto);
-        inv.setItem(somnusSlot, somnus);
-        inv.setItem(chioneSlot, chione);
-        inv.setItem(arcusSlot, arcus);
-        inv.setItem(psycheSlot, psyche);
-        inv.setItem(mercurySlot, mercury);
+        inv.setItem(somnusSlot, comingSoon);
+        inv.setItem(chioneSlot, comingSoon);
+        inv.setItem(arcusSlot, comingSoon);
+        inv.setItem(psycheSlot, comingSoon);
+        inv.setItem(mercurySlot, comingSoon);
         inv.setItem(dianaSlot, diana);
-        inv.setItem(bellonaSlot, bellona);
-        inv.setItem(vulcanSlot, vulcan);
-        inv.setItem(ceresSlot, ceres);
-        inv.setItem(vestaSlot, vesta);
-        inv.setItem(arceSlot, arce);
-        inv.setItem(janusSlot, janus);
+        inv.setItem(bellonaSlot, comingSoon);
+        inv.setItem(vulcanSlot, comingSoon);
+        inv.setItem(ceresSlot, comingSoon);
+        inv.setItem(vestaSlot, comingSoon);
+        inv.setItem(arceSlot, comingSoon);
+        inv.setItem(janusSlot, comingSoon);
         inv.setItem(apolloSlot, apollo);
-        inv.setItem(marsSlot, mars);
-        inv.setItem(venusSlot, venus);
+        inv.setItem(marsSlot, comingSoon);
+        inv.setItem(venusSlot, comingSoon);
         inv.setItem(bacchusSlot, bacchus);
         inv.setItem(backSlot, back);
         player.openInventory(inv);
@@ -89,58 +90,71 @@ public class RomanGodsGUI {
         ((Player) event.getWhoClicked()).updateInventory();
         switch (event.getSlot()) {
             case jupiterSlot:
-                chooseHeritage(HeritageType.JUPITER, "child of Jupiter", (Player) event.getWhoClicked());
+                if (event.getWhoClicked().hasPermission("minerva.bigthree.zeus")) {
+                    chooseHeritage(HeritageType.JUPITER, "child of Jupiter", (Player) event.getWhoClicked());
+                } else {
+                    event.getWhoClicked().sendMessage(ChatColor.RED + "You must have the Big Three rank to play as a child of Jupiter!");
+                }
                 break;
             case neptuneSlot:
-                chooseHeritage(HeritageType.NEPTUNE, "child of Neptune", (Player) event.getWhoClicked());
+                if (event.getWhoClicked().hasPermission("minerva.bigthree.poseidon")) {
+                    chooseHeritage(HeritageType.NEPTUNE, "child of Neptune", (Player) event.getWhoClicked());
+                } else {
+                    event.getWhoClicked().sendMessage(ChatColor.RED + "You must have the Big Three rank to play as a child of Neptune!");
+                }
+
                 break;
             case plutoSlot:
-                chooseHeritage(HeritageType.PLUTO, "child of Pluto", (Player) event.getWhoClicked());
+                if (event.getWhoClicked().hasPermission("minerva.bigthree.hades")) {
+                    chooseHeritage(HeritageType.PLUTO, "child of Pluto", (Player) event.getWhoClicked());
+                } else {
+                    event.getWhoClicked().sendMessage(ChatColor.RED + "You must have the Big Three rank to play as a child of Pluto!");
+                }
                 break;
             case somnusSlot:
-                chooseHeritage(HeritageType.SOMNUS, "child of Somnus", (Player) event.getWhoClicked());
+                //chooseHeritage(HeritageType.SOMNUS, "child of Somnus", (Player) event.getWhoClicked());
                 break;
             case chioneSlot:
-                chooseHeritage(HeritageType.CHIONE, "child of Chione", (Player) event.getWhoClicked());
+                //chooseHeritage(HeritageType.CHIONE, "child of Chione", (Player) event.getWhoClicked());
                 break;
             case arcusSlot:
-                chooseHeritage(HeritageType.ARCUS, "child of Arcus", (Player) event.getWhoClicked());
+                //chooseHeritage(HeritageType.ARCUS, "child of Arcus", (Player) event.getWhoClicked());
                 break;
             case psycheSlot:
-                chooseHeritage(HeritageType.PSYCHE_ROMAN, "child of Psyche", (Player) event.getWhoClicked());
+                //chooseHeritage(HeritageType.PSYCHE_ROMAN, "child of Psyche", (Player) event.getWhoClicked());
                 break;
             case mercurySlot:
-                chooseHeritage(HeritageType.MERCURY, "child of Mercury", (Player) event.getWhoClicked());
+                //chooseHeritage(HeritageType.MERCURY, "child of Mercury", (Player) event.getWhoClicked());
                 break;
             case dianaSlot:
                 chooseHeritage(HeritageType.DIANA, "Hunter of Diana", (Player) event.getWhoClicked());
                 break;
             case bellonaSlot:
-                chooseHeritage(HeritageType.BELLONA, "child of Bellona", (Player) event.getWhoClicked());
+                //chooseHeritage(HeritageType.BELLONA, "child of Bellona", (Player) event.getWhoClicked());
                 break;
             case vulcanSlot:
-                chooseHeritage(HeritageType.VULCAN, "child of Vulcan", (Player) event.getWhoClicked());
+                //chooseHeritage(HeritageType.VULCAN, "child of Vulcan", (Player) event.getWhoClicked());
                 break;
             case ceresSlot:
-                chooseHeritage(HeritageType.CERES, "child of Ceres", (Player) event.getWhoClicked());
+                //(HeritageType.CERES, "child of Ceres", (Player) event.getWhoClicked());
                 break;
             case vestaSlot:
-                chooseHeritage(HeritageType.VESTA, "child of Vesta", (Player) event.getWhoClicked());
+                //chooseHeritage(HeritageType.VESTA, "child of Vesta", (Player) event.getWhoClicked());
                 break;
             case arceSlot:
-                chooseHeritage(HeritageType.ARCE, "child of Arce", (Player) event.getWhoClicked());
+                //chooseHeritage(HeritageType.ARCE, "child of Arce", (Player) event.getWhoClicked());
                 break;
             case janusSlot:
-                chooseHeritage(HeritageType.JANUS, "child of Janus", (Player) event.getWhoClicked());
+                //chooseHeritage(HeritageType.JANUS, "child of Janus", (Player) event.getWhoClicked());
                 break;
             case apolloSlot:
                 chooseHeritage(HeritageType.APOLLO_ROMAN, "child of Apollo", (Player) event.getWhoClicked());
                 break;
             case marsSlot:
-                chooseHeritage(HeritageType.MARS, "child of Mars", (Player) event.getWhoClicked());
+                //chooseHeritage(HeritageType.MARS, "child of Mars", (Player) event.getWhoClicked());
                 break;
             case venusSlot:
-                chooseHeritage(HeritageType.VENUS, "child of Venus", (Player) event.getWhoClicked());
+                //chooseHeritage(HeritageType.VENUS, "child of Venus", (Player) event.getWhoClicked());
                 break;
             case bacchusSlot:
                 chooseHeritage(HeritageType.BACCHUS, "child of Bacchus", (Player) event.getWhoClicked());

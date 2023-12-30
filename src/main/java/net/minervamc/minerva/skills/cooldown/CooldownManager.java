@@ -7,17 +7,18 @@ import java.util.UUID;
 public class CooldownManager {
     private final Map<UUID, CooldownContainer> cooldownContainerMap = new HashMap<>();
 
-    public CooldownContainer createContainer(UUID playerId) {
-        CooldownContainer container = new CooldownContainer();
+    public void createContainer(UUID playerId) {
         cooldownContainerMap.put(playerId, new CooldownContainer());
-        return container;
     }
 
-    public CooldownContainer removeContainer(UUID playerId) {
-        return cooldownContainerMap.remove(playerId);
+    public void removeContainer(UUID playerId) {
+        cooldownContainerMap.remove(playerId);
     }
 
     public CooldownContainer getContainer(UUID playerId) {
+        if (cooldownContainerMap.getOrDefault(playerId, null) == null) {
+            createContainer(playerId);
+        }
         return cooldownContainerMap.get(playerId);
     }
 

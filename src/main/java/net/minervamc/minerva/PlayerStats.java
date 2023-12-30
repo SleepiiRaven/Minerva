@@ -129,7 +129,7 @@ public class PlayerStats {
     }
 
     public static void saveAll() {
-        playerStats.forEach((k, v) -> v.saveAndDelete());
+        for (PlayerStats stats : playerStats.values()) {stats.save();}
     }
 
     public void save() {
@@ -139,11 +139,6 @@ public class PlayerStats {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void saveAndDelete() {
-        save();
-        playerStats.remove(uuid, this);
     }
     //endregion
 }

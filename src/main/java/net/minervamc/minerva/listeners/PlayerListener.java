@@ -8,13 +8,20 @@ import net.minervamc.minerva.guis.MythicalCreaturesGUI;
 import net.minervamc.minerva.guis.RomanGodsGUI;
 import net.minervamc.minerva.guis.SkillsGUI;
 import net.minervamc.minerva.guis.TitansGUI;
+import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.utils.ItemUtils;
+import net.minervamc.minerva.utils.ParticleUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
@@ -24,6 +31,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.util.Vector;
 
 public class PlayerListener implements Listener {
     private final Minerva plugin = Minerva.getInstance();
@@ -53,8 +61,17 @@ public class PlayerListener implements Listener {
         long cooldown = 10;
         PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
         if (playerStats.skillTriggers.spellMode) {
-            playerStats.skillTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR);
+            if (player.getInventory().getItemInMainHand().getType() == Material.BOW) {
+                playerStats.skillTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR, true);
+            } else {
+                playerStats.skillTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR, false);
+            }
             cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
+            return;
+        }
+
+        if (player.getInventory().getItemInMainHand().getType() == Material.BOW) {
+            playerStats.skillTriggers.enterSpellMode(player, true);
         }
     }
 
@@ -68,38 +85,37 @@ public class PlayerListener implements Listener {
         PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
         cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
         if (playerStats.skillTriggers.spellMode) {
-            playerStats.skillTriggers.continueNormalSpell(action);
+            if (player.getInventory().getItemInMainHand().getType() == Material.BOW) {
+                playerStats.skillTriggers.continueNormalSpell(action, true);
+            } else {
+                playerStats.skillTriggers.continueNormalSpell(action, false);
+            }
             return;
         }
 
-        playerStats.skillTriggers.enterSpellMode(player);
+        if (player.getInventory().getItemInMainHand().getType() != Material.BOW) {
+            playerStats.skillTriggers.enterSpellMode(player, false);
+        }
     }
 
     @EventHandler
     public void inventoryClick(InventoryClickEvent event) {
         switch (ChatColor.stripColor(event.getView().getTitle())) {
-            case SkillsGUI.invName -> SkillsGUI.clickedGUI(event);
             case AncestryGUI.invName -> AncestryGUI.clickedGUI(event);
             case GreekGodsGUI.invName -> GreekGodsGUI.clickedGUI(event);
             case RomanGodsGUI.invName -> RomanGodsGUI.clickedGUI(event);
             case TitansGUI.invName -> TitansGUI.clickedGUI(event);
             case MythicalCreaturesGUI.invName -> MythicalCreaturesGUI.clickedGUI(event);
         }
+        if (ChatColor.stripColor(event.getView().getTitle()).contains(SkillsGUI.invName)) {
+            SkillsGUI.clickedGUI(event);
+        }
     }
 
     @EventHandler
-    public void playerOpenInventory(InventoryOpenEvent event) {
-        //ItemUtils.resetItemDisplayName(event.getPlayer().getItemInHand());
-    }
-
-    @EventHandler
-    public void playerDropItem(PlayerDropItemEvent event) {
-        //ItemUtils.resetItemDisplayName(event.getItemDrop().getItemStack());
-    }
-
-    @EventHandler
-    public void playerSwapSlots(PlayerItemHeldEvent event) {
-        //ItemStack previousItem = event.getPlayer().getInventory().getItem(event.getPreviousSlot());
-        //if (previousItem != null) ItemUtils.resetItemDisplayName(previousItem);
+    public void playerDamagePlayer(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player damager && event.getEntity() instanceof Player player) {
+            if (Party.isPlayerInPlayerParty(damager, player)) event.setCancelled(true);
+        }
     }
 }

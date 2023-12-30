@@ -3,6 +3,7 @@ package net.minervamc.minerva.skills.greek.hades;
 import java.util.ArrayList;
 import java.util.List;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.FastUtils;
@@ -16,6 +17,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -92,6 +94,7 @@ public class SkeletalHands extends Skill {
         List<ArmorStand> hands = new ArrayList<>();
         cooldownManager.setCooldownFromNow(player.getUniqueId(), "skeletalHands", cooldown);
         cooldownAlarm(player, cooldown, "Skeletal Hands");
+
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_CONDUIT_ACTIVATE, 1f, 1f);
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_CAT_HISS, 0.4f, 0.4f);
         for (int i = 0; i < handCount; i++) {
@@ -124,7 +127,7 @@ public class SkeletalHands extends Skill {
             int ticks = 0;
             @Override
             public void run() {
-                if (ticks >= maxTicks) {
+                if (player.isDead() || !player.isOnline() || ticks >= maxTicks) {
                     for (ArmorStand hand : hands) {
                         hand.getWorld().playSound(hand.getLocation(), Sound.BLOCK_CONDUIT_DEACTIVATE, 1f, 1f);
                         hand.remove();
@@ -142,8 +145,8 @@ public class SkeletalHands extends Skill {
                         hand.getWorld().spawnParticle(Particle.REDSTONE, hand.getLocation().add(particlePoint), 0, 0, 0, 0.125, new Particle.DustOptions(Color.fromRGB(32, 32, 32), 1));
                         hand.getWorld().spawnParticle(Particle.REDSTONE, hand.getLocation().add(particlePoint), 0, 0, 0, 0.125, new Particle.DustOptions(Color.fromRGB(40, 40, 40), 1));
                     }
-                    for (LivingEntity entity : hand.getLocation().getNearbyLivingEntities(effectRadius)) {
-                        if (entity != player) {
+                    for (Entity entity : hand.getLocation().getNearbyEntities(effectRadius, effectRadius, effectRadius)) {
+                        if (entity instanceof LivingEntity livingEntity && entity != player && !(entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
                             if (entity instanceof Player grabbed) {
                                 if (cooldownManager.isCooldownDone(grabbed.getUniqueId(), "skeletalHandsWarning")) {
                                     grabbed.sendMessage(ChatColor.YELLOW + "You have been grabbed by " + player.getName() + "'s Skeletal Hands. Crouch to escape!");

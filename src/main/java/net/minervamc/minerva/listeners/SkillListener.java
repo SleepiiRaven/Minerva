@@ -7,11 +7,14 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
+import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.Skills;
 import net.minervamc.minerva.skills.greek.apollo.PlagueVolley;
 import net.minervamc.minerva.skills.greek.poseidon.AquaticLimbExtensions;
 import net.minervamc.minerva.types.HeritageType;
+import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.Color;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -19,6 +22,7 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Waterlogged;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -35,6 +39,7 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
@@ -75,6 +80,11 @@ public class SkillListener implements Listener {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 60, 0));
             }
         }
+        if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.BOW) {
+            if (PlayerStats.getStats(event.getPlayer().getUniqueId()).getPassive() == Skills.HUNTRESS_AGILITY && PlayerStats.getStats(event.getPlayer().getUniqueId()).getPassiveActive()) {
+                event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 5, 0));
+            }
+        }
     }
 
     @EventHandler
@@ -83,6 +93,11 @@ public class SkillListener implements Listener {
             if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 if (PlayerStats.getStats(player.getUniqueId()).getPassive() == Skills.PROTECTIVE_CLOUD && PlayerStats.getStats(player.getUniqueId()).getPassiveActive()) {
                     event.setCancelled(true);
+                }
+            } else if (event.getCause() == EntityDamageEvent.DamageCause.POISON) {
+                if (PlayerStats.getStats(player.getUniqueId()).getPassive() == Skills.DRUNKEN_REVELRY && PlayerStats.getStats(player.getUniqueId()).getPassiveActive()) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 40, 0));
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 40, 0));
                 }
             }
         }
@@ -101,8 +116,6 @@ public class SkillListener implements Listener {
         if (event.getAnimationType() == PlayerAnimationType.ARM_SWING) {
             if (AquaticLimbExtensions.waterBlocks.containsKey(player.getUniqueId())) {
                 Minerva.getInstance().getCdInstance().setCooldownFromNow(player.getUniqueId(), "aquaticPunching", AquaticLimbExtensions.punchDurationMillis);
-            } else if (!Minerva.getInstance().getCdInstance().isCooldownDone(player.getUniqueId(), "burningLightNotPunching")) {
-                Minerva.getInstance().getCdInstance().setCooldownFromNow(player.getUniqueId(), "burningLightPunching", 250L);
             }
         }
     }
@@ -110,19 +123,55 @@ public class SkillListener implements Listener {
     @EventHandler
     public void onShoot(EntityShootBowEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
+        Arrow originalArrow = (Arrow) event.getProjectile();
         if (PlayerStats.getStats(player.getUniqueId()).getPassive() == Skills.ARROWS_OF_THE_SUN && PlayerStats.getStats(player.getUniqueId()).getPassiveActive()) {
             Random random = new Random();
             int randomInt = random.nextInt(0, 5);
             if (randomInt == 1) {
                 Vector velocity = event.getProjectile().getVelocity();
-                SpectralArrow arrow = (SpectralArrow) event.getProjectile().getWorld().spawnEntity(event.getProjectile().getLocation().setDirection(event.getProjectile().getLocation().getDirection()), EntityType.SPECTRAL_ARROW);
+                SpectralArrow arrow = originalArrow.getWorld().spawnArrow(originalArrow.getLocation(), event.getProjectile().getVelocity(), 1f, 1f, SpectralArrow.class);
                 event.getProjectile().remove();
+                arrow.setDamage(originalArrow.getDamage());
+                arrow.setShooter(player);
                 arrow.setVelocity(velocity);
-
+                if (player.getScoreboardTags().contains("homingApollo") || player.getScoreboardTags().contains("homingArtemis")) {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (player.isDead() || !player.isOnline() || arrow.isDead() || arrow.isOnGround()) {
+                                this.cancel();
+                            }
+                            List<Entity> nearest;
+                            nearest = arrow.getNearbyEntities(5, 5, 5);
+                            LivingEntity target = null;
+                            for (Entity near : nearest) {
+                                if (near != player && near instanceof LivingEntity livingEntityNear && !livingEntityNear.isInvulnerable() && !livingEntityNear.isDead() && player.hasLineOfSight(livingEntityNear) && !(livingEntityNear instanceof Player livingPlayer && (livingPlayer.getGameMode() == GameMode.CREATIVE || livingPlayer.getGameMode() == GameMode.SPECTATOR || Party.isPlayerInPlayerParty(player, livingPlayer)))) {
+                                    if (player.getScoreboardTags().contains("homingApollo")) {
+                                        if (target == null) {
+                                            target = livingEntityNear;
+                                        } else if (arrow.getLocation().distanceSquared(livingEntityNear.getEyeLocation()) < arrow.getLocation().distanceSquared(target.getEyeLocation())) {
+                                            target = livingEntityNear;
+                                        }
+                                    } else {
+                                        if (!near.getScoreboardTags().contains("artemisWolf")) {
+                                            if (target == null) {
+                                                target = livingEntityNear;
+                                            } else if (arrow.getLocation().distanceSquared(livingEntityNear.getEyeLocation()) < arrow.getLocation().distanceSquared(target.getEyeLocation())) {
+                                                target = livingEntityNear;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if (target == null) return;
+                            arrow.setVelocity(target.getEyeLocation().toVector().subtract(arrow.getLocation().toVector()).normalize().multiply(2));
+                        }
+                    }.runTaskTimer(Minerva.getInstance(), 0L, 1L);
+                }
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        if (arrow.isDead()) {
+                        if (player.isDead() || !player.isOnline() || arrow.isDead()) {
                             World world = arrow.getWorld();
                             Location loc = arrow.getLocation();
                             world.spawnParticle(Particle.REDSTONE, loc, 10, 0, 0, 0, 0.5, new Particle.DustOptions(Color.fromRGB(250, 250, 210), 2));
@@ -131,57 +180,54 @@ public class SkillListener implements Listener {
                             player.getWorld().playSound(player.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1.5f, 2f);
                             player.getWorld().playSound(player.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 0.2f, 1f);
                             player.getWorld().playSound(player.getLocation(), Sound.BLOCK_AMETHYST_CLUSTER_BREAK, 2f, 2f);
-                            for (Entity nearbyEntity : loc.getNearbyEntities(2, 2, 2)) {
-                                if (!(nearbyEntity instanceof LivingEntity target) || nearbyEntity.equals(player)) continue;
-                                target.damage(5, player);
+                            for (Entity nearbyEntity : loc.getNearbyEntities(4, 4, 4)) {
+                                if (nearbyEntity instanceof LivingEntity target && target != player && !(target instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
+                                    SkillUtils.damage(target, arrow.getDamage() * 0.8, player);
+                                }
                             }
                             this.cancel();
                             return;
                         }
                         if (arrow.isOnGround()) {
+                            arrow.remove();
                             this.cancel();
-                        }
-                        if (player.getScoreboardTags().contains("homingApollo")) {
-                            List<Entity> nearest = arrow.getNearbyEntities(20, 20, 20);
-                            Entity target = null;
-                            for (Entity near : nearest) {
-                                if (near != player && near instanceof LivingEntity && !near.isInvulnerable() && !near.isDead() && player.hasLineOfSight(near)) {
-                                    if (target == null) {
-                                        target = near;
-                                    } else if (arrow.getLocation().distanceSquared(near.getLocation()) < arrow.getLocation().distanceSquared(target.getLocation())) {
-                                        target = near;
-                                    }
-                                }
-                            }
-                            if (target == null) return;
-                            arrow.setVelocity(target.getLocation().toVector().subtract(arrow.getLocation().toVector()).normalize().multiply(2));
                         }
                     }
                 }.runTaskTimer(Minerva.getInstance(), 0L, 1L);
             }
         }
-        if (player.getScoreboardTags().contains("homingApollo")) {
-            Entity arrow = event.getProjectile();
+        if (player.getScoreboardTags().contains("homingApollo") || player.getScoreboardTags().contains("homingArtemis")) {
+            Arrow finalOriginalArrow = originalArrow;
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (arrow.isDead() || arrow.isOnGround()) {
+                    if (player.isDead() || !player.isOnline() || finalOriginalArrow.isDead() || finalOriginalArrow.isOnGround()) {
                         this.cancel();
                     }
-
-                    List<Entity> nearest = arrow.getNearbyEntities(20, 20, 20);
+                    List<Entity> nearest;
+                    nearest = finalOriginalArrow.getNearbyEntities(5, 5, 5);
                     LivingEntity target = null;
                     for (Entity near : nearest) {
-                        if (near != player && near instanceof LivingEntity livingEntityNear && !livingEntityNear.isDead() && player.hasLineOfSight(livingEntityNear)) {
-                            if (target == null) {
-                                target = livingEntityNear;
-                            } else if (arrow.getLocation().distanceSquared(livingEntityNear.getEyeLocation()) < arrow.getLocation().distanceSquared(target.getEyeLocation())) {
-                                target = livingEntityNear;
+                        if (near != player && near instanceof LivingEntity livingEntityNear && !livingEntityNear.isInvulnerable() && !livingEntityNear.isDead() && player.hasLineOfSight(livingEntityNear) && !(livingEntityNear instanceof Player livingPlayer && (livingPlayer.getGameMode() == GameMode.CREATIVE || livingPlayer.getGameMode() == GameMode.SPECTATOR || Party.isPlayerInPlayerParty(player, livingPlayer)))) {
+                            if (player.getScoreboardTags().contains("homingApollo")) {
+                                if (target == null) {
+                                    target = livingEntityNear;
+                                } else if (finalOriginalArrow.getLocation().distanceSquared(livingEntityNear.getEyeLocation()) < finalOriginalArrow.getLocation().distanceSquared(target.getEyeLocation())) {
+                                    target = livingEntityNear;
+                                }
+                            } else {
+                                if (!near.getScoreboardTags().contains("artemisWolf")) {
+                                    if (target == null) {
+                                        target = livingEntityNear;
+                                    } else if (finalOriginalArrow.getLocation().distanceSquared(livingEntityNear.getEyeLocation()) < finalOriginalArrow.getLocation().distanceSquared(target.getEyeLocation())) {
+                                        target = livingEntityNear;
+                                    }
+                                }
                             }
                         }
                     }
                     if (target == null) return;
-                    arrow.setVelocity(target.getEyeLocation().toVector().subtract(arrow.getLocation().toVector()).normalize().multiply(2));
+                    finalOriginalArrow.setVelocity(target.getEyeLocation().toVector().subtract(finalOriginalArrow.getLocation().toVector()).normalize().multiply(2));
                 }
             }.runTaskTimer(Minerva.getInstance(), 0L, 1L);
         }
