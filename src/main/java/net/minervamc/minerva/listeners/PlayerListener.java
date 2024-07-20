@@ -55,46 +55,52 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void playerLeftClick(PlayerAnimationEvent event) {
         Player player = event.getPlayer();
-        // PlayerInteractEvent doesn't work with LEFT_CLICK_BLOCK in adventure mode, so using this for that.
-        if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") || event.getAnimationType() != PlayerAnimationType.ARM_SWING || !ItemUtils.weapons.contains(player.getInventory().getItemInMainHand().getType()))
-            return;
-        long cooldown = 10;
         PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
-        if (playerStats.skillTriggers.spellMode) {
-            if (player.getInventory().getItemInMainHand().getType() == Material.BOW) {
-                playerStats.skillTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR, true);
-            } else {
-                playerStats.skillTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR, false);
-            }
-            cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
-            return;
-        }
 
-        if (player.getInventory().getItemInMainHand().getType() == Material.BOW) {
-            playerStats.skillTriggers.enterSpellMode(player, true);
+        if (playerStats.skillMode) {
+            // PlayerInteractEvent doesn't work with LEFT_CLICK_BLOCK in adventure mode, so using this for that.
+            if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") || event.getAnimationType() != PlayerAnimationType.ARM_SWING || !ItemUtils.weapons.contains(player.getInventory().getItemInMainHand().getType()))
+                return;
+            long cooldown = 50;
+
+            if (playerStats.skillTriggers.spellMode) {
+                if (player.getInventory().getItemInMainHand().getType() == Material.BOW || player.getInventory().getItemInMainHand().getType() == Material.TRIDENT) {
+                    playerStats.skillTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR, true);
+                } else {
+                    playerStats.skillTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR, false);
+                }
+                cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
+                return;
+            }
+
+            if (player.getInventory().getItemInMainHand().getType() == Material.BOW || player.getInventory().getItemInMainHand().getType() == Material.TRIDENT) {
+                playerStats.skillTriggers.enterSpellMode(player, true);
+            }
         }
     }
 
     @EventHandler
     public void playerRightClick(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        Action action = event.getAction();
-        if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") || action != Action.RIGHT_CLICK_AIR || !ItemUtils.weapons.contains(player.getInventory().getItemInMainHand().getType()))
-            return;
-        long cooldown = (10);
         PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
-        cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
-        if (playerStats.skillTriggers.spellMode) {
-            if (player.getInventory().getItemInMainHand().getType() == Material.BOW) {
-                playerStats.skillTriggers.continueNormalSpell(action, true);
-            } else {
-                playerStats.skillTriggers.continueNormalSpell(action, false);
+        Action action = event.getAction();
+        if (playerStats.skillMode) {
+            if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") || !(action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) || !ItemUtils.weapons.contains(player.getInventory().getItemInMainHand().getType()))
+                return;
+            long cooldown = 50;
+            cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
+            if (playerStats.skillTriggers.spellMode) {
+                if (player.getInventory().getItemInMainHand().getType() == Material.BOW || player.getInventory().getItemInMainHand().getType() == Material.TRIDENT) {
+                    playerStats.skillTriggers.continueNormalSpell(action, true);
+                } else {
+                    playerStats.skillTriggers.continueNormalSpell(action, false);
+                }
+                return;
             }
-            return;
-        }
 
-        if (player.getInventory().getItemInMainHand().getType() != Material.BOW) {
-            playerStats.skillTriggers.enterSpellMode(player, false);
+            if (player.getInventory().getItemInMainHand().getType() != Material.BOW || player.getInventory().getItemInMainHand().getType() == Material.TRIDENT) {
+                playerStats.skillTriggers.enterSpellMode(player, false);
+            }
         }
     }
 

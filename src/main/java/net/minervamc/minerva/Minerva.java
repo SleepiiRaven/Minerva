@@ -2,6 +2,7 @@ package net.minervamc.minerva;
 
 import java.io.File;
 import net.minervamc.minerva.commands.PartyCommand;
+import net.minervamc.minerva.commands.SkillModeToggle;
 import net.minervamc.minerva.commands.SkillsCommand;
 import net.minervamc.minerva.listeners.PlayerListener;
 import net.minervamc.minerva.listeners.SkillListener;
@@ -39,6 +40,7 @@ public final class Minerva extends JavaPlugin {
 
     public void registerCommands() {
         getCommand("mskills").setExecutor(new SkillsCommand());
+        getCommand("skillmode").setExecutor(new SkillModeToggle());
         getCommand("party").setExecutor(new PartyCommand());
     }
 

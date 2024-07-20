@@ -41,6 +41,7 @@ import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -80,7 +81,7 @@ public class SkillListener implements Listener {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 60, 0));
             }
         }
-        if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.BOW) {
+        if (player.getInventory().getItemInMainHand().getType() == Material.BOW) {
             if (PlayerStats.getStats(event.getPlayer().getUniqueId()).getPassive() == Skills.HUNTRESS_AGILITY && PlayerStats.getStats(event.getPlayer().getUniqueId()).getPassiveActive()) {
                 event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 5, 0));
             }

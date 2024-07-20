@@ -10,6 +10,7 @@ import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.FastUtils;
 import net.minervamc.minerva.utils.ItemUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -29,10 +30,9 @@ public class CallOfTheWild extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
         int wolvesCount = 5;
-        double angerRange = 10;
         int radius = 5;
         long wolfDespawnTicks = 200/5; // The runnable is every 5 seconds so the first number is the ticks you want :)
-        long cooldown = wolfDespawnTicks * 50 + 6000;
+        long cooldown = wolfDespawnTicks * 5 * 50 + 6000;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "callOfTheWild")) {
             onCooldown(player);
@@ -68,27 +68,13 @@ public class CallOfTheWild extends Skill {
             wolves.add(wolf);
         }
 
-        LivingEntity target = null;
-
-        for (Entity entity : player.getNearbyEntities(angerRange, angerRange, angerRange)) {
-            if (entity instanceof LivingEntity livingEntity && livingEntity != player && !entity.isInvulnerable() && !entity.isDead() && !livingEntity.getScoreboardTags().contains("artemisWolf") && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                if (target == null) {
-                    target = livingEntity;
-                } else if (player.getLocation().distanceSquared(livingEntity.getLocation()) < player.getLocation().distanceSquared(target.getLocation())) {
-                    target = livingEntity;
-                }
-            }
-        }
-
         for (Wolf wolf : wolves) {
-            wolf.setAngry(true);
-            wolf.setTarget(target);
             wolf.setOwner(player);
+            wolf.setCollarColor(DyeColor.WHITE);
         }
 
         new BukkitRunnable() {
             int ticks = 0;
-            LivingEntity target = null;
             @Override
             public void run() {
                 if (player.isDead() || !player.isOnline() || ticks >= wolfDespawnTicks) {
@@ -99,22 +85,6 @@ public class CallOfTheWild extends Skill {
                         wolf.getWorld().spawnParticle(Particle.ENCHANTMENT_TABLE, particleLoc, 10);
                     }
                     this.cancel();
-                }
-
-                for (Entity entity : player.getNearbyEntities(angerRange, angerRange, angerRange)) {
-                    if (entity instanceof LivingEntity livingEntity && livingEntity != player && !entity.isInvulnerable() && !entity.isDead() && !livingEntity.getScoreboardTags().contains("artemisWolf")) {
-                        if (target == null) {
-                            target = livingEntity;
-                        } else if (player.getLocation().distanceSquared(livingEntity.getLocation()) < player.getLocation().distanceSquared(target.getLocation())) {
-                            target = livingEntity;
-                        }
-                    }
-                }
-
-                for (Wolf wolf : wolves) {
-                    if (wolf.getTarget() == null && target != null) {
-                        wolf.setTarget(target);
-                    }
                 }
 
                 ticks++;

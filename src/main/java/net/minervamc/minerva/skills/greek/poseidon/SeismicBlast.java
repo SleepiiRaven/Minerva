@@ -91,7 +91,7 @@ public class SeismicBlast extends Skill {
             Block block = player.getLocation().subtract(0, 1, 0).getBlock();
             BlockData blockData;
             if (!block.getType().isSolid()) blockData = Bukkit.createBlockData(Material.DIRT);
-            blockData = block.getBlockData();
+            else blockData = block.getBlockData();
             player.getWorld().spawnParticle(Particle.BLOCK_DUST, particleLocation, 3, blockData);
         }
 

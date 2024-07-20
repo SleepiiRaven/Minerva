@@ -22,6 +22,7 @@ public class PlayerStats {
     //region Stats
     private final UUID uuid;
     public SkillTriggers skillTriggers;
+    public boolean skillMode = true;
     private HeritageType heritage = HeritageType.NONE;
     private Skill skillRRR = Skills.DEFAULT;
     private Skill skillRLR = Skills.DEFAULT;

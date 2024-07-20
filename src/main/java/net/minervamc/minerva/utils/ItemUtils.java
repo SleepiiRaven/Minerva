@@ -102,6 +102,7 @@ public class ItemUtils {
             Material.DIAMOND_HOE,
             Material.NETHERITE_HOE,
             Material.SHEARS,
-            Material.BOW
+            Material.BOW,
+            Material.TRIDENT
     );
 }

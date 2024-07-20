@@ -48,13 +48,13 @@ public class GreekGodsGUI {
     private static final int psycheSlot = 28;
     private static final int hermesSlot = 29;
     private static final int artemisSlot = 30;
-    private static final int athenaSlot = 40;
+    private static final int athenaSlot = 39;
     private static final int hephaestusSlot = 42;
     private static final int demeterSlot = 33;
     private static final int hestiaSlot = 34;
     private static final int arkeSlot = 35;
     private static final int hecateSlot = 38;
-    private static final int aresSlot = 39;
+    private static final int aresSlot = 40;
     private static final int dionysusSlot = 31;
     private static final int aphroditeSlot = 41;
     private static final int apolloSlot = 32;
@@ -80,6 +80,7 @@ public class GreekGodsGUI {
         inv.setItem(arkeSlot, comingSoon);
         inv.setItem(hecateSlot, comingSoon);
         inv.setItem(apolloSlot, apollo);
+        //inv.setItem(aresSlot, ares);
         inv.setItem(aresSlot, comingSoon);
         inv.setItem(aphroditeSlot, comingSoon);
         inv.setItem(dionysusSlot, dionysus);
