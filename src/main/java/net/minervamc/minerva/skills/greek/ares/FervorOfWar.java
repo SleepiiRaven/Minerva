@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 public class FervorOfWar extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-
+        
     }
 
     @Override
