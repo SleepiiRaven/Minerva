@@ -26,12 +26,12 @@ tasks.assemble {
 
 tasks.shadowJar {
     archiveClassifier.set("")
-    val additionalPaths = listOf("path/to/first/additional/directory", "path/to/second/additional/directory")
+    val additionalPaths = listOf("run/plugins") // my server dir in my ide
     val default = "${layout.buildDirectory.get().asFile}/libs"
 
     var pluginDir = file("null")
     try {
-        pluginDir = file("D:/Servers/Minerva/plugins")
+        pluginDir = file("D:/Servers/Minerva/plugins") // Minerva server dir
     }catch (_: InvalidUserDataException) {}
 
     if (pluginDir.exists()) destinationDirectory.set(pluginDir)
