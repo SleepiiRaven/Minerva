@@ -7,6 +7,8 @@
 
 # IntelliJ
 out/
+gradlew
+gradlew.bat
 
 # Compiled class file
 *.class
