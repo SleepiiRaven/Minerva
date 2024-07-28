@@ -7,6 +7,9 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import lombok.Getter;
+import lombok.Setter;
 import net.minervamc.minerva.skills.SkillTriggers;
 import net.minervamc.minerva.skills.Skills;
 import net.minervamc.minerva.types.HeritageType;
@@ -19,41 +22,33 @@ public class PlayerStats {
     private static final Path STORAGE_FOLDER = Minerva.getInstance().getDataFolder().toPath().resolve("PlayerData");
     private final Path storage;
 
+    //region Getters
     //region Stats
-    private final UUID uuid;
+    @Getter private final UUID uuid;
     public SkillTriggers skillTriggers;
     public boolean skillMode = true;
-    private HeritageType heritage = HeritageType.NONE;
-    private Skill skillRRR = Skills.DEFAULT;
-    private Skill skillRLR = Skills.DEFAULT;
-    private Skill skillRLL = Skills.DEFAULT;
-    private Skill skillRRL = Skills.DEFAULT;
-    private Skill passive = Skills.DEFAULT_PASSIVE;
+    //region Setters
+    @Setter @Getter private HeritageType heritage = HeritageType.NONE;
+    @Setter @Getter private Skill skillRRR = Skills.DEFAULT;
+    @Setter @Getter private Skill skillRLR = Skills.DEFAULT;
+    @Setter @Getter private Skill skillRLL = Skills.DEFAULT;
+    @Setter @Getter private Skill skillRRL = Skills.DEFAULT;
+    @Setter @Getter private Skill passive = Skills.DEFAULT_PASSIVE;
     private boolean rrrActive = true;
     private boolean rlrActive = true;
     private boolean rllActive = true;
     private boolean rrlActive = true;
-    private boolean passiveActive = true;
+    @Setter private boolean passiveActive = true;
     private int rrrLevel = 1;
     private int rlrLevel = 1;
     private int rllLevel = 1;
     private int rrlLevel = 1;
-    private int passiveLevel = 1;
-    private int maxLevel = 1;
-    private int maxPoints = 0;
-    private int points = 0;
+    @Setter @Getter private int passiveLevel = 1;
+    @Setter @Getter private int maxLevel = 1;
+    @Setter @Getter private int maxPoints = 0;
+    @Setter @Getter private int points = 0;
     //endregion
 
-    //region Getters
-    public UUID getUuid() {
-        return uuid;
-    }
-    public HeritageType getHeritage() { return heritage; }
-    public Skill getSkillRRR() { return skillRRR; }
-    public Skill getSkillRLR() { return skillRLR; }
-    public Skill getSkillRLL() { return skillRLL; }
-    public Skill getSkillRRL() { return skillRRL; }
-    public Skill getPassive() { return passive; }
     public boolean getRRRActive() { return rrrActive; }
     public boolean getRLRActive() { return rlrActive; }
     public boolean getRLLActive() { return rllActive; }
@@ -63,32 +58,19 @@ public class PlayerStats {
     public int getRLRLevel() { return rlrLevel; }
     public int getRLLLevel() { return rllLevel; }
     public int getRRLLevel() { return rrlLevel; }
-    public int getPassiveLevel() { return passiveLevel; }
-    public int getMaxLevel() { return maxLevel; }
-    public int getPoints() { return points; }
-    public int getMaxPoints() { return maxPoints; }
+
     //endregion
 
-    //region Setters
-    public void setHeritage(HeritageType heritage) { this.heritage = heritage; }
-    public void setSkillRRR(Skill skillRRR) { this.skillRRR = skillRRR; }
-    public void setSkillRLR(Skill skillRLR) { this.skillRLR = skillRLR; }
-    public void setSkillRLL(Skill skillRLL) { this.skillRLL = skillRLL; }
-    public void setSkillRRL(Skill skillRRL) { this.skillRRL = skillRRL; }
-    public void setPassive(Skill passive) { this.passive = passive; }
     public void setRRRActive(boolean active) { rrrActive = active; }
     public void setRLRActive(boolean active) { rlrActive = active; }
     public void setRLLActive(boolean active) { rllActive = active; }
     public void setRRLActive(boolean active) { rrlActive = active; }
-    public void setPassiveActive(boolean active) { passiveActive = active; }
+
     public void setRRRLevel(int level) { rrrLevel = level; }
     public void setRLRLevel(int level) { rlrLevel = level; }
     public void setRLLLevel(int level) { rllLevel = level; }
     public void setRRLLevel(int level) { rrlLevel = level; }
-    public void setPassiveLevel(int level) { passiveLevel = level; }
-    public void setMaxLevel(int maxLevel) { this.maxLevel = maxLevel; }
-    public void setPoints(int points) { this.points = points; }
-    public void setMaxPoints(int points) { maxPoints = points; }
+
     //endregion
 
     public PlayerStats(UUID uuid) {

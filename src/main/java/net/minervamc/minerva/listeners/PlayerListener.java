@@ -12,6 +12,7 @@ import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
+import net.minervamc.minerva.utils.SpellCastUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -59,16 +60,15 @@ public class PlayerListener implements Listener {
 
         if (playerStats.skillMode) {
             // PlayerInteractEvent doesn't work with LEFT_CLICK_BLOCK in adventure mode, so using this for that.
-            if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") || event.getAnimationType() != PlayerAnimationType.ARM_SWING || !ItemUtils.weapons.contains(player.getInventory().getItemInMainHand().getType()))
-                return;
+            if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") || event.getAnimationType() != PlayerAnimationType.ARM_SWING
+                    || SpellCastUtils.isSpellCastFocused(player.getInventory().getItemInMainHand())) return; // faceless changed spell cast here
             long cooldown = 50;
 
             if (playerStats.skillTriggers.spellMode) {
                 if (player.getInventory().getItemInMainHand().getType() == Material.BOW || player.getInventory().getItemInMainHand().getType() == Material.TRIDENT) {
                     playerStats.skillTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR, true);
-                } else {
-                    playerStats.skillTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR, false);
-                }
+                } else playerStats.skillTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR, false);
+
                 cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
                 return;
             }
@@ -85,7 +85,10 @@ public class PlayerListener implements Listener {
         PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
         Action action = event.getAction();
         if (playerStats.skillMode) {
-            if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") || !(action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) || !ItemUtils.weapons.contains(player.getInventory().getItemInMainHand().getType()))
+            if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click")
+                    || !(action == Action.RIGHT_CLICK_AIR
+                    || action == Action.RIGHT_CLICK_BLOCK)
+                    || SpellCastUtils.isSpellCastFocused(player.getInventory().getItemInMainHand())) // faceless changed spell cast here
                 return;
             long cooldown = 50;
             cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);

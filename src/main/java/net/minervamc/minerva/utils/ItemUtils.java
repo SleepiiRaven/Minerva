@@ -23,11 +23,11 @@ public class ItemUtils {
         ItemMeta itemMeta = item.getItemMeta();
         if (item.getType().isAir()) return;
         String oldName = itemMeta.getDisplayName();
-        String storedName = itemMeta.getPersistentDataContainer().get(Minerva.itemMessageKey, PersistentDataType.STRING);
+        String storedName = itemMeta.getPersistentDataContainer().get(Keys.ITEM_MESSAGE_KEY, PersistentDataType.STRING);
         if (!oldName.equals(storedName) && storedName != null) {
             oldName = storedName;
         }
-        itemMeta.getPersistentDataContainer().set(Minerva.itemMessageKey, PersistentDataType.STRING, oldName);
+        itemMeta.getPersistentDataContainer().set(Keys.ITEM_MESSAGE_KEY, PersistentDataType.STRING, oldName);
         if (ChatColor.stripColor(item.getItemMeta().getDisplayName()).equals(ChatColor.stripColor(message))) {
 //                itemMeta.setDisplayName("a ");
 //                item.setItemMeta(itemMeta);
@@ -44,11 +44,11 @@ public class ItemUtils {
     public static void resetItemDisplayName(ItemStack item) {
         if (item.hasItemMeta()) {
             ItemMeta itemMeta = item.getItemMeta();
-            String previousName = itemMeta.getPersistentDataContainer().get(Minerva.itemMessageKey, PersistentDataType.STRING);
+            String previousName = itemMeta.getPersistentDataContainer().get(Keys.ITEM_MESSAGE_KEY, PersistentDataType.STRING);
             if (previousName != null) {
                 itemMeta.setDisplayName(previousName);
             } else {
-                itemMeta.getPersistentDataContainer().set(Minerva.itemMessageKey, PersistentDataType.STRING, itemMeta.getDisplayName());
+                itemMeta.getPersistentDataContainer().set(Keys.ITEM_MESSAGE_KEY, PersistentDataType.STRING, itemMeta.getDisplayName());
             }
 
             item.setItemMeta(itemMeta);
