@@ -10,6 +10,9 @@ out/
 gradlew
 gradlew.bat
 run
+build
+gradle
+.gradle
 
 # Compiled class file
 *.class
