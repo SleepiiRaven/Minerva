@@ -4,14 +4,12 @@ import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.guis.AncestryGUI;
 import net.minervamc.minerva.guis.SkillsGUI;
 import net.minervamc.minerva.types.HeritageType;
-import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommandYamlParser;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

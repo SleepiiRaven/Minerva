@@ -1,17 +1,13 @@
 package net.minervamc.minerva.listeners;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
-import java.util.UUID;
-import java.util.function.BiConsumer;
+
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.Skills;
-import net.minervamc.minerva.skills.greek.apollo.PlagueVolley;
 import net.minervamc.minerva.skills.greek.poseidon.AquaticLimbExtensions;
-import net.minervamc.minerva.types.HeritageType;
 import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
@@ -22,13 +18,10 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Waterlogged;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.entity.SpectralArrow;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,17 +29,12 @@ import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
-import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
 
 public class SkillListener implements Listener {

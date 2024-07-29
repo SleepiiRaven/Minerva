@@ -1,7 +1,7 @@
 package net.minervamc.minerva.skills.greek.zeus;
 
 import java.util.Random;
-import net.minervamc.minerva.Minerva;
+
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
@@ -9,7 +9,6 @@ import net.minervamc.minerva.utils.FastUtils;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
 import net.minervamc.minerva.utils.SkillUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;

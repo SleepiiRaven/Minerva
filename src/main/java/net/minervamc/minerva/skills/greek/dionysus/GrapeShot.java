@@ -1,7 +1,6 @@
 package net.minervamc.minerva.skills.greek.dionysus;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
@@ -70,7 +69,7 @@ public class GrapeShot extends Skill {
 
         new BukkitRunnable() {
             int ticks = 0;
-            Location throwLoc = player.getEyeLocation();
+            final Location throwLoc = player.getEyeLocation();
             @Override
             public void run() {
                 double currentDistance = berrySpeed * ticks;

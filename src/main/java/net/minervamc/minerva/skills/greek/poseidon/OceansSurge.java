@@ -5,7 +5,6 @@ import java.util.List;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
-import net.minervamc.minerva.skills.greek.zeus.LightningToss;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
@@ -20,10 +19,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 public class OceansSurge extends Skill {
     @Override
@@ -74,8 +71,8 @@ public class OceansSurge extends Skill {
 
         new BukkitRunnable() {
             double t = Math.PI/4;
-            Location loc = player.getLocation();
-            List<LivingEntity> hitLivingEntities = new ArrayList<>();
+            final Location loc = player.getLocation();
+            final List<LivingEntity> hitLivingEntities = new ArrayList<>();
             public void run(){
                 t += 0.1*Math.PI;
                 for (double theta = 0; theta <= 2 * Math.PI; theta = theta + Math.PI/32){

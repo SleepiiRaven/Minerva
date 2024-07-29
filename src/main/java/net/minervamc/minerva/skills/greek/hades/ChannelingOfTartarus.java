@@ -1,11 +1,7 @@
 package net.minervamc.minerva.skills.greek.hades;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
@@ -13,7 +9,6 @@ import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
 import net.minervamc.minerva.utils.SkillUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -200,8 +195,7 @@ public class ChannelingOfTartarus extends Skill {
             Collection<Entity> closebyMonsters = particleLoc.getWorld().getNearbyEntities(particleLoc, range, range, range);
             for (Entity closebyMonster : closebyMonsters) {
                 // make sure it's a living entity, not an armor stand or something, continue skips the current loop
-                if (!(closebyMonster instanceof LivingEntity) || (closebyMonster == player)) continue;
-                LivingEntity livingMonster = (LivingEntity) closebyMonster;
+                if (!(closebyMonster instanceof LivingEntity livingMonster) || (closebyMonster == player)) continue;
                 // Get the entity's collision box
                 BoundingBox monsterBoundingBox = livingMonster.getBoundingBox();
                 BoundingBox collisionBox = BoundingBox.of(particleLoc, range, range, range);

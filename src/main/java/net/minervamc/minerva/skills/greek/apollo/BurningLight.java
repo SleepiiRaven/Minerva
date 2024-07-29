@@ -1,6 +1,5 @@
 package net.minervamc.minerva.skills.greek.apollo;
 
-import net.kyori.adventure.sound.SoundStop;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
@@ -14,7 +13,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.block.data.type.Light;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -45,8 +43,8 @@ public class BurningLight extends Skill {
 
         new BukkitRunnable() {
             int ticks = 0;
-            Vector savedDirection = player.getEyeLocation().getDirection();
-            Location savedLocation = player.getEyeLocation();
+            final Vector savedDirection = player.getEyeLocation().getDirection();
+            final Location savedLocation = player.getEyeLocation();
             @Override
             public void run() {
                 if (player.isDead() || !player.isOnline() || ticks > maxTicks || !player.isOnline()) {

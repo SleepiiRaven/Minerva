@@ -1,6 +1,5 @@
 package net.minervamc.minerva.skills.greek.zeus;
 
-import java.nio.charset.MalformedInputException;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;

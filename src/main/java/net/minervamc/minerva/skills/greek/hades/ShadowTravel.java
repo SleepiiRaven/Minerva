@@ -1,8 +1,7 @@
 package net.minervamc.minerva.skills.greek.hades;
 
 import java.util.Collection;
-import java.util.concurrent.ThreadLocalRandom;
-import net.minervamc.minerva.Minerva;
+
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
@@ -10,7 +9,6 @@ import net.minervamc.minerva.utils.FastUtils;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
 import net.minervamc.minerva.utils.SkillUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -23,7 +21,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -122,8 +119,7 @@ public class ShadowTravel extends Skill {
             Collection<Entity> closebyMonsters = player.getWorld().getNearbyEntities(location, range, range, range);
             for (Entity closebyMonster : closebyMonsters) {
                 // make sure it's a living entity, not an armor stand or something, continue skips the current loop
-                if (!(closebyMonster instanceof LivingEntity) || (closebyMonster == player)) continue;
-                LivingEntity livingMonster = (LivingEntity) closebyMonster;
+                if (!(closebyMonster instanceof LivingEntity livingMonster) || (closebyMonster == player)) continue;
                 if (!(livingMonster instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
                     // Get the entity's collision box
                     BoundingBox monsterBoundingBox = livingMonster.getBoundingBox();

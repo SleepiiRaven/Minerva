@@ -214,7 +214,8 @@ public class Command extends org.bukkit.command.Command {
     private void cacheMethods() {
         Method[] methods = this.getClass().getDeclaredMethods();
         for(Method method : methods) {
-            if(method.isAnnotationPresent(ICommand.class)) {
+            if(method.isAnnotationPresent(ICommand.class)) //noinspection LoggingSimilarMessage
+            {
                 method.setAccessible(true);
                 ICommand annotation = method.getAnnotation(ICommand.class);
                 if(annotation == null) continue;

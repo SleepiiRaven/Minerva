@@ -7,7 +7,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.api.item.ItemCreator;
-import net.minervamc.minerva.api.text.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;

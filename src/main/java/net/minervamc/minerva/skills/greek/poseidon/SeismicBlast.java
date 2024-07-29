@@ -106,7 +106,7 @@ public class SeismicBlast extends Skill {
             }
         }
 
-        if (caughtLivingEntities.size() < 1) return;
+        if (caughtLivingEntities.isEmpty()) return;
 
         new BukkitRunnable() {
             @Override
@@ -114,7 +114,7 @@ public class SeismicBlast extends Skill {
                 boolean playedSound = false;
                 for (LivingEntity livingEntity : caughtLivingEntities) {
                     if (!livingEntity.isOnGround()) {
-                        if (playedSound == false) {
+                        if (!playedSound) {
                             player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WITHER_SHOOT, 1f, 0.7f);
                             playedSound = true;
                         }

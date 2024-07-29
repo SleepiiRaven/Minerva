@@ -1,6 +1,5 @@
 package net.minervamc.minerva.skills.greek.artemis;
 
-import javax.sql.PooledConnection;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
@@ -14,8 +13,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.block.data.type.Light;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

@@ -4,6 +4,7 @@ import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
+import net.minervamc.minerva.utils.AttributeUtils;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
 import org.bukkit.ChatColor;
@@ -81,13 +82,13 @@ public class ApollosHymn extends Skill {
                         }
 
                         if (livingEntity == player) {
-                            double maxHealth = player.getMaxHealth();
+                            double maxHealth = AttributeUtils.getMaxHealth(player);
                             player.setHealth(Math.min(player.getHealth() + localSelfHeal, maxHealth));
                         } else if (livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)) {
-                            double maxHealth = livingEntity.getMaxHealth();
+                            double maxHealth = AttributeUtils.getMaxHealth(livingEntity);
                             livingEntity.setHealth(Math.min(livingEntity.getHealth() + localHeal, maxHealth));
                         } else {
-                            double maxHealth = livingEntity.getMaxHealth();
+                            double maxHealth = AttributeUtils.getMaxHealth(livingEntity);
                             livingEntity.setHealth(Math.min(livingEntity.getHealth() + localEnemyHeal, maxHealth));
                         }
                     }

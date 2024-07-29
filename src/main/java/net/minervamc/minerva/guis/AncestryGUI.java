@@ -1,5 +1,6 @@
 package net.minervamc.minerva.guis;
 
+import net.kyori.adventure.text.Component;
 import net.minervamc.minerva.utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,7 +24,7 @@ public class AncestryGUI {
     private static final int titanSlot = 32;
     private static final int mortalSlot = 34;
     public static void openGUI(Player player) {
-        Inventory inv = Bukkit.createInventory(player, 9 * 6, invName);
+        Inventory inv = Bukkit.createInventory(player, 9 * 6, Component.text(invName));
         for (int i = 0; i < 54; i++) {
             inv.setItem(i, ItemUtils.getItem(new ItemStack(Material.BLACK_STAINED_GLASS_PANE), " "));
         }

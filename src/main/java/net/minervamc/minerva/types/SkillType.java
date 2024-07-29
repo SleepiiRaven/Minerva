@@ -5,5 +5,5 @@ public enum SkillType {
     RLL,
     RLR,
     RRL,
-    PASSIVE;
+    PASSIVE
 }

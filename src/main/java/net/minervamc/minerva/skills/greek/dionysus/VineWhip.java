@@ -9,7 +9,6 @@ import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
 import net.minervamc.minerva.utils.SkillUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
@@ -18,12 +17,9 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -46,9 +42,9 @@ public class VineWhip extends Skill {
         List<Vector> linePoints = ParticleUtils.getLinePoints(player.getLocation().getDirection(), distance, 0.5);
         new BukkitRunnable() {
             boolean hit = false;
-            List<LivingEntity> hitEnemies = new ArrayList<>();
+            final List<LivingEntity> hitEnemies = new ArrayList<>();
             int ticks = 0;
-            Location location = player.getEyeLocation();
+            final Location location = player.getEyeLocation();
             @Override
             public void run() {
                 if (player.isDead() || !player.isOnline()) {

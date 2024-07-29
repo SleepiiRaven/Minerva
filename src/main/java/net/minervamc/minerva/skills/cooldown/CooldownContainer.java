@@ -1,12 +1,9 @@
 package net.minervamc.minerva.skills.cooldown;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import net.minervamc.minerva.Minerva;
+
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 public class CooldownContainer implements ConfigurationSerializable {

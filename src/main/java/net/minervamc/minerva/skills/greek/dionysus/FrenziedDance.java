@@ -85,19 +85,13 @@ public class FrenziedDance extends Skill {
                         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1f, 1.5f);
                         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1f, 2.0f);
                     }
-                    case 1 -> {
-                        player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1f, 1.59f);
-                    }
-                    case 2,4 -> {
-                        player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1f, 1.41f);
-                    }
+                    case 1 -> player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1f, 1.59f);
+                    case 2,4 -> player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1f, 1.41f);
                     case 3 -> {
                         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1f, 1.78f);
                         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1f, 1.33f);
                     }
-                    case 5 -> {
-                        player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1f, 1.06f);
-                    }
+                    case 5 -> player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1f, 1.06f);
                     case 6 -> {
                         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1f, 1.19f);
                         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1f, 1.78f);

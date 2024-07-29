@@ -1,8 +1,6 @@
 package net.minervamc.minerva.guis;
 
-import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
-import net.minervamc.minerva.commands.SkillsCommand;
 import net.minervamc.minerva.types.HeritageType;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.SkillUtils;
@@ -12,7 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 

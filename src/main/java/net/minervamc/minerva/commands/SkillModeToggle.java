@@ -1,7 +1,6 @@
 package net.minervamc.minerva.commands;
 
 import net.minervamc.minerva.PlayerStats;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

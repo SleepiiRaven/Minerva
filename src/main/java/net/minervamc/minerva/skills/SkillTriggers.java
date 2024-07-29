@@ -50,10 +50,7 @@ public class SkillTriggers {
 
     public void continueNormalSpell(Action clickType, boolean swapped) {
         player.playSound(player, Sound.BLOCK_LEVER_CLICK, 0.5f, 0.8f);
-        boolean click = false;
-        if (clickType.equals(Action.RIGHT_CLICK_AIR) || clickType.equals(Action.RIGHT_CLICK_BLOCK)) {
-            click = true;
-        }
+        boolean click = clickType.equals(Action.RIGHT_CLICK_AIR) || clickType.equals(Action.RIGHT_CLICK_BLOCK);
         if (!swapped) {
             if (clicksSoFar == 0) {
                 currentMessage = (click) ? /*IF WE ARE RIGHT CLICKING*/ ChatColor.GREEN.toString() + ChatColor.UNDERLINE + "R R" + ChatColor.RESET + ChatColor.RED + " _" :
