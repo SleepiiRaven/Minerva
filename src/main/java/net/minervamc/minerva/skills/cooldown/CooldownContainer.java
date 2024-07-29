@@ -7,6 +7,7 @@ import java.util.Map;
 import net.minervamc.minerva.Minerva;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 public class CooldownContainer implements ConfigurationSerializable {
     // A hashmap is a data structure which maps a key to a value. You can get the value by inputting the key
@@ -34,7 +35,7 @@ public class CooldownContainer implements ConfigurationSerializable {
     }
 
     @Override
-    public Map<String, Object> serialize() {
+    public @NotNull Map<String, Object> serialize() {
         return new HashMap<>(cooldownMap);
     }
 }

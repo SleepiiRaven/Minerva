@@ -27,7 +27,7 @@ tasks.assemble {
 
 tasks.shadowJar {
     archiveClassifier.set("")
-    val additionalPaths = listOf("run/plugins") // my server dir in my ide
+    val additionalPaths = listOf("run/plugins") // list of additional directories
     val default = "${layout.buildDirectory.get().asFile}/libs"
 
     var pluginDir = file("null")
@@ -48,8 +48,4 @@ tasks.shadowJar {
             }
         }
     }
-}
-
-tasks.assemble {
-    dependsOn(tasks.shadowJar)
 }

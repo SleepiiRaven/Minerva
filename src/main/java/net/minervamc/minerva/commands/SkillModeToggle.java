@@ -13,10 +13,9 @@ public class SkillModeToggle implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender instanceof Player player) {
-            boolean skillMode = PlayerStats.getStats(player.getUniqueId()).skillMode;
-            skillMode = !skillMode;
-            PlayerStats.getStats(player.getUniqueId()).skillMode = skillMode;
-            if (skillMode) player.sendMessage(ChatColor.YELLOW + "Skill mode is now on. You can now use your heritage's skills.");
+            PlayerStats.getStats(player.getUniqueId()).toggleSkillMode();
+
+            if (PlayerStats.getStats(player).isSkillMode()) player.sendMessage(ChatColor.YELLOW + "Skill mode is now on. You can now use your heritage's skills.");
             else player.sendMessage(ChatColor.YELLOW + "Skill mode is now off. You can no longer use your heritage's skills until you use this command again.");
             return true;
         }

@@ -1,7 +1,7 @@
 package net.minervamc.minerva.utils;
 
 import net.kyori.adventure.text.Component;
-import net.minervamc.minerva.lib.text.TextContext;
+import net.minervamc.minerva.api.text.Text;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -11,8 +11,8 @@ import java.util.List;
 
 public class SpellCastUtils {
 
-    private static final Component FOCUSED = TextContext.formatLegacy("&aFocused", true);
-    private static final Component UNFOCUSED = TextContext.formatLegacy("&cUnfocused", true);
+    private static final Component FOCUSED = Text.formatLegacy("&aFocused", true);
+    private static final Component UNFOCUSED = Text.formatLegacy("&cUnfocused", true);
 
     public static void focusSpellCast(ItemStack item) {
         if(isSpellCastFocused(item)) return;

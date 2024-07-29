@@ -10,30 +10,22 @@ import net.minervamc.minerva.guis.SkillsGUI;
 import net.minervamc.minerva.guis.TitansGUI;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
-import net.minervamc.minerva.utils.ItemUtils;
-import net.minervamc.minerva.utils.ParticleUtils;
 import net.minervamc.minerva.utils.SpellCastUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.util.Vector;
 
+@SuppressWarnings("deprecation")
 public class PlayerListener implements Listener {
     private final Minerva plugin = Minerva.getInstance();
     CooldownManager cooldownManager = plugin.getCdInstance();
@@ -58,16 +50,15 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
 
-        if (playerStats.skillMode) {
+        if (playerStats.isSkillMode()) {
             // PlayerInteractEvent doesn't work with LEFT_CLICK_BLOCK in adventure mode, so using this for that.
             if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") || event.getAnimationType() != PlayerAnimationType.ARM_SWING
-                    || SpellCastUtils.isSpellCastFocused(player.getInventory().getItemInMainHand())) return; // faceless changed spell cast here
+                    || !SpellCastUtils.isSpellCastFocused(player.getInventory().getItemInMainHand())) return; // faceless changed spell cast here
             long cooldown = 50;
 
             if (playerStats.skillTriggers.spellMode) {
-                if (player.getInventory().getItemInMainHand().getType() == Material.BOW || player.getInventory().getItemInMainHand().getType() == Material.TRIDENT) {
-                    playerStats.skillTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR, true);
-                } else playerStats.skillTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR, false);
+                playerStats.skillTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR,
+                        player.getInventory().getItemInMainHand().getType() == Material.BOW || player.getInventory().getItemInMainHand().getType() == Material.TRIDENT);
 
                 cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
                 return;
@@ -84,20 +75,17 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
         Action action = event.getAction();
-        if (playerStats.skillMode) {
+        if (playerStats.isSkillMode()) {
             if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click")
                     || !(action == Action.RIGHT_CLICK_AIR
                     || action == Action.RIGHT_CLICK_BLOCK)
-                    || SpellCastUtils.isSpellCastFocused(player.getInventory().getItemInMainHand())) // faceless changed spell cast here
+                    || !SpellCastUtils.isSpellCastFocused(player.getInventory().getItemInMainHand())) // faceless changed spell cast here
                 return;
             long cooldown = 50;
             cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
             if (playerStats.skillTriggers.spellMode) {
-                if (player.getInventory().getItemInMainHand().getType() == Material.BOW || player.getInventory().getItemInMainHand().getType() == Material.TRIDENT) {
-                    playerStats.skillTriggers.continueNormalSpell(action, true);
-                } else {
-                    playerStats.skillTriggers.continueNormalSpell(action, false);
-                }
+                playerStats.skillTriggers.continueNormalSpell(action,
+                        player.getInventory().getItemInMainHand().getType() == Material.BOW || player.getInventory().getItemInMainHand().getType() == Material.TRIDENT);
                 return;
             }
 

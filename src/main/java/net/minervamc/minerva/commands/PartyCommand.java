@@ -14,6 +14,7 @@ public class PartyCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if (!(commandSender instanceof Player commander)) return false;
+
         if (strings.length > 0) {
             if (strings[0].equals("list")) {
                 StringBuilder message = new StringBuilder(ChatColor.YELLOW + "Players in your party: ");
