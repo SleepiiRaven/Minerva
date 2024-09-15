@@ -61,7 +61,7 @@ public class SkillUtils {
             case APOLLO_GREEK, APOLLO_ROMAN -> setSkills(player, Skills.APOLLOS_HYMN, Skills.PLAGUE_VOLLEY, Skills.BURNING_LIGHT, Skills.ENHANCED_ARCHERY, Skills.ARROWS_OF_THE_SUN);
             case ARTEMIS, DIANA -> setSkills(player, Skills.NIMBLE_DASH, Skills.CALL_OF_THE_WILD, Skills.SUPER_CHARGED, Skills.SHARPSHOOTER, Skills.HUNTRESS_AGILITY);
             case DIONYSUS, BACCHUS -> setSkills(player,  Skills.VINE_WHIP, Skills.GRAPE_SHOT, Skills.MAD_GODS_DRINK, Skills.FRENZIED_DANCE, Skills.DRUNKEN_REVELRY);
-            case ARES, MARS -> setSkills(player, Skills.ARES_BLESSING, Skills.TOMAHAWK_THROW, Skills.PRIMAL_SCREAM, Skills.BLOODLUST, Skills.FERVOR_OF_WAR);
+            case ARES, MARS -> setSkills(player, Skills.BLOODLUST, Skills.TOMAHAWK_THROW, Skills.CLEAVE, Skills.PRIMAL_SCREAM, Skills.ARES_BLESSING);
         }
     }
 

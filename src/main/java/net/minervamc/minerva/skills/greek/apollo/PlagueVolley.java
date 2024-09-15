@@ -7,22 +7,15 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionData;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.bukkit.Sound;
 
 public class PlagueVolley extends Skill {
     @Override
@@ -67,7 +60,7 @@ public class PlagueVolley extends Skill {
             Arrow arrow = player.getWorld().spawnArrow(location.clone().add(arrowDirection).setDirection(arrowDirection), arrowDirection.clone().multiply(0.8), 1f, 0f);
             arrow.setShooter(player);
             arrow.setVelocity(arrowDirection.clone().multiply(3));
-            arrow.setBasePotionData(new PotionData(PotionType.POISON));
+            arrow.setBasePotionType(PotionType.POISON);
             arrow.setDamage(damage);
             arrows.add(arrow);
         }
@@ -88,7 +81,7 @@ public class PlagueVolley extends Skill {
                     List<Vector> spiralPoints = ParticleUtils.getVerticalCirclePoints(1, arrow.getLocation().getPitch(), arrow.getLocation().getYaw(), 10);
                     if (ticks >= 10) ticks = 0;
                     Location particleLoc = arrow.getLocation().add(spiralPoints.get(ticks));
-                    particleLoc.getWorld().spawnParticle(Particle.REDSTONE, particleLoc, 0, 0, 0, 0, 0, new Particle.DustOptions(Color.GREEN, 1f));
+                    particleLoc.getWorld().spawnParticle(Particle.DUST, particleLoc, 0, 0, 0, 0, 0, new Particle.DustOptions(Color.GREEN, 1f));
                     ticks++;
                 }
                 if (allDead) this.cancel();

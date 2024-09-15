@@ -36,13 +36,9 @@ import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
-import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -97,7 +93,7 @@ public class SkillListener implements Listener {
                 }
             } else if (event.getCause() == EntityDamageEvent.DamageCause.POISON) {
                 if (PlayerStats.getStats(player.getUniqueId()).getPassive() == Skills.DRUNKEN_REVELRY && PlayerStats.getStats(player.getUniqueId()).getPassiveActive()) {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 40, 0));
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 40, 0));
                     player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 40, 0));
                 }
             }
@@ -175,7 +171,7 @@ public class SkillListener implements Listener {
                         if (player.isDead() || !player.isOnline() || arrow.isDead()) {
                             World world = arrow.getWorld();
                             Location loc = arrow.getLocation();
-                            world.spawnParticle(Particle.REDSTONE, loc, 10, 0, 0, 0, 0.5, new Particle.DustOptions(Color.fromRGB(250, 250, 210), 2));
+                            world.spawnParticle(Particle.DUST, loc, 10, 0, 0, 0, 0.5, new Particle.DustOptions(Color.fromRGB(250, 250, 210), 2));
                             world.spawnParticle(Particle.END_ROD, loc, 50, 0, 0, 0, 0.3);
                             player.getWorld().playSound(player.getLocation(), Sound.ITEM_TRIDENT_RETURN, 1.5f, 1.2f);
                             player.getWorld().playSound(player.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1.5f, 2f);

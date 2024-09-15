@@ -70,8 +70,8 @@ public class BurningLight extends Skill {
                 for (Vector point : ParticleUtils.getSpherePoints(radius, 5)) {
                     i++;
                     Location particleLocation = sphereLoc.clone().add(point);
-                    particleLocation.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(184,134,11), 2));
-                    if (i % 3 == 0) particleLocation.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.WHITE, 2));
+                    particleLocation.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(184,134,11), 2));
+                    if (i % 3 == 0) particleLocation.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.WHITE, 2));
                 }
             }
         }.runTaskTimer(Minerva.getInstance(), 0L, 5L);

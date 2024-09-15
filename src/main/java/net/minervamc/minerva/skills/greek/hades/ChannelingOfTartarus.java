@@ -193,10 +193,10 @@ public class ChannelingOfTartarus extends Skill {
         boolean foundEnemy = false;
         for (Vector vector : ParticleUtils.getQuadraticBezierPoints(start, control, end, 10)) {
             Location particleLoc = player.getEyeLocation().add(vector);
-            particleLoc.getWorld().spawnParticle(Particle.REDSTONE, particleLoc, 10, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(32, 32, 40), 2));
-            particleLoc.getWorld().spawnParticle(Particle.REDSTONE, particleLoc, 10, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(54, 55, 66), 2));
-            particleLoc.getWorld().spawnParticle(Particle.REDSTONE, particleLoc, 3, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(102, 235, 237), 2));
-            particleLoc.getWorld().spawnParticle(Particle.REDSTONE, particleLoc, 3, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(74, 149, 150), 2));
+            particleLoc.getWorld().spawnParticle(Particle.DUST, particleLoc, 10, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(32, 32, 40), 2));
+            particleLoc.getWorld().spawnParticle(Particle.DUST, particleLoc, 10, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(54, 55, 66), 2));
+            particleLoc.getWorld().spawnParticle(Particle.DUST, particleLoc, 3, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(102, 235, 237), 2));
+            particleLoc.getWorld().spawnParticle(Particle.DUST, particleLoc, 3, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(74, 149, 150), 2));
             Collection<Entity> closebyMonsters = particleLoc.getWorld().getNearbyEntities(particleLoc, range, range, range);
             for (Entity closebyMonster : closebyMonsters) {
                 // make sure it's a living entity, not an armor stand or something, continue skips the current loop
@@ -258,8 +258,8 @@ public class ChannelingOfTartarus extends Skill {
                 Collection<Entity> closebyEntities = effectLocation.getWorld().getNearbyEntities(effectLocation, 3, height, 3);
                 for (Vector point : ParticleUtils.getCylinderPoints(radius, height)) {
                     Location particleLoc = effectLocation.clone().add(point);
-                    particleLoc.getWorld().spawnParticle(Particle.REDSTONE, particleLoc, 3, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(102, 235, 237), 2));
-                    particleLoc.getWorld().spawnParticle(Particle.REDSTONE, particleLoc, 3, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(74, 149, 150), 2));
+                    particleLoc.getWorld().spawnParticle(Particle.DUST, particleLoc, 3, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(102, 235, 237), 2));
+                    particleLoc.getWorld().spawnParticle(Particle.DUST, particleLoc, 3, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(74, 149, 150), 2));
                 }
                 for (Entity entity : closebyEntities) {
                     if (entity instanceof LivingEntity enemy && entity != player && !(enemy instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {

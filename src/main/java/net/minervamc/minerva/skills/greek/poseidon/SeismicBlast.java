@@ -92,7 +92,7 @@ public class SeismicBlast extends Skill {
             BlockData blockData;
             if (!block.getType().isSolid()) blockData = Bukkit.createBlockData(Material.DIRT);
             else blockData = block.getBlockData();
-            player.getWorld().spawnParticle(Particle.BLOCK_DUST, particleLocation, 3, blockData);
+            player.getWorld().spawnParticle(Particle.BLOCK, particleLocation, 3, blockData);
         }
 
         List<LivingEntity> caughtLivingEntities = new ArrayList<>();

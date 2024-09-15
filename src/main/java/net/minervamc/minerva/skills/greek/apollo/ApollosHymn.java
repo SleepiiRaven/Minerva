@@ -62,8 +62,8 @@ public class ApollosHymn extends Skill {
                     if (ticks == maxHeals) {
                         world.spawnParticle(Particle.HEART, loc, 1, 0, 0, 0, 0);
                     }
-                    world.spawnParticle(Particle.REDSTONE, loc, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(250, 250, 210), 2));
-                    world.spawnParticle(Particle.REDSTONE, loc, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(184, 134, 11), 2));
+                    world.spawnParticle(Particle.DUST, loc, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(250, 250, 210), 2));
+                    world.spawnParticle(Particle.DUST, loc, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(184, 134, 11), 2));
                     world.spawnParticle(Particle.END_ROD, loc, 1, 0, 0, 0, 0);
                 }
 

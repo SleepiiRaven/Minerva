@@ -80,7 +80,7 @@ public class GreekGodsGUI {
         inv.setItem(arkeSlot, comingSoon);
         inv.setItem(hecateSlot, comingSoon);
         inv.setItem(apolloSlot, apollo);
-        //inv.setItem(aresSlot, ares);
+        inv.setItem(aresSlot, ares);
         inv.setItem(aresSlot, comingSoon);
         inv.setItem(aphroditeSlot, comingSoon);
         inv.setItem(dionysusSlot, dionysus);
@@ -154,7 +154,7 @@ public class GreekGodsGUI {
                 chooseHeritage(HeritageType.APOLLO_GREEK, "child of Apollo", (Player) event.getWhoClicked());
                 break;
             case aresSlot:
-                //chooseHeritage(HeritageType.ARES, "child of Ares", (Player) event.getWhoClicked());
+                chooseHeritage(HeritageType.ARES, "child of Ares", (Player) event.getWhoClicked());
                 break;
             case aphroditeSlot:
                 //chooseHeritage(HeritageType.APHRODITE, "child of Aphrodite", (Player) event.getWhoClicked());

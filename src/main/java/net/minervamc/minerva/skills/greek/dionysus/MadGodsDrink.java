@@ -81,7 +81,7 @@ public class MadGodsDrink extends Skill {
                     }
 
                     Location particleLoc = location.clone().add(bezierPoints.get(i + index));
-                    particleLoc.getWorld().spawnParticle(Particle.SPELL_WITCH, particleLoc, 0, 0, 0, 0, 0);
+                    particleLoc.getWorld().spawnParticle(Particle.WITCH, particleLoc, 0, 0, 0, 0, 0);
                     savedLocation = particleLoc;
 
                     index++;
@@ -104,11 +104,11 @@ public class MadGodsDrink extends Skill {
                 if (ticks != 0) explodeLocation.getWorld().playSound(explodeLocation, Sound.BLOCK_LAVA_POP, 1f, 1f);
                 for (Vector point : ParticleUtils.getFilledCirclePoints(radius, 100)) {
                     Location particleLocation = explodeLocation.clone().add(point);
-                    particleLocation.getWorld().spawnParticle(Particle.SPELL_WITCH, particleLocation, 0, 0, 0, 0, 0);
+                    particleLocation.getWorld().spawnParticle(Particle.WITCH, particleLocation, 0, 0, 0, 0, 0);
                 }
                 for (Entity entity : explodeLocation.getNearbyEntities(radius, radius, radius)) {
                     if (entity instanceof LivingEntity livingEntity) {
-                        livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, slowDur, slowAmp));
+                        livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, slowDur, slowAmp));
                         livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.POISON, poisonDur, poisonAmp));
                     }
                 }
@@ -132,7 +132,7 @@ public class MadGodsDrink extends Skill {
         ItemStack item = new ItemStack(Material.POTION);
         PotionMeta meta = (PotionMeta) item.getItemMeta();
         meta.setColor(Color.PURPLE);
-        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
 
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + "[Mad God's Drink]"));
 

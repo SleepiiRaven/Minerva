@@ -93,7 +93,7 @@ public class LightningToss extends Skill {
 
         for (double i = 0; i <= maxDistance; i += 0.2) {
             player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, location.clone().add(direction.clone().multiply(i)), 0);
-            player.getWorld().spawnParticle(Particle.REDSTONE, location.clone().add(direction.clone().multiply(i)), 0, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(254, 191, 16), 2));
+            player.getWorld().spawnParticle(Particle.DUST, location.clone().add(direction.clone().multiply(i)), 0, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(254, 191, 16), 2));
             for (Entity entity : location.clone().add(direction.clone().multiply(i)).getNearbyEntities(1, 1, 1)) {
                 if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
                     SkillUtils.damage(livingEntity, damage, player);

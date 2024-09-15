@@ -138,12 +138,12 @@ public class SkeletalHands extends Skill {
                     if (hand.isDead()) {hand = null; continue;}
                     hand.getWorld().playSound(hand.getLocation(), Sound.ENTITY_WITHER_SKELETON_STEP, 1f, 1f);
                     for (Vector particlePoint : ParticleUtils.getCirclePoints(effectRadius)) {
-                        hand.getWorld().spawnParticle(Particle.REDSTONE, hand.getLocation().add(particlePoint), 0, 0, 0, 0.125, new Particle.DustOptions(Color.fromRGB(32, 32, 32), 1));
-                        hand.getWorld().spawnParticle(Particle.REDSTONE, hand.getLocation().add(particlePoint), 0, 0, 0, 0.125, new Particle.DustOptions(Color.fromRGB(40, 40, 40), 1));
+                        hand.getWorld().spawnParticle(Particle.DUST, hand.getLocation().add(particlePoint), 0, 0, 0, 0.125, new Particle.DustOptions(Color.fromRGB(32, 32, 32), 1));
+                        hand.getWorld().spawnParticle(Particle.DUST, hand.getLocation().add(particlePoint), 0, 0, 0, 0.125, new Particle.DustOptions(Color.fromRGB(40, 40, 40), 1));
                     }
                     for (Vector particlePoint : ParticleUtils.getFilledCirclePoints(effectRadius, 2)) {
-                        hand.getWorld().spawnParticle(Particle.REDSTONE, hand.getLocation().add(particlePoint), 0, 0, 0, 0.125, new Particle.DustOptions(Color.fromRGB(32, 32, 32), 1));
-                        hand.getWorld().spawnParticle(Particle.REDSTONE, hand.getLocation().add(particlePoint), 0, 0, 0, 0.125, new Particle.DustOptions(Color.fromRGB(40, 40, 40), 1));
+                        hand.getWorld().spawnParticle(Particle.DUST, hand.getLocation().add(particlePoint), 0, 0, 0, 0.125, new Particle.DustOptions(Color.fromRGB(32, 32, 32), 1));
+                        hand.getWorld().spawnParticle(Particle.DUST, hand.getLocation().add(particlePoint), 0, 0, 0, 0.125, new Particle.DustOptions(Color.fromRGB(40, 40, 40), 1));
                     }
                     for (Entity entity : hand.getLocation().getNearbyEntities(effectRadius, effectRadius, effectRadius)) {
                         if (entity instanceof LivingEntity livingEntity && entity != player && !(entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {

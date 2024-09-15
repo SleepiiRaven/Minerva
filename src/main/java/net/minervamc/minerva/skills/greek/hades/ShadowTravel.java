@@ -1,8 +1,6 @@
 package net.minervamc.minerva.skills.greek.hades;
 
 import java.util.Collection;
-import java.util.concurrent.ThreadLocalRandom;
-import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
@@ -10,13 +8,8 @@ import net.minervamc.minerva.utils.FastUtils;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
 import net.minervamc.minerva.utils.SkillUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -79,7 +72,7 @@ public class ShadowTravel extends Skill {
         cooldownAlarm(player, cooldown, "Shadow Travel");
 
         player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20, 0));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20, 100));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 20, 100));
         player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 0));
         Vector dir = player.getEyeLocation().getDirection();
         Location previousLoc = player.getEyeLocation();
@@ -117,8 +110,8 @@ public class ShadowTravel extends Skill {
             Vector teleportDistance = dir.clone().multiply(t);
             location.clone().add(teleportDistance);
             player.getWorld().spawnParticle(Particle.PORTAL, location, 10);
-            player.getWorld().spawnParticle(Particle.REDSTONE, location, 10, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(32, 32, 32), 2));
-            player.getWorld().spawnParticle(Particle.REDSTONE, location, 10, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(40, 40, 40), 2));
+            player.getWorld().spawnParticle(Particle.DUST, location, 10, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(32, 32, 32), 2));
+            player.getWorld().spawnParticle(Particle.DUST, location, 10, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(40, 40, 40), 2));
             Collection<Entity> closebyMonsters = player.getWorld().getNearbyEntities(location, range, range, range);
             for (Entity closebyMonster : closebyMonsters) {
                 // make sure it's a living entity, not an armor stand or something, continue skips the current loop

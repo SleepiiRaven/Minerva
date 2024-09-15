@@ -143,16 +143,16 @@ public class TidalWave extends Skill {
             Vector C = relativePlayerVector.clone().add(localDirection.clone().multiply(0.8).subtract(new Vector(0, 0.5, 0)));
             for (Vector particleVector : ParticleUtils.getQuadraticBezierPoints(A, B, C, 10)) {
                 Location particleLocation = location.clone().add(particleVector).clone().add(progressVector);
-                player.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(0,157,196), 1));
-                player.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 1, new Particle.DustOptions(Color.BLUE, 1));
+                player.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(0,157,196), 1));
+                player.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, new Particle.DustOptions(Color.BLUE, 1));
             }
             A = C.clone();
             B = relativePlayerVector.clone().subtract(new Vector(0, 0.5, 0));
             C = A.clone().subtract(new Vector(0, 1, 0));
             for (Vector particleVector : ParticleUtils.getQuadraticBezierPoints(A, B, C, 10)) {
                 Location particleLocation = location.clone().add(particleVector).clone().add(progressVector);
-                player.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(0,157,196), 1));
-                player.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 1, new Particle.DustOptions(Color.BLUE, 1));
+                player.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(0,157,196), 1));
+                player.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, new Particle.DustOptions(Color.BLUE, 1));
             }
         }
     }

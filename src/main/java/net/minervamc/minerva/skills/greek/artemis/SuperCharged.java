@@ -67,10 +67,10 @@ public class SuperCharged extends Skill {
                         if (particleLoc.getBlock().isSolid()) {
                             break;
                         }
-                        player.getWorld().spawnParticle(Particle.CRIT_MAGIC, particleLoc, 1, 0, 0, 0, 0);
+                        player.getWorld().spawnParticle(Particle.ENCHANTED_HIT, particleLoc, 1, 0, 0, 0, 0);
                         player.getWorld().spawnParticle(Particle.END_ROD, particleLoc, 1, 0, 0, 0 ,0);
-                        player.getWorld().spawnParticle(Particle.REDSTONE, particleLoc, 3, 0, 0, 0, 0, new Particle.DustOptions(Color.SILVER, 2));
-                        player.getWorld().spawnParticle(Particle.ENCHANTMENT_TABLE, particleLoc, 1, 0, 0, 0, 0);
+                        player.getWorld().spawnParticle(Particle.DUST, particleLoc, 3, 0, 0, 0, 0, new Particle.DustOptions(Color.SILVER, 2));
+                        player.getWorld().spawnParticle(Particle.ENCHANT, particleLoc, 1, 0, 0, 0, 0);
                         for (Entity entity : particleLoc.getNearbyEntities(1, 1, 1)) {
                             if (entity instanceof LivingEntity livingEntity && livingEntity != player && !livingEntity.getScoreboardTags().contains("artemisWolf") && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
                                 if (particleLoc.distance(livingEntity.getEyeLocation()) <= 0.3) SkillUtils.damage(livingEntity, headshotDamage, player);
@@ -86,7 +86,7 @@ public class SuperCharged extends Skill {
 
                 for (Vector vector : ParticleUtils.getVerticalCirclePoints(radius, player.getEyeLocation().getPitch(), player.getEyeLocation().getYaw(), 20)) {
                     Location particleLocation = effectLocation.clone().add(vector);
-                    player.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.SILVER, 2f));
+                    player.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.SILVER, 2f));
                 }
                 radius -= maxRadius/chargeTime;
             }

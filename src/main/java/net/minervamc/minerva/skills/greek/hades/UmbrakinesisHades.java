@@ -144,9 +144,9 @@ public class UmbrakinesisHades extends Skill {
                     double y = viewDir.getY() * t;
                     double z = viewDir.getZ() * t;
                     viewPos.add(x, y, z);
-                    player.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, viewPos, 1, 0, 0, 0);
-                    player.getWorld().spawnParticle(Particle.REDSTONE, viewPos, 1, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(32, 32, 32), 2));
-                    player.getWorld().spawnParticle(Particle.REDSTONE, viewPos, 1, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(40, 40, 40), 2));
+                    player.getWorld().spawnParticle(Particle.FIREWORK, viewPos, 1, 0, 0, 0);
+                    player.getWorld().spawnParticle(Particle.DUST, viewPos, 1, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(32, 32, 32), 2));
+                    player.getWorld().spawnParticle(Particle.DUST, viewPos, 1, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(40, 40, 40), 2));
                     player.getWorld().spawnParticle(Particle.END_ROD, viewPos, 1, 0, 0, 0);
                     double rX = range - x;
                     double rY = range - y;
@@ -194,9 +194,9 @@ public class UmbrakinesisHades extends Skill {
                     return;
                 }
                 Location pos = player.getLocation();
-                player.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, pos, 1, 0, 0, 0);
-                player.getWorld().spawnParticle(Particle.REDSTONE, pos, 1, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(32, 32, 32), 2));
-                player.getWorld().spawnParticle(Particle.REDSTONE, pos, 1, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(40, 40, 40), 2));
+                player.getWorld().spawnParticle(Particle.FIREWORK, pos, 1, 0, 0, 0);
+                player.getWorld().spawnParticle(Particle.DUST, pos, 1, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(32, 32, 32), 2));
+                player.getWorld().spawnParticle(Particle.DUST, pos, 1, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(40, 40, 40), 2));
                 ticks++;
             }
         }.runTaskTimer(Minerva.getInstance(), 0L, 1L);

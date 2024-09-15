@@ -64,7 +64,7 @@ public class CallOfTheWild extends Skill {
 
             Wolf wolf = (Wolf) player.getWorld().spawnEntity(wolfLocation.setDirection(wolfDirection), EntityType.WOLF);
             wolf.addScoreboardTag("artemisWolf");
-            wolf.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, (int) (wolfDespawnTicks*5), 4));
+            wolf.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, (int) (wolfDespawnTicks*5), 4));
             wolves.add(wolf);
         }
 
@@ -82,7 +82,7 @@ public class CallOfTheWild extends Skill {
                     for (Wolf wolf : wolves) {
                         wolf.remove();
                         Location particleLoc = wolf.getLocation();
-                        wolf.getWorld().spawnParticle(Particle.ENCHANTMENT_TABLE, particleLoc, 10);
+                        wolf.getWorld().spawnParticle(Particle.ENCHANT, particleLoc, 10);
                     }
                     this.cancel();
                 }

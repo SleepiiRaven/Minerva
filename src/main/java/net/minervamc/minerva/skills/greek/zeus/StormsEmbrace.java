@@ -98,8 +98,8 @@ public class StormsEmbrace extends Skill {
                     for (Vector relativeParticleLocation : ParticleUtils.getFilledCirclePoints(radius, 50)) {
                         Location particleLocation = effectLocation.add(relativeParticleLocation);
                         particleLocation.getWorld().spawnParticle(Particle.CLOUD, particleLocation, 0, 0, 0, 0, 0);
-                        particleLocation.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 0, 0, 0, 0, 0, new Particle.DustOptions(Color.GRAY, 2));
-                        particleLocation.getWorld().spawnParticle(Particle.WATER_DROP, particleLocation, 0);
+                        particleLocation.getWorld().spawnParticle(Particle.DUST, particleLocation, 0, 0, 0, 0, 0, new Particle.DustOptions(Color.GRAY, 2));
+                        particleLocation.getWorld().spawnParticle(Particle.FALLING_WATER, particleLocation, 0);
                         finalParticle = particleLocation;
                     }
 
@@ -152,9 +152,9 @@ public class StormsEmbrace extends Skill {
 
         for (double i = 0; i <= maxDistance; i += 0.2) {
             player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, location.clone().add(direction.clone().multiply(i)), 0);
-            player.getWorld().spawnParticle(Particle.REDSTONE, location.clone().add(direction.clone().multiply(i)), 0, 0, 0, 0, 0, new Particle.DustOptions(Color.AQUA, 2));
-            player.getWorld().spawnParticle(Particle.REDSTONE, location.clone().add(direction.clone().multiply(i)), 0, 0, 0, 0, 0, new Particle.DustOptions(Color.WHITE, 2));
-            player.getWorld().spawnParticle(Particle.REDSTONE, location.clone().add(direction.clone().multiply(i)), 0, 0, 0, 0, 0, new Particle.DustOptions(Color.GRAY, 2));
+            player.getWorld().spawnParticle(Particle.DUST, location.clone().add(direction.clone().multiply(i)), 0, 0, 0, 0, 0, new Particle.DustOptions(Color.AQUA, 2));
+            player.getWorld().spawnParticle(Particle.DUST, location.clone().add(direction.clone().multiply(i)), 0, 0, 0, 0, 0, new Particle.DustOptions(Color.WHITE, 2));
+            player.getWorld().spawnParticle(Particle.DUST, location.clone().add(direction.clone().multiply(i)), 0, 0, 0, 0, 0, new Particle.DustOptions(Color.GRAY, 2));
 
             if (random.nextInt(0, 10) == 2 && maxBranches > 0) {
                 double xRotation = FastUtils.randomDoubleInRange(-rotationMax, rotationMax);

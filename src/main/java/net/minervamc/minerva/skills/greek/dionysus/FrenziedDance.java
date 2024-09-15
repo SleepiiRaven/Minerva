@@ -28,7 +28,7 @@ public class FrenziedDance extends Skill {
         cooldownManager.setCooldownFromNow(player.getUniqueId(), "frenziedDance", cooldown);
         cooldownAlarm(player, cooldown, "Frenzied Dance");
 
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 30, 9));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 30, 9));
 
         new BukkitRunnable() {
             int ticks = 0;
@@ -36,7 +36,7 @@ public class FrenziedDance extends Skill {
             public void run() {
                 if (player.isDead() || !player.isOnline() || ticks >= 6) {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 1));
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 200, 0));
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 200, 0));
                     player.getWorld().playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1f, 1f);
                     this.cancel();
                 }

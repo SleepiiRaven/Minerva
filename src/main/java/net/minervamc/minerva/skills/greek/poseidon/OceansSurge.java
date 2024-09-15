@@ -83,7 +83,7 @@ public class OceansSurge extends Skill {
                     double y = 2 * Math.exp(-0.1*t) * Math.sin(t) + 1.5;
                     double z = t * Math.sin(theta);
                     loc.add(x,y,z);
-                    player.getWorld().spawnParticle(Particle.CRIT_MAGIC, loc, 1, 0, 0, 0, 0);
+                    player.getWorld().spawnParticle(Particle.ENCHANTED_HIT, loc, 1, 0, 0, 0, 0);
                     for (Entity entity : loc.getNearbyEntities(0.5, 2, 0.5)) {
                         if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Horse) && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
                             SkillUtils.damage(livingEntity, damage, player);
@@ -98,7 +98,7 @@ public class OceansSurge extends Skill {
                     y = 2 * Math.exp(-0.1 * t) * Math.sin(t) + 1.5;
                     z = t * Math.sin(theta);
                     loc.add(x,y,z);
-                    player.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(0,157,196), 1));
+                    player.getWorld().spawnParticle(Particle.DUST, loc, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(0,157,196), 1));
                     loc.subtract(x,y,z);
                 }
                 if (t > 20){
@@ -113,7 +113,7 @@ public class OceansSurge extends Skill {
                     double y = 2 * Math.exp(-0.1*t) * Math.sin(t) + 1.5;
                     double z = t * Math.sin(theta);
                     loc.add(x,y,z);
-                    player.getWorld().spawnParticle(Particle.CRIT_MAGIC, loc, 1, 0, 0, 0, 0);
+                    player.getWorld().spawnParticle(Particle.ENCHANTED_HIT, loc, 1, 0, 0, 0, 0);
                     for (Entity entity : loc.getNearbyEntities(0.5, 2, 0.5)) {
                         if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Horse) && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
                             SkillUtils.damage(livingEntity, damage, player);
@@ -128,7 +128,7 @@ public class OceansSurge extends Skill {
                     y = 2 * Math.exp(-0.1 * t) * Math.sin(t) + 1.5;
                     z = t * Math.sin(theta);
                     loc.add(x,y,z);
-                    player.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(0,157,196), 1));
+                    player.getWorld().spawnParticle(Particle.DUST, loc, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(0,157,196), 1));
                     loc.subtract(x,y,z);
                 }
                 if (t > 20){

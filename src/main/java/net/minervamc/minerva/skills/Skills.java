@@ -7,7 +7,7 @@ import net.minervamc.minerva.skills.greek.apollo.EnhancedArchery;
 import net.minervamc.minerva.skills.greek.apollo.PlagueVolley;
 import net.minervamc.minerva.skills.greek.ares.AresBlessing;
 import net.minervamc.minerva.skills.greek.ares.Bloodlust;
-import net.minervamc.minerva.skills.greek.ares.FervorOfWar;
+import net.minervamc.minerva.skills.greek.ares.Cleave;
 import net.minervamc.minerva.skills.greek.ares.PrimalScream;
 import net.minervamc.minerva.skills.greek.ares.TomahawkThrow;
 import net.minervamc.minerva.skills.greek.artemis.CallOfTheWild;
@@ -71,7 +71,7 @@ public interface Skills {
     Skill MAD_GODS_DRINK = new MadGodsDrink();
     Skill ARES_BLESSING = new AresBlessing();
     Skill BLOODLUST = new Bloodlust();
-    Skill FERVOR_OF_WAR = new FervorOfWar();
+    Skill CLEAVE = new Cleave();
     Skill PRIMAL_SCREAM = new PrimalScream();
     Skill TOMAHAWK_THROW = new TomahawkThrow();
     Skill DEFAULT = new DefaultSkill();

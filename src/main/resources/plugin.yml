@@ -1,7 +1,7 @@
 name: Minerva
 version: '0.1.0'
 main: net.minervamc.minerva.Minerva
-api-version: '1.18'
+api-version: '1.21.1'
 commands:
   mskills:
     description: Minerva commands that relate to skills, heritage, and ancestry.
