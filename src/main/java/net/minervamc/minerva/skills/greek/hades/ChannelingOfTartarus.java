@@ -1,11 +1,6 @@
 package net.minervamc.minerva.skills.greek.hades;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
@@ -13,7 +8,6 @@ import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
 import net.minervamc.minerva.utils.SkillUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -46,18 +40,6 @@ public class ChannelingOfTartarus extends Skill {
         int burstWindUpTime;
 
         switch (level) {
-            default -> {
-                cooldown = 12000;
-                distance = 5;
-                range = 1.5;
-                burstDistance = 30;
-                burstRadius = 3; // Radius of giant burst cyllander
-                burstHeight = 20; // Goes down half the height and up half the height
-                missileDamage = 80;
-                burstDamage = 400;
-                timeBetweenMissiles = 10;
-                burstWindUpTime = 30;
-            }
             case 2 -> {
                 cooldown = 11000;
                 distance = 6;
@@ -106,6 +88,18 @@ public class ChannelingOfTartarus extends Skill {
                 timeBetweenMissiles = 5;
                 burstWindUpTime = 30;
             }
+            default -> {
+                cooldown = 12000;
+                distance = 5;
+                range = 1.5;
+                burstDistance = 30;
+                burstRadius = 3; // Radius of giant burst cyllander
+                burstHeight = 20; // Goes down half the height and up half the height
+                missileDamage = 80;
+                burstDamage = 400;
+                timeBetweenMissiles = 10;
+                burstWindUpTime = 30;
+            }
         }
 
         double finalDistance = distance;
@@ -129,11 +123,12 @@ public class ChannelingOfTartarus extends Skill {
             UP
         }
 
-        cooldownManager.setCooldownFromNow(player.getUniqueId(), "channelingOfTartarusCasting", ((timeBetweenMissiles*3 + burstWindUpTime)*50));
+        cooldownManager.setCooldownFromNow(player.getUniqueId(), "channelingOfTartarusCasting", ((timeBetweenMissiles * 3 + burstWindUpTime) * 50));
 
         new BukkitRunnable() {
             int hitEnemies = 0;
             Direction dir = Direction.LEFT;
+
             @Override
             public void run() {
                 Vector beamStart;
@@ -200,8 +195,7 @@ public class ChannelingOfTartarus extends Skill {
             Collection<Entity> closebyMonsters = particleLoc.getWorld().getNearbyEntities(particleLoc, range, range, range);
             for (Entity closebyMonster : closebyMonsters) {
                 // make sure it's a living entity, not an armor stand or something, continue skips the current loop
-                if (!(closebyMonster instanceof LivingEntity) || (closebyMonster == player)) continue;
-                LivingEntity livingMonster = (LivingEntity) closebyMonster;
+                if (!(closebyMonster instanceof LivingEntity livingMonster) || (closebyMonster == player)) continue;
                 // Get the entity's collision box
                 BoundingBox monsterBoundingBox = livingMonster.getBoundingBox();
                 BoundingBox collisionBox = BoundingBox.of(particleLoc, range, range, range);
@@ -237,8 +231,7 @@ public class ChannelingOfTartarus extends Skill {
                     } catch (Exception e) {
                         effectLocation = null;
                     }
-                }
-                else if (resultEntities != null && resultEntities.getHitEntity() != null && !player.isDead() && player.isOnline()) {
+                } else if (resultEntities != null && resultEntities.getHitEntity() != null && !player.isDead() && player.isOnline()) {
                     try {
                         effectLocation = resultEntities.getHitEntity().getLocation();
                     } catch (Exception e) {

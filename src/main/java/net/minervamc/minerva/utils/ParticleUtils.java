@@ -2,7 +2,6 @@ package net.minervamc.minerva.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
@@ -47,7 +46,7 @@ public class ParticleUtils {
     public static List<Vector> getCirclePoints(double radius) {
         List<Vector> points = new ArrayList<>();
         for (int d = 0; d < 20; d += 1) {
-            double angle = (2*Math.PI*d)/20;
+            double angle = (2 * Math.PI * d) / 20;
             // Cosine for X
             Vector vector = new Vector(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
             points.add(vector);
@@ -55,6 +54,7 @@ public class ParticleUtils {
 
         return points;
     }
+
     public static List<Vector> getVerticalCirclePoints(double radius, float pitch, float yaw, int particles) {
         List<Vector> points = new ArrayList<>();
         for (int i = 0; i < particles; i++) {
@@ -71,19 +71,36 @@ public class ParticleUtils {
         return points;
     }
 
-        public static List<Vector> getSpiralPoints(double radius, double radiusIncrease, double maxY) {
-            List<Vector> points = new ArrayList<>();
-            for (int d = 0; d <= 60; d += 1) {
-                radius += radiusIncrease;
-                double y = 0;
-                if (maxY != 0) y = d/(60/maxY);
-                Vector vector = new Vector(Math.cos(d) * radius, d/(60/maxY), Math.sin(d) * radius);
+    public static List<Vector> getSpiralPoints(double radius, double radiusIncrease, double maxY) {
+        List<Vector> points = new ArrayList<>();
+        for (int d = 0; d <= 60; d += 1) {
+            radius += radiusIncrease;
+            double y = 0;
+            if (maxY != 0) y = d / (60 / maxY);
+            Vector vector = new Vector(Math.cos(d) * radius, y, Math.sin(d) * radius);
 
-                points.add(vector);
-            }
-
-            return points;
+            points.add(vector);
         }
+
+        return points;
+    }
+
+    public static List<Vector> getHorizontalSpiralPoints(double rotations, double initRad, double finalRad, double finalLen, float pitch, float yaw, int particles) {
+        List<Vector> points = new ArrayList<>();
+
+        for (int i = 0; i < particles; i++) {
+            double theta = i * rotations * Math.PI * 2 / particles;
+            double radius = initRad + finalRad * i/particles;
+            double z = finalLen * i/particles;
+
+            Vector point = new Vector(Math.cos(Math.toRadians(theta)) * radius, z, Math.sin(Math.toRadians(theta)) * radius);
+//            rotateXAxis(point, pitch);
+//            rotateYAxis(point, yaw);
+            points.add(point);
+        }
+
+        return points;
+    }
 
     public static List<Vector> getFilledCirclePoints(double radius, double pointCount) {
         List<Vector> points = new ArrayList<>();
@@ -108,8 +125,8 @@ public class ParticleUtils {
     public static List<Vector> getFilledRectanglePoints(double width, double height, Vector direction) {
         List<Vector> points = new ArrayList<>();
 
-        for (double i = 0; i < width/2; i += 0.2) {
-            for (double j = 0; j < height/2; j += 0.2) {
+        for (double i = 0; i < width / 2; i += 0.2) {
+            for (double j = 0; j < height / 2; j += 0.2) {
                 points.add(direction.clone().add(new Vector(i, 0, j)));
                 points.add(direction.clone().add(new Vector(i, 0, -j)));
                 points.add(direction.clone().add(new Vector(-i, 0, j)));
@@ -123,7 +140,7 @@ public class ParticleUtils {
     public static List<Vector> getCylinderPoints(double radius, double height) {
         List<Vector> originalCirclePoints = getCirclePoints(radius);
         List<Vector> points = new ArrayList<>(originalCirclePoints);
-        for (int i = 0; i <= height/2; i++) {
+        for (int i = 0; i <= height / 2; i++) {
             for (Vector point : originalCirclePoints) {
                 points.add(point.clone().add(new Vector(0, i, 0)));
                 points.add(point.clone().add(new Vector(0, -i, 0)));
@@ -154,7 +171,7 @@ public class ParticleUtils {
     public static List<Vector> getQuadraticBezierPoints(Vector A, Vector B, Vector C, double particles) {
         List<Vector> points = new ArrayList<>();
         for (double i = 0; i <= particles; i += 1) {
-            double t = i/particles;
+            double t = i / particles;
             double u = 1 - t;
             Vector bezierPoint = A.multiply(u * u).add(B.clone().multiply(2 * u * t)).add(C.clone().multiply(t * t));
             points.add(bezierPoint.clone());

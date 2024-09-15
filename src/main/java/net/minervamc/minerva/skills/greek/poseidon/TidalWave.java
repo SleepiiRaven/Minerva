@@ -7,22 +7,17 @@ import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
 import net.minervamc.minerva.utils.SkillUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -35,30 +30,30 @@ public class TidalWave extends Skill {
         double damage;
 
         switch (level) {
-            default -> {
-                tickDuration = 20;
-                cooldown = 10000 + (tickDuration*50);
-                damage = 30;
-            }
             case 2 -> {
                 tickDuration = 30;
-                cooldown = 9000 + (tickDuration*50);
+                cooldown = 9000 + (tickDuration * 50);
                 damage = 1;
             }
             case 3 -> {
                 tickDuration = 40;
-                cooldown = 8000 + (tickDuration*50);
+                cooldown = 8000 + (tickDuration * 50);
                 damage = 2;
             }
             case 4 -> {
                 tickDuration = 50;
-                cooldown = 7000 + (tickDuration*50);
+                cooldown = 7000 + (tickDuration * 50);
                 damage = 2.5;
             }
             case 5 -> {
                 tickDuration = 60;
-                cooldown = 8000 + (tickDuration*50);
+                cooldown = 8000 + (tickDuration * 50);
                 damage = 3;
+            }
+            default -> {
+                tickDuration = 20;
+                cooldown = 10000 + (tickDuration * 50);
+                damage = 30;
             }
         }
 
@@ -86,7 +81,7 @@ public class TidalWave extends Skill {
 
             @Override
             public void run() {
-                if (player.isDead() || !player.isOnline() || player.isSneaking() || ticks >= (tickDuration/5)) {
+                if (player.isDead() || !player.isOnline() || player.isSneaking() || ticks >= (tickDuration / 5)) {
                     player.teleport(mount.getLocation());
                     mount.remove();
                     this.cancel();
@@ -143,7 +138,7 @@ public class TidalWave extends Skill {
             Vector C = relativePlayerVector.clone().add(localDirection.clone().multiply(0.8).subtract(new Vector(0, 0.5, 0)));
             for (Vector particleVector : ParticleUtils.getQuadraticBezierPoints(A, B, C, 10)) {
                 Location particleLocation = location.clone().add(particleVector).clone().add(progressVector);
-                player.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(0,157,196), 1));
+                player.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(0, 157, 196), 1));
                 player.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, new Particle.DustOptions(Color.BLUE, 1));
             }
             A = C.clone();
@@ -151,7 +146,7 @@ public class TidalWave extends Skill {
             C = A.clone().subtract(new Vector(0, 1, 0));
             for (Vector particleVector : ParticleUtils.getQuadraticBezierPoints(A, B, C, 10)) {
                 Location particleLocation = location.clone().add(particleVector).clone().add(progressVector);
-                player.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(0,157,196), 1));
+                player.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(0, 157, 196), 1));
                 player.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, new Particle.DustOptions(Color.BLUE, 1));
             }
         }

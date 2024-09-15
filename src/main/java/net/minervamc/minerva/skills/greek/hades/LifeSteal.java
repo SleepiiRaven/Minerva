@@ -33,6 +33,6 @@ public class LifeSteal extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.NETHERITE_SWORD), ChatColor.DARK_RED + "" + ChatColor.BOLD + "[Life Steal]", ChatColor.GRAY +"When you kill an enemy, regenerate a small amount of health.");
+        return ItemUtils.getItem(new ItemStack(Material.NETHERITE_SWORD), ChatColor.DARK_RED + "" + ChatColor.BOLD + "[Life Steal]", ChatColor.GRAY + "When you kill an enemy, regenerate a small amount of health.");
     }
 }

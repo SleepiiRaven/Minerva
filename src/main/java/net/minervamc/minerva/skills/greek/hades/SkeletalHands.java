@@ -37,14 +37,6 @@ public class SkeletalHands extends Skill {
         int maxTicks; //How many times each hand can grab for the spell's lifetime. multiply this by the trigger rate to get amount of ticks until end, 20 ticks in a second.
 
         switch (level) {
-            default -> {
-                cooldown = 10000;
-                triggerRate = 20;
-                range = 5;
-                effectRadius = 1;
-                handCount = 5;
-                maxTicks = 5;
-            }
             case 2 -> {
                 cooldown = 10000;
                 triggerRate = 20;
@@ -76,6 +68,14 @@ public class SkeletalHands extends Skill {
                 effectRadius = 2.5;
                 handCount = 8;
                 maxTicks = 8;
+            }
+            default -> {
+                cooldown = 10000;
+                triggerRate = 20;
+                range = 5;
+                effectRadius = 1;
+                handCount = 5;
+                maxTicks = 5;
             }
         }
 
@@ -125,6 +125,7 @@ public class SkeletalHands extends Skill {
         }
         new BukkitRunnable() {
             int ticks = 0;
+
             @Override
             public void run() {
                 if (player.isDead() || !player.isOnline() || ticks >= maxTicks) {
@@ -135,7 +136,10 @@ public class SkeletalHands extends Skill {
                     this.cancel();
                 }
                 for (ArmorStand hand : hands) {
-                    if (hand.isDead()) {hand = null; continue;}
+                    if (hand.isDead()) {
+                        hand = null;
+                        continue;
+                    }
                     hand.getWorld().playSound(hand.getLocation(), Sound.ENTITY_WITHER_SKELETON_STEP, 1f, 1f);
                     for (Vector particlePoint : ParticleUtils.getCirclePoints(effectRadius)) {
                         hand.getWorld().spawnParticle(Particle.DUST, hand.getLocation().add(particlePoint), 0, 0, 0, 0.125, new Particle.DustOptions(Color.fromRGB(32, 32, 32), 1));

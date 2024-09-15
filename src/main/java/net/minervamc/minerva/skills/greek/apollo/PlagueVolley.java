@@ -7,15 +7,18 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-import org.bukkit.Sound;
 
 public class PlagueVolley extends Skill {
     @Override
@@ -44,14 +47,15 @@ public class PlagueVolley extends Skill {
         arrowDirections.add(ParticleUtils.rotateYAxis(direction, -15));
         arrowDirections.add(ParticleUtils.rotateYAxis(direction, 15));
         switch (level) {
-            default -> {}
-            case 3,4 -> {
+            case 3, 4 -> {
                 arrowDirections.add(ParticleUtils.rotateYAxis(direction, -30));
                 arrowDirections.add(ParticleUtils.rotateYAxis(direction, 30));
             }
             case 5 -> {
                 arrowDirections.add(ParticleUtils.rotateYAxis(direction, -45));
                 arrowDirections.add(ParticleUtils.rotateYAxis(direction, 45));
+            }
+            default -> {
             }
         }
 
@@ -67,6 +71,7 @@ public class PlagueVolley extends Skill {
 
         new BukkitRunnable() {
             int ticks = 0;
+
             @Override
             public void run() {
                 boolean allDead = true;

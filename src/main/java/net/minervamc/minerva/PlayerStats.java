@@ -15,8 +15,8 @@ import net.minervamc.minerva.utils.JsonUtils;
 import org.bukkit.Bukkit;
 
 public class PlayerStats {
-    public static Map<UUID, PlayerStats> playerStats = new HashMap<>();
     private static final Path STORAGE_FOLDER = Minerva.getInstance().getDataFolder().toPath().resolve("PlayerData");
+    public static Map<UUID, PlayerStats> playerStats = new HashMap<>();
     private final Path storage;
 
     //region Stats
@@ -42,53 +42,6 @@ public class PlayerStats {
     private int maxLevel = 1;
     private int maxPoints = 0;
     private int points = 0;
-    //endregion
-
-    //region Getters
-    public UUID getUuid() {
-        return uuid;
-    }
-    public HeritageType getHeritage() { return heritage; }
-    public Skill getSkillRRR() { return skillRRR; }
-    public Skill getSkillRLR() { return skillRLR; }
-    public Skill getSkillRLL() { return skillRLL; }
-    public Skill getSkillRRL() { return skillRRL; }
-    public Skill getPassive() { return passive; }
-    public boolean getRRRActive() { return rrrActive; }
-    public boolean getRLRActive() { return rlrActive; }
-    public boolean getRLLActive() { return rllActive; }
-    public boolean getRRLActive() { return rrlActive; }
-    public boolean getPassiveActive() { return passiveActive; }
-    public int getRRRLevel() { return rrrLevel; }
-    public int getRLRLevel() { return rlrLevel; }
-    public int getRLLLevel() { return rllLevel; }
-    public int getRRLLevel() { return rrlLevel; }
-    public int getPassiveLevel() { return passiveLevel; }
-    public int getMaxLevel() { return maxLevel; }
-    public int getPoints() { return points; }
-    public int getMaxPoints() { return maxPoints; }
-    //endregion
-
-    //region Setters
-    public void setHeritage(HeritageType heritage) { this.heritage = heritage; }
-    public void setSkillRRR(Skill skillRRR) { this.skillRRR = skillRRR; }
-    public void setSkillRLR(Skill skillRLR) { this.skillRLR = skillRLR; }
-    public void setSkillRLL(Skill skillRLL) { this.skillRLL = skillRLL; }
-    public void setSkillRRL(Skill skillRRL) { this.skillRRL = skillRRL; }
-    public void setPassive(Skill passive) { this.passive = passive; }
-    public void setRRRActive(boolean active) { rrrActive = active; }
-    public void setRLRActive(boolean active) { rlrActive = active; }
-    public void setRLLActive(boolean active) { rllActive = active; }
-    public void setRRLActive(boolean active) { rrlActive = active; }
-    public void setPassiveActive(boolean active) { passiveActive = active; }
-    public void setRRRLevel(int level) { rrrLevel = level; }
-    public void setRLRLevel(int level) { rlrLevel = level; }
-    public void setRLLLevel(int level) { rllLevel = level; }
-    public void setRRLLevel(int level) { rrlLevel = level; }
-    public void setPassiveLevel(int level) { passiveLevel = level; }
-    public void setMaxLevel(int maxLevel) { this.maxLevel = maxLevel; }
-    public void setPoints(int points) { this.points = points; }
-    public void setMaxPoints(int points) { maxPoints = points; }
     //endregion
 
     public PlayerStats(UUID uuid) {
@@ -120,6 +73,172 @@ public class PlayerStats {
         return data;
     }
 
+    public static void saveAll() {
+        for (PlayerStats stats : playerStats.values()) {
+            stats.save();
+        }
+    }
+
+    //region Getters
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public HeritageType getHeritage() {
+        return heritage;
+    }
+
+    //region Setters
+    public void setHeritage(HeritageType heritage) {
+        this.heritage = heritage;
+    }
+
+    public Skill getSkillRRR() {
+        return skillRRR;
+    }
+
+    public void setSkillRRR(Skill skillRRR) {
+        this.skillRRR = skillRRR;
+    }
+
+    public Skill getSkillRLR() {
+        return skillRLR;
+    }
+
+    public void setSkillRLR(Skill skillRLR) {
+        this.skillRLR = skillRLR;
+    }
+
+    public Skill getSkillRLL() {
+        return skillRLL;
+    }
+
+    public void setSkillRLL(Skill skillRLL) {
+        this.skillRLL = skillRLL;
+    }
+
+    public Skill getSkillRRL() {
+        return skillRRL;
+    }
+
+    public void setSkillRRL(Skill skillRRL) {
+        this.skillRRL = skillRRL;
+    }
+
+    public Skill getPassive() {
+        return passive;
+    }
+
+    public void setPassive(Skill passive) {
+        this.passive = passive;
+    }
+
+    public boolean getRRRActive() {
+        return rrrActive;
+    }
+
+    public void setRRRActive(boolean active) {
+        rrrActive = active;
+    }
+
+    public boolean getRLRActive() {
+        return rlrActive;
+    }
+
+    public void setRLRActive(boolean active) {
+        rlrActive = active;
+    }
+    //endregion
+
+    public boolean getRLLActive() {
+        return rllActive;
+    }
+
+    public void setRLLActive(boolean active) {
+        rllActive = active;
+    }
+
+    public boolean getRRLActive() {
+        return rrlActive;
+    }
+
+    public void setRRLActive(boolean active) {
+        rrlActive = active;
+    }
+
+    public boolean getPassiveActive() {
+        return passiveActive;
+    }
+
+    public void setPassiveActive(boolean active) {
+        passiveActive = active;
+    }
+
+    public int getRRRLevel() {
+        return rrrLevel;
+    }
+
+    public void setRRRLevel(int level) {
+        rrrLevel = level;
+    }
+
+    public int getRLRLevel() {
+        return rlrLevel;
+    }
+
+    public void setRLRLevel(int level) {
+        rlrLevel = level;
+    }
+
+    public int getRLLLevel() {
+        return rllLevel;
+    }
+
+    public void setRLLLevel(int level) {
+        rllLevel = level;
+    }
+
+    public int getRRLLevel() {
+        return rrlLevel;
+    }
+
+    public void setRRLLevel(int level) {
+        rrlLevel = level;
+    }
+
+    public int getPassiveLevel() {
+        return passiveLevel;
+    }
+
+    public void setPassiveLevel(int level) {
+        passiveLevel = level;
+    }
+
+    public int getMaxLevel() {
+        return maxLevel;
+    }
+
+    public void setMaxLevel(int maxLevel) {
+        this.maxLevel = maxLevel;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+    //endregion
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public int getMaxPoints() {
+        return maxPoints;
+    }
+
+    public void setMaxPoints(int points) {
+        maxPoints = points;
+    }
+
     public void createJSON() throws IOException {
         if (!Files.exists(this.storage)) {
             if (!Files.exists(this.storage.getParent())) {
@@ -127,10 +246,6 @@ public class PlayerStats {
             }
             Files.createFile(this.storage);
         }
-    }
-
-    public static void saveAll() {
-        for (PlayerStats stats : playerStats.values()) {stats.save();}
     }
 
     public void save() {

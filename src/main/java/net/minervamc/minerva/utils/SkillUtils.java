@@ -9,6 +9,7 @@ import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.types.SkillType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Tameable;
 
 public class SkillUtils {
     public static void redirect(Player player, UUID pUUID, SkillType skillType) {
@@ -55,13 +56,20 @@ public class SkillUtils {
         stats.setRRLActive(true);
         stats.setPassiveActive(true);
         switch (heritageType) {
-            case HADES, PLUTO -> setSkills(player, Skills.SHADOW_TRAVEL, Skills.UMBRAKINESIS_HADES, Skills.CHANNELING_OF_TARTARUS, Skills.SKELETAL_HANDS, Skills.LIFE_STEAL);
-            case ZEUS, JUPITER -> setSkills(player, Skills.SOAR, Skills.LIGHTNING_TOSS, Skills.STORMS_EMBRACE, Skills.WIND_WALL, Skills.PROTECTIVE_CLOUD);
-            case POSEIDON, NEPTUNE -> setSkills(player, Skills.TIDAL_WAVE, Skills.AQUATIC_LIMB_EXTENSIONS, Skills.SEISMIC_BLAST, Skills.OCEANS_SURGE, Skills.OCEANS_EMBRACE);
-            case APOLLO_GREEK, APOLLO_ROMAN -> setSkills(player, Skills.APOLLOS_HYMN, Skills.PLAGUE_VOLLEY, Skills.BURNING_LIGHT, Skills.ENHANCED_ARCHERY, Skills.ARROWS_OF_THE_SUN);
-            case ARTEMIS, DIANA -> setSkills(player, Skills.NIMBLE_DASH, Skills.CALL_OF_THE_WILD, Skills.SUPER_CHARGED, Skills.SHARPSHOOTER, Skills.HUNTRESS_AGILITY);
-            case DIONYSUS, BACCHUS -> setSkills(player,  Skills.VINE_WHIP, Skills.GRAPE_SHOT, Skills.MAD_GODS_DRINK, Skills.FRENZIED_DANCE, Skills.DRUNKEN_REVELRY);
-            case ARES, MARS -> setSkills(player, Skills.BLOODLUST, Skills.TOMAHAWK_THROW, Skills.CLEAVE, Skills.PRIMAL_SCREAM, Skills.ARES_BLESSING);
+            case HADES, PLUTO ->
+                    setSkills(player, Skills.SHADOW_TRAVEL, Skills.UMBRAKINESIS_HADES, Skills.CHANNELING_OF_TARTARUS, Skills.SKELETAL_HANDS, Skills.LIFE_STEAL);
+            case ZEUS, JUPITER ->
+                    setSkills(player, Skills.SOAR, Skills.LIGHTNING_TOSS, Skills.STORMS_EMBRACE, Skills.WIND_WALL, Skills.PROTECTIVE_CLOUD);
+            case POSEIDON, NEPTUNE ->
+                    setSkills(player, Skills.TIDAL_WAVE, Skills.AQUATIC_LIMB_EXTENSIONS, Skills.SEISMIC_BLAST, Skills.OCEANS_SURGE, Skills.OCEANS_EMBRACE);
+            case APOLLO_GREEK, APOLLO_ROMAN ->
+                    setSkills(player, Skills.APOLLOS_HYMN, Skills.PLAGUE_VOLLEY, Skills.BURNING_LIGHT, Skills.ENHANCED_ARCHERY, Skills.ARROWS_OF_THE_SUN);
+            case ARTEMIS, DIANA ->
+                    setSkills(player, Skills.NIMBLE_DASH, Skills.CALL_OF_THE_WILD, Skills.SUPER_CHARGED, Skills.SHARPSHOOTER, Skills.HUNTRESS_AGILITY);
+            case DIONYSUS, BACCHUS ->
+                    setSkills(player, Skills.VINE_WHIP, Skills.GRAPE_SHOT, Skills.MAD_GODS_DRINK, Skills.FRENZIED_DANCE, Skills.DRUNKEN_REVELRY);
+            case ARES, MARS ->
+                    setSkills(player, Skills.BLOODLUST, Skills.TOMAHAWK_THROW, Skills.CLEAVE, Skills.PRIMAL_SCREAM, Skills.ARES_BLESSING);
         }
     }
 
@@ -74,6 +82,7 @@ public class SkillUtils {
         stats.setPassive(passive);
         stats.save();
     }
+
     public static Skill getSkill(SkillType skillType, PlayerStats stats) {
         return switch (skillType) {
             case RRR -> stats.getSkillRRR();
@@ -86,6 +95,12 @@ public class SkillUtils {
 
     public static void damage(LivingEntity livingEntity, double damage, Player damager) {
         double pvpNerf = 0.35;
+
+        if (livingEntity instanceof Tameable) {
+            if (((Tameable) livingEntity).getOwner() != null) {
+                return;
+            }
+        }
 
         if (livingEntity instanceof Player) {
             livingEntity.damage(damage * pvpNerf, damager);

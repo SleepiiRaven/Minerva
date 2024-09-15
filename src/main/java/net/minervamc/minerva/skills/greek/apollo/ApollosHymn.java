@@ -50,6 +50,7 @@ public class ApollosHymn extends Skill {
         Location playerLocation = player.getLocation();
         new BukkitRunnable() {
             int ticks = 0;
+
             @Override
             public void run() {
                 if (player.isDead() || !player.isOnline() || ticks > maxHeals) {

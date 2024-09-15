@@ -10,13 +10,12 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class RomanGodsGUI {
     public static final String invName = "Choose a Roman God...";
-    private static final ItemStack comingSoon = ItemUtils.getItem(new ItemStack(Material.ENDER_EYE), ChatColor.BLACK + "" + ChatColor.MAGIC + "" + ChatColor.BOLD + "[Clear Sight Mortal]", ChatColor.GRAY + "Coming soon...");
+    private static final ItemStack comingSoon = ItemUtils.getItem(new ItemStack(Material.ENDER_EYE), ChatColor.BLACK + "" + ChatColor.MAGIC + ChatColor.BOLD + "[Clear Sight Mortal]", ChatColor.GRAY + "Coming soon...");
     private static final ItemStack jupiter = ItemUtils.getItem(new ItemStack(Material.GOLDEN_HELMET), ChatColor.RED + "" + ChatColor.BOLD + "Jupiter", ChatColor.GRAY + "Become a child of Jupiter, god of the sky. (Requires Donator Rank)");
     private static final ItemStack neptune = ItemUtils.getItem(new ItemStack(Material.TRIDENT), ChatColor.RED + "" + ChatColor.BOLD + "Neptune", ChatColor.GRAY + "Become a child of Neptune, god of the sea. (Requires Donator Rank)");
     private static final ItemStack pluto = ItemUtils.getItem(new ItemStack(Material.DIAMOND), ChatColor.RED + "" + ChatColor.BOLD + "Pluto", ChatColor.GRAY + "Become a child of Pluto, god of the dead. (Requires Donator Rank)");
@@ -57,6 +56,7 @@ public class RomanGodsGUI {
     private static final int venusSlot = 41;
     private static final int apolloSlot = 32;
     private static final int backSlot = 45;
+
     public static void openGUI(Player player) {
         Inventory inv = Bukkit.createInventory(player, 9 * 6, invName);
         for (int i = 0; i < 54; i++) {
@@ -165,6 +165,7 @@ public class RomanGodsGUI {
                 break;
         }
     }
+
     private static void chooseHeritage(HeritageType type, String youAreNowABlank, Player player) {
         PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
         stats.setHeritage(type);

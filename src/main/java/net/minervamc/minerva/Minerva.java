@@ -11,10 +11,14 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Minerva extends JavaPlugin {
-    private static Minerva instance;
-    private CooldownManager cdInstance;
     public static File dataFolder;
     public static NamespacedKey itemMessageKey;
+    private static Minerva instance;
+    private CooldownManager cdInstance;
+
+    public static Minerva getInstance() {
+        return instance;
+    }
 
     @Override
     public void onEnable() {
@@ -42,10 +46,6 @@ public final class Minerva extends JavaPlugin {
         getCommand("mskills").setExecutor(new SkillsCommand());
         getCommand("skillmode").setExecutor(new SkillModeToggle());
         getCommand("party").setExecutor(new PartyCommand());
-    }
-
-    public static Minerva getInstance() {
-        return instance;
     }
 
     public CooldownManager getCdInstance() {

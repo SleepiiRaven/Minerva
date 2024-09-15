@@ -1,6 +1,5 @@
 package net.minervamc.minerva.skills.greek.artemis;
 
-import javax.sql.PooledConnection;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
@@ -14,8 +13,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.block.data.type.Light;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -49,6 +46,7 @@ public class SuperCharged extends Skill {
 
         new BukkitRunnable() {
             double radius = maxRadius;
+
             @Override
             public void run() {
                 if (player.isDead() || !player.isOnline()) {
@@ -68,12 +66,13 @@ public class SuperCharged extends Skill {
                             break;
                         }
                         player.getWorld().spawnParticle(Particle.ENCHANTED_HIT, particleLoc, 1, 0, 0, 0, 0);
-                        player.getWorld().spawnParticle(Particle.END_ROD, particleLoc, 1, 0, 0, 0 ,0);
+                        player.getWorld().spawnParticle(Particle.END_ROD, particleLoc, 1, 0, 0, 0, 0);
                         player.getWorld().spawnParticle(Particle.DUST, particleLoc, 3, 0, 0, 0, 0, new Particle.DustOptions(Color.SILVER, 2));
                         player.getWorld().spawnParticle(Particle.ENCHANT, particleLoc, 1, 0, 0, 0, 0);
                         for (Entity entity : particleLoc.getNearbyEntities(1, 1, 1)) {
                             if (entity instanceof LivingEntity livingEntity && livingEntity != player && !livingEntity.getScoreboardTags().contains("artemisWolf") && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                                if (particleLoc.distance(livingEntity.getEyeLocation()) <= 0.3) SkillUtils.damage(livingEntity, headshotDamage, player);
+                                if (particleLoc.distance(livingEntity.getEyeLocation()) <= 0.3)
+                                    SkillUtils.damage(livingEntity, headshotDamage, player);
                                 else SkillUtils.damage(livingEntity, normalDamage, player);
                             }
                         }
@@ -88,7 +87,7 @@ public class SuperCharged extends Skill {
                     Location particleLocation = effectLocation.clone().add(vector);
                     player.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.SILVER, 2f));
                 }
-                radius -= maxRadius/chargeTime;
+                radius -= maxRadius / chargeTime;
             }
         }.runTaskTimer(Minerva.getInstance(), 0L, 1L);
     }

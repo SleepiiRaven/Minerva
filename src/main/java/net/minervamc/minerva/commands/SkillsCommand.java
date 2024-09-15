@@ -4,14 +4,12 @@ import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.guis.AncestryGUI;
 import net.minervamc.minerva.guis.SkillsGUI;
 import net.minervamc.minerva.types.HeritageType;
-import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommandYamlParser;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,15 +23,13 @@ public class SkillsCommand implements CommandExecutor {
                 commandSender.sendMessage(ChatColor.RED + "Invalid command for non-player. Correct usage to open GUI for player that isn't you: /mskills [gui] [player]");
             }
             return true;
-        }
-        else if (args.length == 1 && commandSender.hasPermission("minerva.skills.opengui.others")) {
+        } else if (args.length == 1 && commandSender.hasPermission("minerva.skills.opengui.others")) {
             if (Bukkit.getPlayer(args[0]) != null && Bukkit.getPlayer(args[0]).isOnline()) {
                 AncestryGUI.openGUI(Bukkit.getPlayer(args[0]));
             } else {
                 commandSender.sendMessage("Either that player isn't online right now or that player doesn't exist.");
             }
-        }
-        else if (args.length >= 3 && args[0].equals("set")) {
+        } else if (args.length >= 3 && args[0].equals("set")) {
             // Right now it's /mskills set [something] [something] ...
             // We have to check if in that ... there's a player we want to set something for.
             Player player;
@@ -53,8 +49,7 @@ public class SkillsCommand implements CommandExecutor {
                     commandSender.sendMessage(ChatColor.YELLOW + "That player isn't online.");
                     return true;
                 }
-            }
-            else if (commandSender instanceof Player) {
+            } else if (commandSender instanceof Player) {
                 player = (Player) commandSender;
                 stat = args[1];
                 value = args[2];

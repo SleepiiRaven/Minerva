@@ -1,7 +1,6 @@
 package net.minervamc.minerva.skills.greek.dionysus;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
@@ -48,6 +47,7 @@ public class GrapeShot extends Skill {
 
         new BukkitRunnable() {
             int ticks = 0;
+
             @Override
             public void run() {
                 if (player.isDead() || !player.isOnline() || ticks >= maxTicks) {
@@ -69,8 +69,9 @@ public class GrapeShot extends Skill {
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1f, 1.2f);
 
         new BukkitRunnable() {
+            final Location throwLoc = player.getEyeLocation();
             int ticks = 0;
-            Location throwLoc = player.getEyeLocation();
+
             @Override
             public void run() {
                 double currentDistance = berrySpeed * ticks;
@@ -81,7 +82,7 @@ public class GrapeShot extends Skill {
 
                 Location particleLoc = throwLoc.clone().add(throwLoc.getDirection().clone().multiply(currentDistance));
 
-                particleLoc.getWorld().spawnParticle(Particle.DUST, particleLoc, 0, 0, 0 ,0 ,0, new Particle.DustOptions(Color.PURPLE, 1f));
+                particleLoc.getWorld().spawnParticle(Particle.DUST, particleLoc, 0, 0, 0, 0, 0, new Particle.DustOptions(Color.PURPLE, 1f));
                 for (Entity entity : particleLoc.getNearbyEntities(1, 1, 1)) {
                     if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
                         SkillUtils.damage(livingEntity, damage, player);

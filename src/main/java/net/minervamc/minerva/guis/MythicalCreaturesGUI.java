@@ -25,6 +25,7 @@ public class MythicalCreaturesGUI {
     private static final int dryadSlot = 31;
     private static final int cyclopsSlot = 32;
     private static final int backSlot = 45;
+
     public static void openGUI(Player player) {
         Inventory inv = Bukkit.createInventory(player, 9 * 6, invName);
         for (int i = 0; i < 54; i++) {
@@ -60,6 +61,7 @@ public class MythicalCreaturesGUI {
                 break;
         }
     }
+
     private static void chooseHeritage(HeritageType type, String youAreNowABlank, Player player) {
         PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
         stats.setHeritage(type);

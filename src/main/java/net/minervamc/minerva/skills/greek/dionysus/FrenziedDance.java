@@ -32,6 +32,7 @@ public class FrenziedDance extends Skill {
 
         new BukkitRunnable() {
             int ticks = 0;
+
             @Override
             public void run() {
                 if (player.isDead() || !player.isOnline() || ticks >= 6) {
@@ -60,6 +61,7 @@ public class FrenziedDance extends Skill {
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1f, 1.78f);
         new BukkitRunnable() {
             int ticks = 0;
+
             @Override
             public void run() {
                 switch (ticks) {
@@ -78,6 +80,7 @@ public class FrenziedDance extends Skill {
         }.runTaskTimer(Minerva.getInstance(), 16L, 16L);
         new BukkitRunnable() {
             int ticks = 0;
+
             @Override
             public void run() {
                 switch (ticks) {
@@ -88,7 +91,7 @@ public class FrenziedDance extends Skill {
                     case 1 -> {
                         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1f, 1.59f);
                     }
-                    case 2,4 -> {
+                    case 2, 4 -> {
                         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1f, 1.41f);
                     }
                     case 3 -> {

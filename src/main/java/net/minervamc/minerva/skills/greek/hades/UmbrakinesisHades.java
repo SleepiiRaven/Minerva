@@ -1,8 +1,6 @@
 package net.minervamc.minerva.skills.greek.hades;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
@@ -17,15 +15,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 public class UmbrakinesisHades extends Skill {
@@ -41,15 +35,6 @@ public class UmbrakinesisHades extends Skill {
         double velocityMultiplier; // How much velocity the player gains when grappling
 
         switch (level) {
-            default -> {
-                cooldown = 8000;
-                distance = 10;
-                damage = 100;
-                kb = ThreadLocalRandom.current().nextDouble(0.3, 0.5);
-                intervalBetweenTriggers = 10L;
-                maxTriggers = 4;
-                velocityMultiplier = 2;
-            }
             case 2 -> {
                 cooldown = 7000;
                 distance = 15;
@@ -86,6 +71,15 @@ public class UmbrakinesisHades extends Skill {
                 maxTriggers = 10;
                 velocityMultiplier = 3;
             }
+            default -> {
+                cooldown = 8000;
+                distance = 10;
+                damage = 100;
+                kb = ThreadLocalRandom.current().nextDouble(0.3, 0.5);
+                intervalBetweenTriggers = 10L;
+                maxTriggers = 4;
+                velocityMultiplier = 2;
+            }
         }
 
         long duration = (long) (intervalBetweenTriggers * 50 * maxTriggers);
@@ -100,7 +94,7 @@ public class UmbrakinesisHades extends Skill {
         }
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "umbrakinesisDuration")) {
-            if (cooldownManager.getCooldownLeft(player.getUniqueId(), "umbrakinesisDuration") > (duration - ((maxTriggers-1)*intervalBetweenTriggers*50))) {
+            if (cooldownManager.getCooldownLeft(player.getUniqueId(), "umbrakinesisDuration") > (duration - ((maxTriggers - 1) * intervalBetweenTriggers * 50))) {
                 hadesUmbraGrapple(player, cooldownManager, cooldown, velocityMultiplier);
                 cooldownManager.setCooldownFromNow(player.getUniqueId(), "umbrakinesisDuration", (long) 0);
                 return;
@@ -117,8 +111,7 @@ public class UmbrakinesisHades extends Skill {
                 if (player.isDead() || !player.isOnline()) {
                     this.cancel();
                     return;
-                }
-                else if (cooldownManager.isCooldownDone(player.getUniqueId(), "umbrakinesisDuration")) {
+                } else if (cooldownManager.isCooldownDone(player.getUniqueId(), "umbrakinesisDuration")) {
                     this.cancel();
                     cooldownManager.setCooldownFromNow(player.getUniqueId(), "umbrakinesis", cooldown);
                     cooldownAlarm(player, cooldown, "Umbrakinesis");
@@ -153,7 +146,8 @@ public class UmbrakinesisHades extends Skill {
                     double rZ = range - z;
                     Collection<Entity> closebyMonsters = player.getWorld().getNearbyEntities(viewPos, rX, rY, rZ);
                     for (Entity closebyMonster : closebyMonsters) {
-                        if (!(closebyMonster instanceof LivingEntity livingMonster) || (closebyMonster == player) || (closebyMonster instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) continue;
+                        if (!(closebyMonster instanceof LivingEntity livingMonster) || (closebyMonster == player) || (closebyMonster instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
+                            continue;
                         SkillUtils.damage(livingMonster, damage, player);
                         Vector viewNormalized = (viewDir.normalize()).multiply(kb);
                         livingMonster.setVelocity(viewNormalized);
@@ -185,6 +179,7 @@ public class UmbrakinesisHades extends Skill {
         player.playSound(player, Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1f, 1f);
         new BukkitRunnable() {
             int ticks = 0;
+
             @Override
             public void run() {
                 if (player.isDead() || !player.isOnline() || ticks > 5 && player.isOnGround()) {

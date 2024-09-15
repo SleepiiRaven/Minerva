@@ -34,13 +34,6 @@ public class SeismicBlast extends Skill {
         double damage;
 
         switch (level) {
-            default -> {
-                cooldown = 9000;
-                radius = 5;
-                delay = 10;
-                knock = 1;
-                damage = 100;
-            }
             case 2 -> {
                 cooldown = 9000;
                 radius = 4;
@@ -68,6 +61,13 @@ public class SeismicBlast extends Skill {
                 delay = 20;
                 knock = 2;
                 damage = 3;
+            }
+            default -> {
+                cooldown = 9000;
+                radius = 5;
+                delay = 10;
+                knock = 1;
+                damage = 100;
             }
         }
 
@@ -114,7 +114,7 @@ public class SeismicBlast extends Skill {
                 boolean playedSound = false;
                 for (LivingEntity livingEntity : caughtLivingEntities) {
                     if (!livingEntity.isOnGround()) {
-                        if (playedSound == false) {
+                        if (!playedSound) {
                             player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WITHER_SHOOT, 1f, 0.7f);
                             playedSound = true;
                         }

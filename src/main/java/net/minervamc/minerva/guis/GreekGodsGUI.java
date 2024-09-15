@@ -1,8 +1,6 @@
 package net.minervamc.minerva.guis;
 
-import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
-import net.minervamc.minerva.commands.SkillsCommand;
 import net.minervamc.minerva.types.HeritageType;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.SkillUtils;
@@ -12,13 +10,12 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class GreekGodsGUI {
     public static final String invName = "Choose a Greek God...";
-    private static final ItemStack comingSoon = ItemUtils.getItem(new ItemStack(Material.ENDER_EYE), ChatColor.BLACK + "" + ChatColor.MAGIC + "" + ChatColor.BOLD + "[Clear Sight Mortal]", ChatColor.GRAY + "Coming soon...");
+    private static final ItemStack comingSoon = ItemUtils.getItem(new ItemStack(Material.ENDER_EYE), ChatColor.BLACK + "" + ChatColor.MAGIC + ChatColor.BOLD + "[Clear Sight Mortal]", ChatColor.GRAY + "Coming soon...");
     private static final ItemStack zeus = ItemUtils.getItem(new ItemStack(Material.LIGHTNING_ROD), ChatColor.RED + "" + ChatColor.BOLD + "Zeus", ChatColor.GRAY + "Become a child of Zeus, god of the sky. (Requires Donator Rank)");
     private static final ItemStack poseidon = ItemUtils.getItem(new ItemStack(Material.TRIDENT), ChatColor.RED + "" + ChatColor.BOLD + "Poseidon", ChatColor.GRAY + "Become a child of Poseidon, god of the sea. (Requires Donator Rank)");
     private static final ItemStack hades = ItemUtils.getItem(new ItemStack(Material.WITHER_SKELETON_SKULL), ChatColor.RED + "" + ChatColor.BOLD + "Hades", ChatColor.GRAY + "Become a child of Hades, god of the dead. (Requires Donator Rank)");
@@ -59,6 +56,7 @@ public class GreekGodsGUI {
     private static final int aphroditeSlot = 41;
     private static final int apolloSlot = 32;
     private static final int backSlot = 45;
+
     public static void openGUI(Player player) {
         Inventory inv = Bukkit.createInventory(player, 9 * 6, invName);
         for (int i = 0; i < 54; i++) {
@@ -168,6 +166,7 @@ public class GreekGodsGUI {
                 break;
         }
     }
+
     private static void chooseHeritage(HeritageType type, String youAreNowABlank, Player player) {
         PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
         stats.setHeritage(type);

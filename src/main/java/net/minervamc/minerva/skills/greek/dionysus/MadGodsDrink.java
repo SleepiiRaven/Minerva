@@ -1,13 +1,10 @@
 package net.minervamc.minerva.skills.greek.dionysus;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Spliterator;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
-import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -16,10 +13,8 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.SplashPotion;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -55,7 +50,7 @@ public class MadGodsDrink extends Skill {
         Vector playerDirection = player.getEyeLocation().getDirection();
 
         Vector A = playerEyeLocation;
-        Vector B = playerEyeLocation.clone().add(playerDirection.clone().multiply(distance/5).add(new Vector(0, 1, 0)));
+        Vector B = playerEyeLocation.clone().add(playerDirection.clone().multiply(distance / 5).add(new Vector(0, 1, 0)));
         Vector C = playerLocation.clone().add(playerDirection.clone().multiply(distance).setY(0));
 
         int p = 0;
@@ -68,9 +63,10 @@ public class MadGodsDrink extends Skill {
         List<Vector> bezierPoints = ParticleUtils.getQuadraticBezierPoints(A, B, C, 10 * distance);
 
         new BukkitRunnable() {
-            Location location = player.getLocation();
+            final Location location = player.getLocation();
             int index = 0;
             Location savedLocation = player.getEyeLocation();
+
             @Override
             public void run() {
                 for (int i = 0; i < speed; i++) {
@@ -95,9 +91,10 @@ public class MadGodsDrink extends Skill {
 
         new BukkitRunnable() {
             int ticks = 0;
+
             @Override
             public void run() {
-                if (player.isDead() || !player.isOnline() || ticks >= (effectTicks/10)) {
+                if (player.isDead() || !player.isOnline() || ticks >= (effectTicks / 10)) {
                     this.cancel();
                     explodeLocation.getWorld().playSound(explodeLocation, Sound.BLOCK_BEACON_DEACTIVATE, 1f, 1f);
                 }

@@ -23,7 +23,7 @@ public class SkillsGUI {
     private static final ItemStack rllOnItem = ItemUtils.getItem(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.GREEN + "" + ChatColor.BOLD + "[R-L-L]", ChatColor.GREEN + "Click to toggle this skill.");
     private static final ItemStack rrlOnItem = ItemUtils.getItem(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.GREEN + "" + ChatColor.BOLD + "[R-R-L]", ChatColor.GREEN + "Click to toggle this skill.");
     private static final ItemStack passiveOnItem = ItemUtils.getItem(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.GREEN + "" + ChatColor.BOLD + "[PASSIVE]", ChatColor.GREEN + "Click to toggle this skill.");
-   private static final ItemStack rrrOffItem = ItemUtils.getItem(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.RED + "" + ChatColor.BOLD + "[R-R-R]", ChatColor.GREEN + "Click to toggle this skill.");
+    private static final ItemStack rrrOffItem = ItemUtils.getItem(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.RED + "" + ChatColor.BOLD + "[R-R-R]", ChatColor.GREEN + "Click to toggle this skill.");
     private static final ItemStack rlrOffItem = ItemUtils.getItem(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.RED + "" + ChatColor.BOLD + "[R-L-R]", ChatColor.GREEN + "Click to toggle this skill.");
     private static final ItemStack rllOffItem = ItemUtils.getItem(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.RED + "" + ChatColor.BOLD + "[R-L-L]", ChatColor.GREEN + "Click to toggle this skill.");
     private static final ItemStack rrlOffItem = ItemUtils.getItem(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.RED + "" + ChatColor.BOLD + "[R-R-L]", ChatColor.GREEN + "Click to toggle this skill.");
@@ -157,7 +157,7 @@ public class SkillsGUI {
                 if (j < level) {
                     levelItems.add(ItemUtils.getItem(new ItemStack(type), name, ChatColor.GRAY + currentSkill.getLevelDescription(j)));
                 } else if (j == level) {
-                    levelItems.add(ItemUtils.getItem(new ItemStack(Material.STONE_BUTTON), ChatColor.DARK_AQUA + "" + "Upgrade for 1 skill point to gain these perks:", ChatColor.GRAY + currentSkill.getLevelDescription(j)));
+                    levelItems.add(ItemUtils.getItem(new ItemStack(Material.STONE_BUTTON), ChatColor.DARK_AQUA + "Upgrade for 1 skill point to gain these perks:", ChatColor.GRAY + currentSkill.getLevelDescription(j)));
                 } else {
                     levelItems.add(ItemUtils.getItem(new ItemStack(Material.POLISHED_BLACKSTONE_BUTTON), ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "[Locked]"));
                 }
@@ -174,9 +174,9 @@ public class SkillsGUI {
             // Switches
             case backSlot -> {
                 /**
-                AncestryGUI.openGUI(player);
-                player.playSound(player, Sound.ENTITY_ITEM_PICKUP, 1f, 1f);
-                return;**/
+                 AncestryGUI.openGUI(player);
+                 player.playSound(player, Sound.ENTITY_ITEM_PICKUP, 1f, 1f);
+                 return;**/
             }
             case resetSlot -> {
                 stats.setRRRLevel(1);
@@ -271,4 +271,4 @@ public class SkillsGUI {
         }
         player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
     }
- }
+}

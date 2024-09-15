@@ -1,7 +1,6 @@
 package net.minervamc.minerva.skills.greek.zeus;
 
 import java.util.Random;
-import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
@@ -9,7 +8,6 @@ import net.minervamc.minerva.utils.FastUtils;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
 import net.minervamc.minerva.utils.SkillUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -30,12 +28,6 @@ public class LightningToss extends Skill {
         double damage;
         long cooldown;
         switch (level) {
-            default -> {
-                maxDistance = 10;
-                maxBranches = 5;
-                damage = 160;
-                cooldown = 4000;
-            }
             case 2 -> {
                 maxDistance = 12;
                 maxBranches = 5;
@@ -59,6 +51,12 @@ public class LightningToss extends Skill {
                 maxBranches = 12;
                 damage = 25;
                 cooldown = 1500;
+            }
+            default -> {
+                maxDistance = 10;
+                maxBranches = 5;
+                damage = 160;
+                cooldown = 4000;
             }
         }
 

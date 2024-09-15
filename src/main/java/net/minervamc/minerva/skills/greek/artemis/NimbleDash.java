@@ -5,7 +5,6 @@ import java.util.List;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
-import net.minervamc.minerva.utils.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -41,7 +40,8 @@ public class NimbleDash extends Skill {
         player.setNoDamageTicks(invulnerabilityTicks);
         player.setVelocity(player.getLocation().getDirection().multiply(dashVelocityMultiplier).setY(Math.min(2, player.getLocation().getDirection().getY())));
         new BukkitRunnable() {
-            int ticks = 0;
+            final int ticks = 0;
+
             @Override
             public void run() {
                 player.setVelocity(new Vector(0, 0, 0));

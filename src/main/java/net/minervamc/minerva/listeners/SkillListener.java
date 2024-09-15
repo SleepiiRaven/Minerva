@@ -1,17 +1,12 @@
 package net.minervamc.minerva.listeners;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
-import java.util.UUID;
-import java.util.function.BiConsumer;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.Skills;
-import net.minervamc.minerva.skills.greek.apollo.PlagueVolley;
 import net.minervamc.minerva.skills.greek.poseidon.AquaticLimbExtensions;
-import net.minervamc.minerva.types.HeritageType;
 import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
@@ -22,27 +17,26 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Waterlogged;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Pillager;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.entity.SpectralArrow;
+import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
 
 public class SkillListener implements Listener {
@@ -56,8 +50,7 @@ public class SkillListener implements Listener {
                         // Hades'/Pluto's Life-steal ability
                         if (player.getHealth() > (player.getMaxHealth() - 1)) {
                             player.setHealth(player.getMaxHealth());
-                        }
-                        else {
+                        } else {
                             double healing = 1;
                             player.setHealth(player.getHealth() + healing);
                         }
@@ -227,6 +220,24 @@ public class SkillListener implements Listener {
                     finalOriginalArrow.setVelocity(target.getEyeLocation().toVector().subtract(finalOriginalArrow.getLocation().toVector()).normalize().multiply(2));
                 }
             }.runTaskTimer(Minerva.getInstance(), 0L, 1L);
+        }
+    }
+
+    @EventHandler
+    public void onTargetEntity(EntityTargetLivingEntityEvent event) {
+        if (event.getEntity().getScoreboardTags().contains("aresSummoned") && event.getEntity() instanceof Pillager pillager) {
+            if (!(event.getTarget() instanceof LivingEntity potentialTarget) || (potentialTarget instanceof Tameable && ((Tameable) potentialTarget).getOwner() != null) || potentialTarget.getScoreboardTags().contains("aresSummoned")) {
+                event.setCancelled(true);
+            } else if (event.getTarget() instanceof Player player) {
+                if (pillager.getScoreboardTags().contains(player.getUniqueId().toString())) {
+                    event.setCancelled(true);
+                } else if (Party.isInParty(player)) {
+                    for (Player partyMember : Party.partyList(player)) {
+                        if (pillager.getScoreboardTags().contains(partyMember.getUniqueId().toString()))
+                            event.setCancelled(true);
+                    }
+                }
+            }
         }
     }
 }

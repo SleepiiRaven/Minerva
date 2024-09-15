@@ -1,6 +1,5 @@
 package net.minervamc.minerva.skills.greek.zeus;
 
-import java.awt.*;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;

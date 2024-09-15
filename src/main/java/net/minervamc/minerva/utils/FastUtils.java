@@ -10,8 +10,8 @@ public class FastUtils {
     private static final int SIN_MASK = ~(-1 << SIN_BITS);
     private static final int SIN_COUNT = SIN_MASK + 1;
     private static final double radFull = Math.PI * 2.0;
-    private static final double radToIndex = SIN_COUNT / radFull;
     private static final double degFull = 360.0;
+    private static final double radToIndex = SIN_COUNT / radFull;
     private static final double degToIndex = SIN_COUNT / degFull;
     private static final double[] sin;
     private static final double[] cos;
@@ -54,6 +54,7 @@ public class FastUtils {
     public static double sin(double rad) {
         return sin[(int) (rad * radToIndex) & SIN_MASK];
     }
+
     public static double sinDeg(double deg) {
         return sin[(int) (deg * degToIndex) & SIN_MASK];
     }
@@ -61,6 +62,7 @@ public class FastUtils {
     public static double cos(double rad) {
         return cos[(int) (rad * radToIndex) & SIN_MASK];
     }
+
     public static double cosDeg(double deg) {
         return cos[(int) (deg * degToIndex) & SIN_MASK];
     }

@@ -31,15 +31,6 @@ public class WindWall extends Skill {
         long cooldown;
 
         switch (level) {
-            default -> {
-                wallWidth = 8;
-                wallHeight = 5;
-                distance = 3;
-                damage = 90;
-                maxTriggers = 15;
-                ticksBetweenTriggers = 10;
-                cooldown = 15000;
-            }
             case 2 -> {
                 wallWidth = 8;
                 wallHeight = 5;
@@ -76,6 +67,15 @@ public class WindWall extends Skill {
                 ticksBetweenTriggers = 10;
                 cooldown = 12500;
             }
+            default -> {
+                wallWidth = 8;
+                wallHeight = 5;
+                distance = 3;
+                damage = 90;
+                maxTriggers = 15;
+                ticksBetweenTriggers = 10;
+                cooldown = 15000;
+            }
         }
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "windWall")) {
@@ -94,8 +94,8 @@ public class WindWall extends Skill {
             final Location playerLocation = player.getLocation();
             final Vector playerDirection = player.getEyeLocation().getDirection();
             final Vector directionLeft = ParticleUtils.rotateYAxis(playerDirection, -90);
+            final Vector wallStart = (directionLeft.clone().multiply(wallWidth / 2)).add(playerDirection.clone().multiply(distance));
             final Vector directionRight = ParticleUtils.rotateYAxis(playerDirection, 90);
-            final Vector wallStart = (directionLeft.clone().multiply(wallWidth/2)).add(playerDirection.clone().multiply(distance));
             int triggers = 0;
 
             @Override

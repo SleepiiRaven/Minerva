@@ -8,15 +8,18 @@ import net.minervamc.minerva.utils.FastUtils;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
 import net.minervamc.minerva.utils.SkillUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -31,11 +34,6 @@ public class ShadowTravel extends Skill {
 
         kb = FastUtils.randomDoubleInRange(0.3, 1);
         switch (level) {
-            default -> {
-                cooldown = 10000;
-                distance = 7;
-                damage = 50;
-            }
             case 2 -> {
                 cooldown = 9000;
                 distance = 8;
@@ -56,8 +54,12 @@ public class ShadowTravel extends Skill {
                 distance = 15;
                 damage = 0.1;
             }
+            default -> {
+                cooldown = 10000;
+                distance = 7;
+                damage = 50;
+            }
         }
-
 
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "shadowTravel")) {
@@ -115,8 +117,7 @@ public class ShadowTravel extends Skill {
             Collection<Entity> closebyMonsters = player.getWorld().getNearbyEntities(location, range, range, range);
             for (Entity closebyMonster : closebyMonsters) {
                 // make sure it's a living entity, not an armor stand or something, continue skips the current loop
-                if (!(closebyMonster instanceof LivingEntity) || (closebyMonster == player)) continue;
-                LivingEntity livingMonster = (LivingEntity) closebyMonster;
+                if (!(closebyMonster instanceof LivingEntity livingMonster) || (closebyMonster == player)) continue;
                 if (!(livingMonster instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
                     // Get the entity's collision box
                     BoundingBox monsterBoundingBox = livingMonster.getBoundingBox();

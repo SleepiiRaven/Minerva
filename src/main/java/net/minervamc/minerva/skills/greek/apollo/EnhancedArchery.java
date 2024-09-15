@@ -56,11 +56,11 @@ public class EnhancedArchery extends Skill {
                 Location particleLoc = location.clone().add(0, yOffset, 0);
                 particleLoc.setX(location.getX() + Math.cos(ticks) * radius);
                 particleLoc.setZ(location.getZ() + Math.sin(ticks) * radius);
-                location.getWorld().spawnParticle(Particle.DUST, particleLoc, 1, new Particle.DustOptions(Color.fromRGB(212,175,55), 2));
+                location.getWorld().spawnParticle(Particle.DUST, particleLoc, 1, new Particle.DustOptions(Color.fromRGB(212, 175, 55), 2));
 
                 particleLoc.setX(location.getX() + Math.sin(ticks) * radius);
                 particleLoc.setZ(location.getZ() + Math.cos(ticks) * radius);
-                location.getWorld().spawnParticle(Particle.DUST, particleLoc, 1, new Particle.DustOptions(Color.fromRGB(218,165,32), 2));
+                location.getWorld().spawnParticle(Particle.DUST, particleLoc, 1, new Particle.DustOptions(Color.fromRGB(218, 165, 32), 2));
 
 
                 radius -= 0.075;

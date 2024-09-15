@@ -1,12 +1,8 @@
 package net.minervamc.minerva.skills.cooldown;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import net.minervamc.minerva.Minerva;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class CooldownContainer implements ConfigurationSerializable {
     // A hashmap is a data structure which maps a key to a value. You can get the value by inputting the key

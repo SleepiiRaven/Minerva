@@ -2,9 +2,7 @@ package net.minervamc.minerva.skills.greek.poseidon;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
@@ -17,13 +15,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -31,6 +27,7 @@ import org.bukkit.util.Vector;
 public class AquaticLimbExtensions extends Skill {
     public static long punchDurationMillis = 51;
     public static HashMap<UUID, List<Block>> waterBlocks = new HashMap<>();
+
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
         if (!waterBlocks.containsKey(player.getUniqueId())) {
@@ -46,15 +43,6 @@ public class AquaticLimbExtensions extends Skill {
         double damage;
 
         switch (level) {
-            default -> {
-                distanceExtended = 5;
-                maxPunchingTicks = 5; // Takes twice as long to do a full punch
-                punchCooldown = (maxPunchingTicks * 2) * 50;
-                maxPunches = 5;
-                durationTicks = maxPunchingTicks * 4 * maxPunches;
-                cooldown = durationTicks*50 + 9000;
-                damage = 100;
-            }
             case 2 -> {
                 distanceExtended = 12.5;
                 maxPunchingTicks = 5; // Takes twice as long to do a full punch
@@ -90,6 +78,15 @@ public class AquaticLimbExtensions extends Skill {
                 durationTicks = maxPunchingTicks * 4 * maxPunches;
                 cooldown = durationTicks * 50 + 6000;
                 damage = 15;
+            }
+            default -> {
+                distanceExtended = 5;
+                maxPunchingTicks = 5; // Takes twice as long to do a full punch
+                punchCooldown = (maxPunchingTicks * 2) * 50;
+                maxPunches = 5;
+                durationTicks = maxPunchingTicks * 4 * maxPunches;
+                cooldown = durationTicks * 50 + 9000;
+                damage = 100;
             }
         }
 

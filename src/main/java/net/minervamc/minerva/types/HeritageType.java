@@ -135,7 +135,6 @@ public enum HeritageType {
             case HYPNOS -> "hypnos";
 
 
-
             case JUPITER -> "jupiter";
             case PLUTO -> "pluto";
             case NEPTUNE -> "neptune";
@@ -157,7 +156,6 @@ public enum HeritageType {
             case SOMNUS -> "somnus";
 
 
-
             case ATLAS -> "atlas";
             case HYPERION -> "hyperion";
             case KOIOS -> "koios";
@@ -166,8 +164,6 @@ public enum HeritageType {
             case OCEANUS -> "oceanus";
             case RHEA -> "rhea";
             case MNEMOSYNE -> "mnemosyne";
-
-
 
 
             case CYCLOPS -> "cyclops";

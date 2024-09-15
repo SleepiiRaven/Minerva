@@ -16,12 +16,13 @@ public class AncestryGUI {
     private static final ItemStack roman = ItemUtils.getItem(new ItemStack(Material.PURPLE_BANNER), ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Roman Gods]", ChatColor.GRAY + "Become a Roman demigod!");
     //private static final ItemStack titan = ItemUtils.getItem(new ItemStack(Material.RED_BANNER), ChatColor.RED + "" + ChatColor.BOLD + "[Titans]", ChatColor.GRAY + "Become a demititan! (Requires Donator Rank)");
     //private static final ItemStack mythicalCreature = ItemUtils.getItem(new ItemStack(Material.ENDER_EYE), ChatColor.GREEN + "" + ChatColor.BOLD + "[Mythical Creature]", ChatColor.GRAY + "Become a mythical creature!");
-    private static final ItemStack comingSoon = ItemUtils.getItem(new ItemStack(Material.BLACK_BANNER), ChatColor.BLACK + "" + ChatColor.MAGIC + "" + ChatColor.BOLD + "[Clear Sight Mortal]", ChatColor.GRAY + "Coming soon...");
+    private static final ItemStack comingSoon = ItemUtils.getItem(new ItemStack(Material.BLACK_BANNER), ChatColor.BLACK + "" + ChatColor.MAGIC + ChatColor.BOLD + "[Clear Sight Mortal]", ChatColor.GRAY + "Coming soon...");
     private static final int mythicalSlot = 13;
     private static final int greekSlot = 28;
     private static final int romanSlot = 30;
     private static final int titanSlot = 32;
     private static final int mortalSlot = 34;
+
     public static void openGUI(Player player) {
         Inventory inv = Bukkit.createInventory(player, 9 * 6, invName);
         for (int i = 0; i < 54; i++) {

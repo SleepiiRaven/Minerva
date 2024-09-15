@@ -12,14 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public abstract class Skill {
-    public abstract void cast(Player player, CooldownManager cooldownManager, int level);
-
-    public abstract String getLevelDescription(int level);
-
-    public abstract String toString();
-
-    public abstract ItemStack getItem();
-
     public static Skill fromString(String string) {
         return switch (string) {
             case "channelingOfTartarus" -> Skills.CHANNELING_OF_TARTARUS;
@@ -62,7 +54,7 @@ public abstract class Skill {
     }
 
     public static void cooldownAlarm(Player player, long cooldownTime, String abilityName) {
-        long cooldownTimeInTicks = (cooldownTime/50);
+        long cooldownTimeInTicks = (cooldownTime / 50);
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -87,6 +79,7 @@ public abstract class Skill {
         Location tpLoc = entity.getLocation();
         new BukkitRunnable() {
             int ticks = 0;
+
             @Override
             public void run() {
                 if (ticks >= stunTicks) {
@@ -99,4 +92,12 @@ public abstract class Skill {
             }
         }.runTaskTimer(Minerva.getInstance(), 0L, 1L);
     }
+
+    public abstract void cast(Player player, CooldownManager cooldownManager, int level);
+
+    public abstract String getLevelDescription(int level);
+
+    public abstract String toString();
+
+    public abstract ItemStack getItem();
 }

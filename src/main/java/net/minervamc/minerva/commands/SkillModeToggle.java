@@ -1,7 +1,6 @@
 package net.minervamc.minerva.commands;
 
 import net.minervamc.minerva.PlayerStats;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,8 +15,10 @@ public class SkillModeToggle implements CommandExecutor {
             boolean skillMode = PlayerStats.getStats(player.getUniqueId()).skillMode;
             skillMode = !skillMode;
             PlayerStats.getStats(player.getUniqueId()).skillMode = skillMode;
-            if (skillMode) player.sendMessage(ChatColor.YELLOW + "Skill mode is now on. You can now use your heritage's skills.");
-            else player.sendMessage(ChatColor.YELLOW + "Skill mode is now off. You can no longer use your heritage's skills until you use this command again.");
+            if (skillMode)
+                player.sendMessage(ChatColor.YELLOW + "Skill mode is now on. You can now use your heritage's skills.");
+            else
+                player.sendMessage(ChatColor.YELLOW + "Skill mode is now off. You can no longer use your heritage's skills until you use this command again.");
             return true;
         }
         sender.sendMessage(ChatColor.YELLOW + "You must be a player to use this command.");

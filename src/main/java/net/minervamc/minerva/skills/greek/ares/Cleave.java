@@ -13,7 +13,6 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -72,7 +71,7 @@ public class Cleave extends Skill {
             vecsOffsetNormalized.add(((Vector) vec).clone().normalize());
         }
 
-        new BukkitRunnable(){
+        new BukkitRunnable() {
             int ticks = 0;
             int ticks2 = 0;
 
@@ -85,9 +84,10 @@ public class Cleave extends Skill {
                         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.7f, 1.2f);
                     }
                     player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getLocation().add((Vector) vectors[ticks]), 1, 0, 0, 0, 0);
-                    player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getLocation().add((Vector) vectors[ticks+1]), 1, 0, 0, 0, 0);
-                    for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation().add((Vector) vectors[ticks+1]), 1, 1, 1)) {
-                        if (!(entity instanceof LivingEntity livingMonster) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) continue;
+                    player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getLocation().add((Vector) vectors[ticks + 1]), 1, 0, 0, 0, 0);
+                    for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation().add((Vector) vectors[ticks + 1]), 1, 1, 1)) {
+                        if (!(entity instanceof LivingEntity livingMonster) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
+                            continue;
                         SkillUtils.damage(livingMonster, damage, player);
                         Vector viewNormalized = (ParticleUtils.getDirection(player.getLocation(), livingMonster.getLocation()).clone().normalize()).multiply(kb);
                         livingMonster.setVelocity(viewNormalized);
@@ -99,13 +99,12 @@ public class Cleave extends Skill {
                     }
                     player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getLocation().add((Vector) vecs[ticks2]), 1, 0, 0, 0, 0);
                     for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation().add((Vector) vecs[ticks2]), 1, 1, 1)) {
-                        if (!(entity instanceof LivingEntity livingMonster) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
+                        if (!(entity instanceof LivingEntity livingMonster) || (entity.getScoreboardTags().contains("aresSummoned") || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))))
                             continue;
                         SkillUtils.damage(livingMonster, damageSlam, player);
                     }
                     ticks2++;
-                }
-                else {
+                } else {
                     player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 0.3f, 0.6f);
                     player.getWorld().playSound(player.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_DEPLETE, 0.7f, 0.5f);
                     cancel();
@@ -124,7 +123,6 @@ public class Cleave extends Skill {
             }
 
         }.runTaskTimer(Minerva.getInstance(), 0L, 1L);
-
 
 
     }

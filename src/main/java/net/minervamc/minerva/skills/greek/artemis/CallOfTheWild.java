@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.minervamc.minerva.Minerva;
-import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.FastUtils;
@@ -15,9 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
@@ -31,7 +28,7 @@ public class CallOfTheWild extends Skill {
     public void cast(Player player, CooldownManager cooldownManager, int level) {
         int wolvesCount = 5;
         int radius = 5;
-        long wolfDespawnTicks = 200/5; // The runnable is every 5 seconds so the first number is the ticks you want :)
+        long wolfDespawnTicks = 200 / 5; // The runnable is every 5 seconds so the first number is the ticks you want :)
         long cooldown = wolfDespawnTicks * 5 * 50 + 6000;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "callOfTheWild")) {
@@ -64,7 +61,7 @@ public class CallOfTheWild extends Skill {
 
             Wolf wolf = (Wolf) player.getWorld().spawnEntity(wolfLocation.setDirection(wolfDirection), EntityType.WOLF);
             wolf.addScoreboardTag("artemisWolf");
-            wolf.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, (int) (wolfDespawnTicks*5), 4));
+            wolf.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, (int) (wolfDespawnTicks * 5), 4));
             wolves.add(wolf);
         }
 
@@ -75,6 +72,7 @@ public class CallOfTheWild extends Skill {
 
         new BukkitRunnable() {
             int ticks = 0;
+
             @Override
             public void run() {
                 if (player.isDead() || !player.isOnline() || ticks >= wolfDespawnTicks) {

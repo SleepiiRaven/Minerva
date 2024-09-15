@@ -9,7 +9,6 @@ import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
 import net.minervamc.minerva.utils.SkillUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
@@ -18,12 +17,9 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -45,10 +41,11 @@ public class VineWhip extends Skill {
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FISHING_BOBBER_THROW, 1f, 1f);
         List<Vector> linePoints = ParticleUtils.getLinePoints(player.getLocation().getDirection(), distance, 0.5);
         new BukkitRunnable() {
+            final List<LivingEntity> hitEnemies = new ArrayList<>();
+            final Location location = player.getEyeLocation();
             boolean hit = false;
-            List<LivingEntity> hitEnemies = new ArrayList<>();
             int ticks = 0;
-            Location location = player.getEyeLocation();
+
             @Override
             public void run() {
                 if (player.isDead() || !player.isOnline()) {
@@ -66,7 +63,8 @@ public class VineWhip extends Skill {
                     for (Entity entity : particleLoc.getNearbyEntities(1, 1, 1)) {
                         if (entity instanceof LivingEntity livingEntity && !hitEnemies.contains(livingEntity) && livingEntity != player && !(livingEntity instanceof Player livingPlayer && livingPlayer.getGameMode() != GameMode.CREATIVE && Party.isPlayerInPlayerParty(player, livingPlayer))) {
                             Vector direction = location.clone().toVector().subtract(livingEntity.getLocation().toVector()).normalize();
-                            if (!hit) livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.ENTITY_BLAZE_HURT, 1f, 1f);
+                            if (!hit)
+                                livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.ENTITY_BLAZE_HURT, 1f, 1f);
                             livingEntity.setVelocity(direction.clone().multiply(2));
                             SkillUtils.damage(livingEntity, damage, player);
                             hit = true;

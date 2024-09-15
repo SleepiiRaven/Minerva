@@ -1,6 +1,5 @@
 package net.minervamc.minerva.skills.greek.zeus;
 
-import java.nio.charset.MalformedInputException;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
@@ -20,10 +19,6 @@ public class Soar extends Skill {
         long cooldown;
         int duration;
         switch (level) {
-            default -> {
-                cooldown = 12000;
-                duration = 20;
-            }
             case 2 -> {
                 cooldown = 11000;
                 duration = 25;
@@ -40,6 +35,10 @@ public class Soar extends Skill {
                 cooldown = 8000;
                 duration = 40;
             }
+            default -> {
+                cooldown = 12000;
+                duration = 20;
+            }
         }
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "soar")) {
@@ -55,6 +54,7 @@ public class Soar extends Skill {
         player.setFlying(true);
         new BukkitRunnable() {
             int ticks = 0;
+
             @Override
             public void run() {
                 if (player.isDead() || !player.isOnline() || ticks >= duration) {

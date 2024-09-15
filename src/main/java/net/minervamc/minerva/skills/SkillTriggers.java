@@ -15,17 +15,15 @@ public class SkillTriggers {
     public Minerva plugin = Minerva.getInstance();
     public CooldownManager cooldownManager = plugin.getCdInstance();
     public Player player;
-
-    public SkillTriggers(Player player) {
-        this.player = player;
-    }
-
     //region Normal Spell
     public String currentMessage = ChatColor.GREEN.toString() + ChatColor.UNDERLINE + "R" + ChatColor.RESET + ChatColor.RED + " _ _";
     public boolean spellMode = false;
     public int clicksSoFar = 0;
     public boolean[] spellClicks = new boolean[2]; //left = false, right = true.
     private BukkitTask inactivityTimer;
+    public SkillTriggers(Player player) {
+        this.player = player;
+    }
 
     public void enterSpellMode(Player player, boolean swapped) {
         this.player = player;
@@ -50,10 +48,7 @@ public class SkillTriggers {
 
     public void continueNormalSpell(Action clickType, boolean swapped) {
         player.playSound(player, Sound.BLOCK_LEVER_CLICK, 0.5f, 0.8f);
-        boolean click = false;
-        if (clickType.equals(Action.RIGHT_CLICK_AIR) || clickType.equals(Action.RIGHT_CLICK_BLOCK)) {
-            click = true;
-        }
+        boolean click = clickType.equals(Action.RIGHT_CLICK_AIR) || clickType.equals(Action.RIGHT_CLICK_BLOCK);
         if (!swapped) {
             if (clicksSoFar == 0) {
                 currentMessage = (click) ? /*IF WE ARE RIGHT CLICKING*/ ChatColor.GREEN.toString() + ChatColor.UNDERLINE + "R R" + ChatColor.RESET + ChatColor.RED + " _" :

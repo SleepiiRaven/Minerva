@@ -1,6 +1,5 @@
 package net.minervamc.minerva.skills.greek.apollo;
 
-import net.kyori.adventure.sound.SoundStop;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
@@ -14,7 +13,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.block.data.type.Light;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -27,7 +25,7 @@ public class BurningLight extends Skill {
     public void cast(Player player, CooldownManager cooldownManager, int level) {
         int radius = 1;
         int maxTicks = 20; // MUST BE DURATION MILLIS IN TICKS, DIVIDED BY THE TIME BETWEEN TRIGGERS!
-        long durationMillis = 50*maxTicks;
+        long durationMillis = 50 * maxTicks;
         long cooldown = durationMillis + 9000;
         double distanceThrown = 15;
         int fireTicks = 40;
@@ -44,9 +42,10 @@ public class BurningLight extends Skill {
         player.getWorld().playSound(player.getLocation(), Sound.ITEM_TRIDENT_THUNDER, 0.8f, 1f);
 
         new BukkitRunnable() {
+            final Vector savedDirection = player.getEyeLocation().getDirection();
+            final Location savedLocation = player.getEyeLocation();
             int ticks = 0;
-            Vector savedDirection = player.getEyeLocation().getDirection();
-            Location savedLocation = player.getEyeLocation();
+
             @Override
             public void run() {
                 if (player.isDead() || !player.isOnline() || ticks > maxTicks || !player.isOnline()) {
@@ -70,8 +69,9 @@ public class BurningLight extends Skill {
                 for (Vector point : ParticleUtils.getSpherePoints(radius, 5)) {
                     i++;
                     Location particleLocation = sphereLoc.clone().add(point);
-                    particleLocation.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(184,134,11), 2));
-                    if (i % 3 == 0) particleLocation.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.WHITE, 2));
+                    particleLocation.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(184, 134, 11), 2));
+                    if (i % 3 == 0)
+                        particleLocation.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.WHITE, 2));
                 }
             }
         }.runTaskTimer(Minerva.getInstance(), 0L, 5L);
