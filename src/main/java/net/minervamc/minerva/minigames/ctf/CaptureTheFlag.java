@@ -28,6 +28,7 @@ public class CaptureTheFlag extends Minigame {
             return;
         }
         queue.add(player);
+        player.sendMessage(Component.text("Added to ctf queue"));
         if(queue.size() > 4) start();
     }
 
@@ -41,6 +42,7 @@ public class CaptureTheFlag extends Minigame {
             return;
         }
         queue.remove(player);
+        player.sendMessage(Component.text("Removed from ctf queue"));
     }
 
     public static boolean isInQueue(Player player) {

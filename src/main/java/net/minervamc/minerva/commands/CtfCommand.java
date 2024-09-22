@@ -1,6 +1,5 @@
 package net.minervamc.minerva.commands;
 
-import net.kyori.adventure.text.Component;
 import net.minervamc.minerva.lib.command.Command;
 import net.minervamc.minerva.lib.command.CommandContext;
 import net.minervamc.minerva.lib.command.CommandUser;
@@ -23,7 +22,6 @@ public class CtfCommand extends Command {
         assert player != null;
 
         CaptureTheFlag.addQueue(player);
-        player.sendMessage(Component.text("Added to ctf queue"));
     }
 
     @ICommand(user = CommandUser.PLAYER)
@@ -32,11 +30,6 @@ public class CtfCommand extends Command {
         assert player != null;
 
         CaptureTheFlag.removeQueue(player);
-
-        List.of(Component.text(""),
-                Component.text(""));
-
-        player.sendMessage(Component.text("Removed from ctf queue"));
     }
 
     @ICommand(user = CommandUser.ALL)
