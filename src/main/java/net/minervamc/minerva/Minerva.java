@@ -1,9 +1,12 @@
 package net.minervamc.minerva;
 
 import java.io.File;
+
+import lombok.Getter;
 import net.minervamc.minerva.commands.PartyCommand;
 import net.minervamc.minerva.commands.SkillModeToggle;
 import net.minervamc.minerva.commands.SkillsCommand;
+import net.minervamc.minerva.lib.Lib;
 import net.minervamc.minerva.listeners.PlayerListener;
 import net.minervamc.minerva.listeners.SkillListener;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
@@ -13,12 +16,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class Minerva extends JavaPlugin {
     public static File dataFolder;
     public static NamespacedKey itemMessageKey;
+    @Getter
     private static Minerva instance;
+    @Getter
     private CooldownManager cdInstance;
-
-    public static Minerva getInstance() {
-        return instance;
-    }
 
     @Override
     public void onEnable() {
@@ -30,6 +31,8 @@ public final class Minerva extends JavaPlugin {
         saveDefaultConfig();
         registerListeners();
         registerCommands();
+
+        Lib.onEnable(); // Faceless
     }
 
     @Override
@@ -48,7 +51,4 @@ public final class Minerva extends JavaPlugin {
         getCommand("party").setExecutor(new PartyCommand());
     }
 
-    public CooldownManager getCdInstance() {
-        return cdInstance;
-    }
 }
