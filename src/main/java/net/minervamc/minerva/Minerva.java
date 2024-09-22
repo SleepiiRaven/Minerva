@@ -3,6 +3,7 @@ package net.minervamc.minerva;
 import java.io.File;
 
 import lombok.Getter;
+import net.minervamc.minerva.commands.CtfCommand;
 import net.minervamc.minerva.commands.PartyCommand;
 import net.minervamc.minerva.commands.SkillModeToggle;
 import net.minervamc.minerva.commands.SkillsCommand;
@@ -47,6 +48,7 @@ public final class Minerva extends JavaPlugin {
         getCommand("mskills").setExecutor(new SkillsCommand());
         getCommand("skillmode").setExecutor(new SkillModeToggle());
         getCommand("party").setExecutor(new PartyCommand());
+        CtfCommand.register(this);
     }
 
 }

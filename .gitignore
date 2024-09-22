@@ -5,6 +5,9 @@
 *.ipr
 *.iws
 
+#Faceless
+run
+
 # IntelliJ
 out/
 gradlew

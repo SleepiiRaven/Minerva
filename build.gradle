@@ -53,4 +53,5 @@ processResources {
 
 jar {
     destinationDirectory.set(file("D:/Servers/Minerva/plugins"))
+    //destinationDirectory.set(file("run/plugins")) //Faceless
 }
