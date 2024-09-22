@@ -1,0 +1,6 @@
+database:
+  host: 127.0.0.1 # host of your database
+  port: 3306 # default port for MariaDB and MySQL
+  database: customer_1 # name of your database. A database server can contain multiple databases
+  user: customer_1
+  password: 3ec428b6ca

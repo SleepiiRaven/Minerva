@@ -20,6 +20,10 @@ repositories {
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT"
+    // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
+    implementation group: 'com.zaxxer', name: 'HikariCP', version: '2.3.2'
+    // https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
+    implementation group: 'com.mysql', name: 'mysql-connector-j', version: '9.0.0'
 }
 
 def targetJavaVersion = 21
