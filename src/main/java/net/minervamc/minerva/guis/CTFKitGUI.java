@@ -8,13 +8,15 @@ import net.minervamc.minerva.lib.menu.Menu;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.lib.util.MenuUtil;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 public class CTFKitGUI extends Menu {
     public CTFKitGUI() {
-        super(36, Component.text("Kit Selection"));
-        ItemStack blank = ItemCreator.createNameless(Material.BLACK_STAINED_GLASS_PANE);
+        super(27, Component.text("Kit Selection"));
+        ItemStack blank = ItemCreator.createNameless(Material.BLACK_STAINED_GLASS);
         MenuUtil.fill(getInventory(), blank);
         ItemCreator scout = ItemCreator.get(Material.LEATHER_BOOTS);
         scout.setName(Component.text("Scout", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
@@ -25,9 +27,8 @@ public class CTFKitGUI extends Menu {
             Component.text("enemy and play far from the,", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
             Component.text("fight, on enemy flank turf.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
         scout.setLore(scoutLore);
-
-        scout.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        scout.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        scout.addAttribute(Attribute.GENERIC_ARMOR, 7.0, AttributeModifier.Operation.ADD_NUMBER);
+        scout.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         ItemCreator attacker = ItemCreator.get(Material.WOODEN_SWORD);
         attacker.setName(Component.text("Attacker", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
         List<Component> attackerLore = List.of(Component.text("Equipped with extra", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
@@ -37,9 +38,8 @@ public class CTFKitGUI extends Menu {
                 Component.text("enemy, steal the flag,", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                 Component.text("and is crucial to win.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
         attacker.setLore(attackerLore);
-
-        attacker.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        attacker.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        attacker.addAttribute(Attribute.GENERIC_ATTACK_DAMAGE, 7.0, AttributeModifier.Operation.ADD_NUMBER);
+        attacker.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         ItemCreator defender = ItemCreator.get(Material.SHIELD);
         defender.setName(Component.text("Defender", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         List<Component> defenderLore = List.of(Component.text("Using their protective", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
@@ -50,10 +50,16 @@ public class CTFKitGUI extends Menu {
                 Component.text("kits for a team.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
         defender.setLore(defenderLore);
         setItem(11, scout.build(), (p, event) -> {
+            p.getInventory().addItem(scout.build());
+            close(p);
         });
         setItem(13, attacker.build(), (p, event) -> {
+            p.getInventory().addItem(attacker.build());
+            close(p);
         });
         setItem(15, defender.build(), (p, event) -> {
+            p.getInventory().addItem(defender.build());
+            close(p);
         });
     }
 }

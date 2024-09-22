@@ -6,6 +6,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -110,6 +112,11 @@ public class ItemCreator {
     }
     public ItemCreator addItemFlags(ItemFlag... flags) {
         meta.addItemFlags(flags);
+        return this;
+    }
+    public ItemCreator addAttribute(Attribute attribute, double amount, AttributeModifier.Operation operation) {
+        AttributeModifier mod = new AttributeModifier(UUID.randomUUID(), attribute.name(), amount, operation);
+        meta.addAttributeModifier(attribute, mod);
         return this;
     }
     public ItemCreator setUnbreakable(boolean unbreakable) {
