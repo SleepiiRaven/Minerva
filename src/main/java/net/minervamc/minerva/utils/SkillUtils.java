@@ -69,7 +69,7 @@ public class SkillUtils {
             case DIONYSUS, BACCHUS ->
                     setSkills(player, Skills.VINE_WHIP, Skills.GRAPE_SHOT, Skills.MAD_GODS_DRINK, Skills.FRENZIED_DANCE, Skills.DRUNKEN_REVELRY);
             case ARES, MARS ->
-                    setSkills(player, Skills.BLOODLUST, Skills.TOMAHAWK_THROW, Skills.CLEAVE, Skills.PRIMAL_SCREAM, Skills.ARES_BLESSING);
+                    setSkills(player, Skills.SPIRITOFVENGEANCE, Skills.TOMAHAWK_THROW, Skills.CLEAVE, Skills.PRIMAL_SCREAM, Skills.ARES_BLESSING);
         }
     }
 

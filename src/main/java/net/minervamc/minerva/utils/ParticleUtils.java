@@ -43,6 +43,16 @@ public class ParticleUtils {
         return points;
     }
 
+    public static List<Vector> getLinePoints(Vector start, Vector end, double step) {
+        List<Vector> points = new ArrayList<>();
+        for (double i = 0; i < (getDistance(start, end)); i += step) {
+            Vector point = start.clone().add(getDirection(start, end).clone().multiply(i));
+            points.add(point);
+        }
+
+        return points;
+    }
+
     public static List<Vector> getCirclePoints(double radius) {
         List<Vector> points = new ArrayList<>();
         for (int d = 0; d < 20; d += 1) {
@@ -173,7 +183,7 @@ public class ParticleUtils {
         for (double i = 0; i <= particles; i += 1) {
             double t = i / particles;
             double u = 1 - t;
-            Vector bezierPoint = A.multiply(u * u).add(B.clone().multiply(2 * u * t)).add(C.clone().multiply(t * t));
+            Vector bezierPoint = A.clone().multiply(u * u).add(B.clone().multiply(2 * u * t)).add(C.clone().multiply(t * t));
             points.add(bezierPoint.clone());
         }
         return points;
@@ -209,6 +219,17 @@ public class ParticleUtils {
     }
 
     public static Vector getDirection(Location from, Location to) {
-        return to.toVector().subtract(from.toVector()).normalize();
+        return to.clone().toVector().subtract(from.clone().toVector()).normalize();
+    }
+
+    public static Vector getDirection(Vector from, Vector to) {
+        return to.clone().subtract(from).normalize();
+    }
+
+    public static double getDistance(Vector from, Vector to) {
+        double x = Math.pow(to.getX() - from.getX(), 2);
+        double y = Math.pow(to.getY() - from.getY(), 2);
+        double z = Math.pow(to.getZ() - from.getZ(), 2);
+        return Math.sqrt(x+y+z);
     }
 }

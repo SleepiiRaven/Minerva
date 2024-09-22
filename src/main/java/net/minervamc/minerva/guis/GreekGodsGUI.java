@@ -79,7 +79,6 @@ public class GreekGodsGUI {
         inv.setItem(hecateSlot, comingSoon);
         inv.setItem(apolloSlot, apollo);
         inv.setItem(aresSlot, ares);
-        inv.setItem(aresSlot, comingSoon);
         inv.setItem(aphroditeSlot, comingSoon);
         inv.setItem(dionysusSlot, dionysus);
         inv.setItem(backSlot, back);

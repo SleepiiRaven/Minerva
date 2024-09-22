@@ -1,12 +1,16 @@
 package net.minervamc.minerva.skills.greek.ares;
 
+import java.util.List;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
+import net.minervamc.minerva.utils.ParticleUtils;
 import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -22,11 +26,12 @@ import org.joml.Matrix4f;
 public class TomahawkThrow extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-        double speed = 1; //blocks per rotation
-        double damage = 15;
+        double damage = 18;
+        double speed = 20;
         int rotationSpeed = 2; // ticks per rotation
         double kb = 0.3;
         long cooldown = 6000;
+        double distance = 10;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "tomahawk")) {
             onCooldown(player);
@@ -41,10 +46,12 @@ public class TomahawkThrow extends Skill {
         });
 
         final Vector direction = player.getEyeLocation().getDirection();
+        List<Vector> curve = ParticleUtils.getQuadraticBezierPoints(new Vector(0, 0, 0), direction.clone().multiply(distance).add(new Vector(0, 2, 0)), direction.clone().multiply(distance).add(new Vector(0, -3, 0)), speed);
         display.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.THIRDPERSON_RIGHTHAND);
         new BukkitRunnable() {
             int ticks = 0;
             float angle = 0; // Start angle for rotation
+            Location loc = display.getLocation();
 
             @Override
             public void run() {
@@ -62,7 +69,16 @@ public class TomahawkThrow extends Skill {
                     display.setInterpolationDelay(0);
                     display.setInterpolationDuration(rotationSpeed);
                 }
-                display.teleport(display.getLocation().add(direction.clone().multiply(speed)));
+
+                // Movement
+                if (ticks >= curve.size()) {
+                    display.teleport(display.getLocation().add(new Vector(0, -1, 0).add(loc.getDirection().multiply(0.2)).multiply(distance/speed)));
+                } else {
+
+                    display.teleport(loc.clone().add(curve.get(ticks)));
+                }
+
+
                 for (Entity entity : display.getWorld().getNearbyEntities(display.getLocation(), 1, 1, 1)) {
                     if (!(entity instanceof LivingEntity livingMonster) || (entity == display) || (entity.getScoreboardTags().contains("aresSummoned")) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
                         continue;

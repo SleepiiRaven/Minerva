@@ -45,7 +45,7 @@ public abstract class Skill {
             case "vineWhip" -> Skills.VINE_WHIP;
             case "madGodsDrink" -> Skills.MAD_GODS_DRINK;
             case "aresBlessing" -> Skills.ARES_BLESSING;
-            case "bloodlust" -> Skills.BLOODLUST;
+            case "spiritOfVengeance" -> Skills.SPIRITOFVENGEANCE;
             case "cleave" -> Skills.CLEAVE;
             case "primalScream" -> Skills.PRIMAL_SCREAM;
             case "tomahawkThrow" -> Skills.TOMAHAWK_THROW;
