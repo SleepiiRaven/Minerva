@@ -67,7 +67,6 @@ public class PlayerStats {
                 playerStats.put(uuid, data);
                 return data;
             }
-            System.out.println("File exists but wasn't saved." + uuid);
             try {
                 // getting the data
                 String json = Files.readString(path);
@@ -77,9 +76,6 @@ public class PlayerStats {
                 e.printStackTrace();
             }
             playerStats.put(uuid, data);
-        }
-        if (data == null) {
-            System.out.println("Somehow passed data check with null.\nUUID: " + uuid);
         }
         return data;
     }

@@ -101,27 +101,21 @@ public class PlayerStatsAdapter implements JsonSerializer<PlayerStats>, JsonDese
             playerDataJSON.setMaxPoints(object.get("maxPoints").getAsInt());
 
             try {
-                if (object.has("inventory")) {
-                    playerDataJSON.setInventory(itemStackArrayFromBase64(object.get("inventory").getAsString()));
-                } else {
-                    playerDataJSON.setInventory(new ItemStack[36]);
+                String inv = object.get("inventory").getAsString();
+                if (inv != null) {
+                    playerDataJSON.setInventory(itemStackArrayFromBase64(inv));
                 }
-                
-                if (object.has("armor")) {
-                    playerDataJSON.setArmor(itemStackArrayFromBase64(object.get("armor").getAsString()));
-                } else {
-                    playerDataJSON.setArmor(new ItemStack[4]);
+                String armor = object.get("armor").getAsString();
+                if (armor != null) {
+                    playerDataJSON.setArmor(itemStackArrayFromBase64(armor));
                 }
-
-                if (object.has("offhand")) {
-                    playerDataJSON.setOffhand(itemStackArrayFromBase64(object.get("offhand").getAsString()));
-                } else {
-                    playerDataJSON.setOffhand(new ItemStack[1]);
+                String offhand = object.get("offhand").getAsString();
+                if (offhand != null) {
+                    playerDataJSON.setOffhand(itemStackArrayFromBase64(offhand));
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e); // failed
             }
-            return playerDataJSON;
         }
         return null;
     }
