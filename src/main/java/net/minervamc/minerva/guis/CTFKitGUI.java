@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 public class CTFKitGUI extends Menu {
     public CTFKitGUI() {
         super(36, Component.text("Kit Selection"));
-        ItemStack blank = ItemCreator.createNameless(Material.BLACK_STAINED_GLASS);
+        ItemStack blank = ItemCreator.createNameless(Material.BLACK_STAINED_GLASS_PANE);
         MenuUtil.fill(getInventory(), blank);
         ItemCreator scout = ItemCreator.get(Material.LEATHER_BOOTS);
         scout.setName(Component.text("Scout", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
