@@ -1,5 +1,7 @@
 package net.minervamc.minerva.listeners;
 
+import java.util.Arrays;
+import java.util.Objects;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.guis.AncestryGUI;
@@ -24,6 +26,7 @@ import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class PlayerListener implements Listener {
     private final Minerva plugin = Minerva.getInstance();
@@ -34,6 +37,18 @@ public class PlayerListener implements Listener {
         Player p = e.getPlayer();
         cooldownManager.createContainer(p.getUniqueId());
         PlayerStats pData = PlayerStats.getStats(p.getUniqueId());
+        if (!Arrays.stream(pData.getInventory()).allMatch(Objects::isNull)) {
+            p.getInventory().setStorageContents(pData.getInventory());
+        }
+        if (!Arrays.stream(pData.getArmor()).allMatch(Objects::isNull)) {
+            p.getInventory().setArmorContents(pData.getArmor());
+        }
+        if (pData.getOffhand()[0] != null) {
+            p.getInventory().setItemInOffHand(pData.getOffhand()[0]);
+        }
+        pData.setInventory(new ItemStack[36]);
+        pData.setArmor(new ItemStack[4]);
+        pData.setOffhand(new ItemStack[1]);
         pData.save();
     }
 
