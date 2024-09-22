@@ -248,3 +248,13 @@ build/tmp/compileJava/compileTransaction/stash-dir/WindWall$1.class.uniqueId27
 build/tmp/compileJava/compileTransaction/stash-dir/WindWall.class.uniqueId5
 build/tmp/compileJava/previous-compilation-data.bin
 *.bin
+build/tmp/compileJava/previous-compilation-data.bin
+build/tmp/compileJava/previous-compilation-data.bin
+.gradle/buildOutputCleanup/buildOutputCleanup.lock
+.gradle/8.10.1/fileHashes/resourceHashesCache.bin
+.gradle/8.10.1/fileHashes/fileHashes.lock
+.gradle/8.10.1/fileHashes/fileHashes.bin
+.gradle/8.10.1/executionHistory/executionHistory.lock
+.gradle/8.10.1/executionHistory/executionHistory.bin
+*.bin
+*.lock
