@@ -22,10 +22,6 @@ public class CtfCommand extends Command {
         Player player = context.getPlayer();
         assert player != null;
 
-        if(CaptureTheFlag.isInQueue(player)) {
-            player.sendMessage(Component.text("Already in queue"));
-            return;
-        }
         CaptureTheFlag.addQueue(player);
         player.sendMessage(Component.text("Added to ctf queue"));
     }
@@ -35,10 +31,6 @@ public class CtfCommand extends Command {
         Player player = context.getPlayer();
         assert player != null;
 
-        if(!CaptureTheFlag.isInQueue(player)) {
-            player.sendMessage(Component.text("Not in queue"));
-            return;
-        }
         CaptureTheFlag.removeQueue(player);
 
         player.sendMessage(Component.text("Removed from ctf queue"));
