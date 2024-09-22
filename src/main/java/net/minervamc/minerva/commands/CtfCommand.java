@@ -20,31 +20,38 @@ public class CtfCommand extends Command {
     @ICommand(user = CommandUser.PLAYER)
     public void joinqueue(CommandContext context) {
         Player player = context.getPlayer();
-        CaptureTheFlag.addQueue(player);
-
         assert player != null;
+
+        if(CaptureTheFlag.isInQueue(player)) {
+            player.sendMessage(Component.text("Already in queue"));
+            return;
+        }
+        CaptureTheFlag.addQueue(player);
         player.sendMessage(Component.text("Added to ctf queue"));
     }
 
     @ICommand(user = CommandUser.PLAYER)
     public void leavequeue(CommandContext context) {
         Player player = context.getPlayer();
+        assert player != null;
+
+        if(!CaptureTheFlag.isInQueue(player)) {
+            player.sendMessage(Component.text("Not in queue"));
+            return;
+        }
         CaptureTheFlag.removeQueue(player);
 
-        assert player != null;
         player.sendMessage(Component.text("Removed from ctf queue"));
     }
 
     @ICommand(user = CommandUser.ALL)
-    public void start(CommandContext context) {
+    public void forcestart(CommandContext context) {
         CaptureTheFlag.start();
-
     }
 
     @ICommand(user = CommandUser.ALL)
-    public void end(CommandContext context) {
+    public void forcestop(CommandContext context) {
         CaptureTheFlag.end();
-
     }
 
     public static void register(JavaPlugin plugin) {
