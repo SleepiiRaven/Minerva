@@ -46,9 +46,9 @@ public class PlayerStats {
     private int maxLevel = 1;
     private int maxPoints = 0;
     private int points = 0;
-    private ItemStack[] inventory;
-    private ItemStack[] armor;
-    private ItemStack[] offhand;
+    private ItemStack[] inventory = new ItemStack[36];
+    private ItemStack[] armor = new ItemStack[4];
+    private ItemStack[] offhand = new ItemStack[1];
     //endregion
 
     public PlayerStats(UUID uuid) {
@@ -255,23 +255,23 @@ public class PlayerStats {
     }
 
     public ItemStack[] getArmor() {
-        return inventory;
+        return armor;
     }
 
     public ItemStack[] getOffhand() {
-        return inventory;
+        return offhand;
     }
 
     public void setInventory(ItemStack[] inventory) {
         this.inventory = inventory;
     }
 
-    public void setArmor(ItemStack[] inventory) {
-        this.inventory = inventory;
+    public void setArmor(ItemStack[] armor) {
+        this.armor = armor;
     }
 
-    public void setOffhand(ItemStack[] inventory) {
-        this.inventory = inventory;
+    public void setOffhand(ItemStack[] offhand) {
+        this.offhand = offhand;
     }
 
     public void createJSON() throws IOException {
