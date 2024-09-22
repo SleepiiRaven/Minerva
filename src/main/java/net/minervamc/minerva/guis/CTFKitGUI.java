@@ -8,6 +8,7 @@ import net.minervamc.minerva.lib.menu.Menu;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.lib.util.MenuUtil;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 public class CTFKitGUI extends Menu {
@@ -25,6 +26,8 @@ public class CTFKitGUI extends Menu {
             Component.text("fight, on enemy flank turf.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
         scout.setLore(scoutLore);
 
+        scout.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        scout.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         ItemCreator attacker = ItemCreator.get(Material.WOODEN_SWORD);
         attacker.setName(Component.text("Attacker", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
         List<Component> attackerLore = List.of(Component.text("Equipped with extra", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
@@ -35,6 +38,8 @@ public class CTFKitGUI extends Menu {
                 Component.text("and is crucial to win.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
         attacker.setLore(attackerLore);
 
+        attacker.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        attacker.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         ItemCreator defender = ItemCreator.get(Material.SHIELD);
         defender.setName(Component.text("Defender", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         List<Component> defenderLore = List.of(Component.text("Using their protective", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
