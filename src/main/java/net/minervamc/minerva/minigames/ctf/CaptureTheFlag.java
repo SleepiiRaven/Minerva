@@ -20,6 +20,7 @@ public class CaptureTheFlag extends Minigame {
     }
 
     public static void start() {
+        if (playing) return;
         playing = true;
         inGame.addAll(queue);
         queue.clear();
