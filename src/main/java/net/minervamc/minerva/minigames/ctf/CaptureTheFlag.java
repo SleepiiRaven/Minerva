@@ -20,11 +20,27 @@ public class CaptureTheFlag extends Minigame {
     private static final List<Player> inGame = new ArrayList<>();
 
     public static void addQueue(Player player) {
+        if (playing || starting) {
+            player.sendMessage(Component.text("Game has already started!"));
+            return;
+        }
+        if(isInQueue(player)) {
+            player.sendMessage(Component.text("Already in queue"));
+            return;
+        }
         queue.add(player);
         if(queue.size() > 4) start();
     }
 
     public static void removeQueue(Player player) {
+        if (playing || starting) {
+            player.sendMessage(Component.text("Game has already started!"));
+            return;
+        }
+        if(!isInQueue(player)) {
+            player.sendMessage(Component.text("Not in queue"));
+            return;
+        }
         queue.remove(player);
     }
 
