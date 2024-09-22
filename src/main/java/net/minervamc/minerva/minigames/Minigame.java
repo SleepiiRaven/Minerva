@@ -2,6 +2,7 @@ package net.minervamc.minerva.minigames;
 
 import java.util.List;
 import net.minervamc.minerva.PlayerStats;
+import net.minervamc.minerva.guis.CTFKitGUI;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -25,6 +26,13 @@ public abstract class Minigame {
             player.getInventory().setStorageContents(stats.getInventory());
             player.getInventory().setArmorContents(stats.getArmor());
             player.getInventory().setItemInOffHand(stats.getOffhand()[0]);
+        }
+    }
+
+    public static void kits(Player player, String type) {
+        switch (type) {
+            case "ctf":
+                new CTFKitGUI().open(player);
         }
     }
 }

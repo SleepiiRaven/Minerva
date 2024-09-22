@@ -68,11 +68,12 @@ public class CaptureTheFlag extends Minigame {
                     });
                     count--;
                 } else {
+                    saveAndClearInventories(inGame);
                     inGame.forEach(player -> {
                         player.showTitle(Title.title(Component.text("Game Started!", NamedTextColor.GREEN), Component.empty()));
                         player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
+                        kits(player, "ctf");
                     });
-                    saveAndClearInventories(inGame);
                     playing = true;
                     starting = false;
                     this.cancel();
