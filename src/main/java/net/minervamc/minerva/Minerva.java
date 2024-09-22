@@ -16,10 +16,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class Minerva extends JavaPlugin {
     public static File dataFolder;
     public static NamespacedKey itemMessageKey;
-    @Getter
-    private static Minerva instance;
-    @Getter
-    private CooldownManager cdInstance;
+    @Getter private static Minerva instance;
+    @Getter private CooldownManager cdInstance;
 
     @Override
     public void onEnable() {
