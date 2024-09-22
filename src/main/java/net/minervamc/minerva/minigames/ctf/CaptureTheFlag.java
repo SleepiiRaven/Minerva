@@ -63,7 +63,6 @@ public class CaptureTheFlag extends Minigame {
                     inGame.forEach(player -> {
                         player.sendTitle(count + "", "seconds before the game starts.", 0, 40, 0);
 
-
                         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
                     });
                     count--;

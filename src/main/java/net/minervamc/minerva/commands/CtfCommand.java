@@ -33,6 +33,9 @@ public class CtfCommand extends Command {
 
         CaptureTheFlag.removeQueue(player);
 
+        List.of(Component.text(""),
+                Component.text(""));
+
         player.sendMessage(Component.text("Removed from ctf queue"));
     }
 
