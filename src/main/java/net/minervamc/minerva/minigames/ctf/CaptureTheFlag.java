@@ -38,7 +38,8 @@ public class CaptureTheFlag extends Minigame {
     private static Team redTeam;
 
     public static void addQueue(Player player) {
-        if (playing || starting) {
+        if(isIngame(player)) return;
+        if (playing) {
             player.sendMessage(Component.text("Game has already started!"));
             return;
         }
@@ -56,10 +57,7 @@ public class CaptureTheFlag extends Minigame {
     }
 
     public static void removeQueue(Player player) {
-        if (playing || starting) {
-            player.sendMessage(Component.text("Game has already started!"));
-            return;
-        }
+        if(isIngame(player)) return;
         if(!isInQueue(player)) {
             player.sendMessage(Component.text("Not in queue"));
             return;
@@ -72,23 +70,13 @@ public class CaptureTheFlag extends Minigame {
         return queue.contains(player);
     }
 
+    public static boolean isIngame(Player player) {
+        return inGame.contains(player);
+    }
+
     public static void start() {
         if (playing || starting) return;
         starting = true;
-
-        ScoreboardManager manager = Bukkit.getScoreboardManager();
-        scoreboard = manager.getNewScoreboard();
-
-        blueTeam = scoreboard.registerNewTeam("Blue");
-        blueTeam.color(NamedTextColor.BLUE);
-        blueTeam.setAllowFriendlyFire(false);
-
-        redTeam = scoreboard.registerNewTeam("Red");
-        redTeam.color(NamedTextColor.RED);
-        redTeam.setAllowFriendlyFire(false);
-
-        inGame.addAll(queue);
-        queue.clear();
 
         new BukkitRunnable() {
             int count = 5;
@@ -106,6 +94,20 @@ public class CaptureTheFlag extends Minigame {
                     });
                     count--;
                 } else {
+                    ScoreboardManager manager = Bukkit.getScoreboardManager();
+                    scoreboard = manager.getNewScoreboard();
+
+                    blueTeam = scoreboard.registerNewTeam("Blue");
+                    blueTeam.color(NamedTextColor.BLUE);
+                    blueTeam.setAllowFriendlyFire(false);
+
+                    redTeam = scoreboard.registerNewTeam("Red");
+                    redTeam.color(NamedTextColor.RED);
+                    redTeam.setAllowFriendlyFire(false);
+
+                    inGame.addAll(queue);
+                    queue.clear();
+
                     saveAndClearInventories(inGame);
                     inGame.forEach(player -> {
                         player.showTitle(Title.title(Component.text("Game Started!", NamedTextColor.GREEN), Component.empty()));
@@ -193,7 +195,7 @@ public class CaptureTheFlag extends Minigame {
     }
 
     public static void end() {
-        if(!starting || playing) return;
+        if(!playing) return;
         inGame.forEach(player -> player.showTitle(Title.title(Component.text("Game Over!", NamedTextColor.RED), Component.empty())));
         LOGGER.info("Ended");
         loadInventories(new ArrayList<>(inGame));
