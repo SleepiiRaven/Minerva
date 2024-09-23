@@ -100,7 +100,7 @@ public class CaptureTheFlag extends Minigame {
                         Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
                         Title title = Title.title(
                                 Component.text(count + "", color),
-                                Component.text("seconds before the game starts.", NamedTextColor.GREEN), times
+                                Component.text("seconds before the game starts."), times
                         );
 
                         player.showTitle(title);
