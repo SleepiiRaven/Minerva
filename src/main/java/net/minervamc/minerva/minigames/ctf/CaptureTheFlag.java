@@ -213,6 +213,6 @@ public class CaptureTheFlag extends Minigame {
     }
 
     public static boolean isPlaying() {
-        return isPlaying();
+        return playing;
     }
 }
