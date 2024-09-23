@@ -134,8 +134,7 @@ public class CaptureTheFlag extends Minigame {
                     Set<Player> inGameSet = new HashSet<>(inGame);
                     int i = 0;
                     for (Player player : inGameSet) {
-                        boolean randBool = false;
-                        if (FastUtils.randomIntInRange(0, 1) == 0) randBool = true;
+                        boolean randBool = FastUtils.randomIntInRange(0, 1) == 0;
                         if ((i % 2 == 0) == randBool) {
                             blue.add(player);
                             blueTeam.addEntry(player.getName());
@@ -143,7 +142,7 @@ public class CaptureTheFlag extends Minigame {
                             player.sendMessage(
                                     Component.text("You are on the ")
                                             .append(Component.text("blue", NamedTextColor.BLUE, TextDecoration.BOLD))
-                                            .append(Component.text(" team!", NamedTextColor.WHITE))
+                                            .append(Component.text(" team!"))
                             );
                             player.getInventory().addItem(blueFlagBreaker());
                         } else {
@@ -153,7 +152,7 @@ public class CaptureTheFlag extends Minigame {
                             player.sendMessage(
                                     Component.text("You are on the ")
                                             .append(Component.text("red", NamedTextColor.RED, TextDecoration.BOLD))
-                                            .append(Component.text(" team!", NamedTextColor.WHITE))
+                                            .append(Component.text(" team!"))
                             );
                             player.getInventory().addItem(redFlagBreaker());
                         }
