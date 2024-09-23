@@ -38,8 +38,6 @@ public class CaptureTheFlag extends Minigame {
     private static Team redTeam;
 
     public static void addQueue(Player player) {
-
-
         if (playing || starting) {
             player.sendMessage(Component.text("Game has already started!"));
             return;
@@ -189,6 +187,7 @@ public class CaptureTheFlag extends Minigame {
     }
 
     public static void end() {
+        if(!starting || playing) return;
         inGame.forEach(player -> player.showTitle(Title.title(Component.text("Game Over!", NamedTextColor.RED), Component.empty())));
         LOGGER.info("Ended");
         loadInventories(inGame);
