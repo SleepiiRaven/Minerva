@@ -59,7 +59,7 @@ public class PrimalScream extends Skill {
                     Location currLoc = lLoc.clone().add(lDir.clone().multiply(time));
 
                     for (Entity entity : player.getWorld().getNearbyEntities(currLoc, 1, 1, 1)) {
-                        if (!(entity instanceof LivingEntity livingMonster) || (entity.getScoreboardTags().contains("aresSummoned") || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))))
+                        if (!(entity instanceof LivingEntity livingMonster) || entity.getScoreboardTags().contains(player.getUniqueId().toString()) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
                             continue;
                         livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, effTime, effAmp));
                         livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, effTime, effAmp));
