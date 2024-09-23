@@ -86,7 +86,7 @@ public class Cleave extends Skill {
                     player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getLocation().add((Vector) vectors[ticks]), 1, 0, 0, 0, 0);
                     player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getLocation().add((Vector) vectors[ticks + 1]), 1, 0, 0, 0, 0);
                     for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation().add((Vector) vectors[ticks + 1]), 1, 1, 1)) {
-                        if (!(entity instanceof LivingEntity livingMonster) || entity.getScoreboardTags().contains("aresSummoned") || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
+                        if (!(entity instanceof LivingEntity livingMonster) || entity.getScoreboardTags().contains(player.getUniqueId().toString()) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
                             continue;
                         SkillUtils.damage(livingMonster, damage, player);
                         Vector viewNormalized = (ParticleUtils.getDirection(player.getLocation(), livingMonster.getLocation()).clone().normalize()).multiply(kb);

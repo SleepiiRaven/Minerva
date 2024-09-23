@@ -80,7 +80,7 @@ public class TomahawkThrow extends Skill {
 
 
                 for (Entity entity : display.getWorld().getNearbyEntities(display.getLocation(), 1, 1, 1)) {
-                    if (!(entity instanceof LivingEntity livingMonster) || (entity == display) || (entity.getScoreboardTags().contains("aresSummoned")) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
+                    if (!(entity instanceof LivingEntity livingMonster) || (entity == display) || entity.getScoreboardTags().contains(player.getUniqueId().toString()) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
                         continue;
                     SkillUtils.damage(livingMonster, damage, player);
                     livingMonster.setVelocity(livingMonster.getVelocity().add(direction.clone().multiply(kb)));

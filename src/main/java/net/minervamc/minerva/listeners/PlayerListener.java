@@ -2,6 +2,8 @@ package net.minervamc.minerva.listeners;
 
 import java.util.Arrays;
 import java.util.Objects;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.guis.AncestryGUI;
@@ -10,6 +12,8 @@ import net.minervamc.minerva.guis.MythicalCreaturesGUI;
 import net.minervamc.minerva.guis.RomanGodsGUI;
 import net.minervamc.minerva.guis.SkillsGUI;
 import net.minervamc.minerva.guis.TitansGUI;
+import net.minervamc.minerva.lib.text.TextContext;
+import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
@@ -20,12 +24,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -128,17 +134,20 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void playerPickUpItem(PlayerAttemptPickupItemEvent event) {
+    public void playerPickUpItem(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        player.sendMessage("nuh u pick uph");
         if (!CaptureTheFlag.isPlaying()) return;
         if (CaptureTheFlag.inBlueTeam(player)) {
-            if (event.getItem().getItemStack().getType() == Material.RED_BANNER) {
-                player.sendMessage(ChatColor.RED + "You are carrying the red banner. Take it to your team's side to win!");
+            if (event.getBlock().getType() == Material.RED_BANNER) {
+                ItemCreator redFlagCr = ItemCreator.get(Material.RED_BANNER);
+                redFlagCr.setName(TextContext.format("Red Flag", false).color(NamedTextColor.RED).decorate(TextDecoration.BOLD));
+                player.sendMessage(ChatColor.RED + "You are carrying the red flag. Take it to your team's side to win!");
             }
         } else {
-            if (event.getItem().getItemStack().getType() == Material.BLUE_BANNER) {
-                player.sendMessage(ChatColor.BLUE + "You are carrying the blue banner. Take it to your team's side to win!");
+            if (event.getBlock().getType() == Material.BLUE_BANNER) {
+                ItemCreator redFlagCr = ItemCreator.get(Material.BLUE_BANNER);
+                redFlagCr.setName(TextContext.format("Blue Flag", false).color(NamedTextColor.BLUE).decorate(TextDecoration.BOLD));
+                player.sendMessage(ChatColor.BLUE + "You are carrying the blue flag. Take it to your team's side to win!");
             }
         }
     }
@@ -146,7 +155,6 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void playerDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        player.sendMessage("nuh udroph");
         if (!CaptureTheFlag.isPlaying()) return;
         if (!CaptureTheFlag.isInGame(player)) return;
         if (CaptureTheFlag.inBlueTeam(player)) {
