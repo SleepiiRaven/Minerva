@@ -119,7 +119,9 @@ public class CaptureTheFlag extends Minigame {
                     Set<Player> inGameSet = new HashSet<>(inGame);
                     int i = 0;
                     for (Player player : inGameSet) {
-                        if (i % 2 == 0) {
+                        boolean randBool = false;
+                        if (FastUtils.randomIntInRange(0, 1) == 0) randBool = true;
+                        if ((i % 2 == 0) == randBool) {
                             blue.add(player);
                             blueTeam.addEntry(player.getName());
                             player.setScoreboard(scoreboard);
