@@ -1,6 +1,7 @@
 package net.minervamc.minerva.lib.util;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
+import java.util.ArrayList;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -117,6 +118,18 @@ public class ItemCreator {
     public ItemCreator addAttribute(Attribute attribute, double amount, AttributeModifier.Operation operation) {
         AttributeModifier mod = new AttributeModifier(UUID.randomUUID(), attribute.name(), amount, operation);
         meta.addAttributeModifier(attribute, mod);
+        return this;
+    }
+    public ItemCreator setPlaceable(Material... canPlaceOn) {
+        // Use the persistent data container for storing block types
+        List<String> canPlaceOnList = new ArrayList<>();
+        for (Material material : canPlaceOn) {
+            canPlaceOnList.add(material.getKey().toString()); // Convert Material to NamespacedKey format
+        }
+
+        // Set the CanPlaceOn tag using PersistentDataContainer (in the Adventure mode format)
+        meta.getPersistentDataContainer().set(new NamespacedKey("minecraft", "CanPlaceOn"), PersistentDataType.STRING, String.join(",", canPlaceOnList));
+
         return this;
     }
     public ItemCreator setUnbreakable(boolean unbreakable) {

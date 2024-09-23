@@ -260,3 +260,4 @@ build/tmp/compileJava/previous-compilation-data.bin
 *.lock
 /build
 /.gradle
+*.lock
