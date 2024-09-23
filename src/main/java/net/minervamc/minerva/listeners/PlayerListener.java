@@ -139,14 +139,22 @@ public class PlayerListener implements Listener {
         if (!CaptureTheFlag.isPlaying()) return;
         if (CaptureTheFlag.inBlueTeam(player)) {
             if (event.getBlock().getType() == Material.RED_BANNER) {
-                ItemCreator redFlagCr = ItemCreator.get(Material.RED_BANNER);
-                redFlagCr.setName(TextContext.format("Red Flag", false).color(NamedTextColor.RED).decorate(TextDecoration.BOLD));
+                event.setDropItems(false);
+
+                ItemCreator flagCr = ItemCreator.get(Material.RED_BANNER);
+                flagCr.setName(TextContext.format("Red Flag", false).color(NamedTextColor.RED).decorate(TextDecoration.BOLD));
+                player.getInventory().addItem(flagCr.build());
+
                 player.sendMessage(ChatColor.RED + "You are carrying the red flag. Take it to your team's side to win!");
             }
         } else {
             if (event.getBlock().getType() == Material.BLUE_BANNER) {
-                ItemCreator redFlagCr = ItemCreator.get(Material.BLUE_BANNER);
-                redFlagCr.setName(TextContext.format("Blue Flag", false).color(NamedTextColor.BLUE).decorate(TextDecoration.BOLD));
+                event.setDropItems(false);
+
+                ItemCreator flagCr = ItemCreator.get(Material.BLUE_BANNER);
+                flagCr.setName(TextContext.format("Blue Flag", false).color(NamedTextColor.BLUE).decorate(TextDecoration.BOLD));
+                player.getInventory().addItem(flagCr.build());
+
                 player.sendMessage(ChatColor.BLUE + "You are carrying the blue flag. Take it to your team's side to win!");
             }
         }
