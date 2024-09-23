@@ -14,7 +14,10 @@ import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.minigames.Minigame;
 import net.minervamc.minerva.utils.FastUtils;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
@@ -194,6 +197,8 @@ public class CaptureTheFlag extends Minigame {
                 TextContext.formatLegacy("&7Use this to break", false),
                 TextContext.formatLegacy("&7the &cred &7team's flag", false)
         ));
+        blueFlagBreakerCr.addAttribute(Attribute.GENERIC_ATTACK_DAMAGE, 0, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
+        blueFlagBreakerCr.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         return ItemCreator.getBreakable(blueFlagBreakerCr.build(), Material.RED_BANNER);
     }
 
@@ -204,6 +209,8 @@ public class CaptureTheFlag extends Minigame {
                 TextContext.formatLegacy("&7Use this to break", false),
                 TextContext.formatLegacy("&7the &1blue &7team's flag", false)
         ));
+        redFlagBreakerCr.addAttribute(Attribute.GENERIC_ATTACK_DAMAGE, 0, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
+        redFlagBreakerCr.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         return ItemCreator.getBreakable(redFlagBreakerCr.build(), Material.BLUE_BANNER);
     }
 
