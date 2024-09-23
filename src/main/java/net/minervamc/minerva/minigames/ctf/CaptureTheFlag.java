@@ -78,16 +78,12 @@ public class CaptureTheFlag extends Minigame {
         scoreboard = manager.getNewScoreboard();
 
         blueTeam = scoreboard.registerNewTeam("Blue");
-        LOGGER.info("Team created blue");
         blueTeam.color(NamedTextColor.BLUE);
         blueTeam.setAllowFriendlyFire(false);
 
         redTeam = scoreboard.registerNewTeam("Red");
-        LOGGER.info("Team created red");
         redTeam.color(NamedTextColor.RED);
         redTeam.setAllowFriendlyFire(false);
-
-        LOGGER.info("All teams {}", scoreboard.getTeams().stream().map(Team::getName).toList());
 
         inGame.addAll(queue);
         queue.clear();
@@ -174,7 +170,7 @@ public class CaptureTheFlag extends Minigame {
 
     private static ItemStack blueFlagBreaker() {
         ItemCreator blueFlagBreakerCr = ItemCreator.get(Material.WOODEN_AXE);
-        blueFlagBreakerCr.setName(TextContext.format("Flag Breaker").color(NamedTextColor.GOLD));
+        blueFlagBreakerCr.setName(TextContext.format("Flag Breaker", false).color(NamedTextColor.GOLD));
         blueFlagBreakerCr.setLore(List.of(
                 TextContext.formatLegacy("&7Use this to break", false),
                 TextContext.formatLegacy("&7the &cred &7team's flag", false)
@@ -198,8 +194,8 @@ public class CaptureTheFlag extends Minigame {
         inGame.clear();
         blue.clear();
         red.clear();
-        if (blueTeam != null) blueTeam.unregister();
-        if (redTeam != null) redTeam.unregister();
+        if (blueTeam != null && scoreboard.getTeam("Blue") != null) blueTeam.unregister();
+        if (redTeam != null && scoreboard.getTeam("Red") != null) redTeam.unregister();
         playing = false;
         starting = false;
     }
