@@ -38,7 +38,7 @@ public class CaptureTheFlag extends Minigame {
     private static Team redTeam;
 
     public static void addQueue(Player player) {
-        if(isIngame(player)) return;
+        if(isInGame(player)) return;
         if (playing) {
             player.sendMessage(Component.text("Game has already started!"));
             return;
@@ -57,7 +57,7 @@ public class CaptureTheFlag extends Minigame {
     }
 
     public static void removeQueue(Player player) {
-        if(isIngame(player)) return;
+        if(isInGame(player)) return;
         if(!isInQueue(player)) {
             player.sendMessage(Component.text("Not in queue"));
             return;
@@ -70,7 +70,7 @@ public class CaptureTheFlag extends Minigame {
         return queue.contains(player);
     }
 
-    public static boolean isIngame(Player player) {
+    public static boolean isInGame(Player player) {
         return inGame.contains(player);
     }
 
@@ -206,5 +206,13 @@ public class CaptureTheFlag extends Minigame {
         if (redTeam != null && scoreboard.getTeam("Red") != null) redTeam.unregister();
         playing = false;
         starting = false;
+    }
+
+    public static boolean inBlueTeam(Player player) {
+        return blue.contains(player);
+    }
+
+    public static boolean isPlaying() {
+        return isPlaying();
     }
 }

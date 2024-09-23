@@ -10,6 +10,7 @@ import net.minervamc.minerva.guis.MythicalCreaturesGUI;
 import net.minervamc.minerva.guis.RomanGodsGUI;
 import net.minervamc.minerva.guis.SkillsGUI;
 import net.minervamc.minerva.guis.TitansGUI;
+import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.utils.ItemUtils;
@@ -23,6 +24,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
+import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -121,6 +124,37 @@ public class PlayerListener implements Listener {
     public void playerDamagePlayer(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player damager && event.getEntity() instanceof Player player) {
             if (Party.isPlayerInPlayerParty(damager, player)) event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void playerPickUpItem(PlayerAttemptPickupItemEvent event) {
+        Player player = event.getPlayer();
+        if (!CaptureTheFlag.isPlaying()) return;
+        if (CaptureTheFlag.inBlueTeam(player)) {
+            if (event.getItem().getItemStack().getType() == Material.RED_BANNER) {
+                player.sendMessage(ChatColor.RED + "You are carrying the red banner. Take it to your team's side to win!");
+            }
+        } else {
+            if (event.getItem().getItemStack().getType() == Material.BLUE_BANNER) {
+                player.sendMessage(ChatColor.BLUE + "You are carrying the blue banner. Take it to your team's side to win!");
+            }
+        }
+    }
+
+    @EventHandler
+    public void playerDropItem(PlayerDropItemEvent event) {
+        Player player = event.getPlayer();
+        if (!CaptureTheFlag.isPlaying()) return;
+        if (!CaptureTheFlag.isInGame(player)) return;
+        if (CaptureTheFlag.inBlueTeam(player)) {
+            if (event.getItemDrop().getItemStack().getType() == Material.BLUE_BANNER) {
+                event.setCancelled(true);
+            }
+        } else {
+            if (event.getItemDrop().getItemStack().getType() == Material.RED_BANNER) {
+                event.setCancelled(true);
+            }
         }
     }
 }
