@@ -1,8 +1,10 @@
 package net.minervamc.minerva.minigames;
 
+import java.util.Arrays;
 import java.util.List;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.guis.CTFKitGUI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -23,11 +25,16 @@ public abstract class Minigame {
     }
     public static void loadInventories(List<Player> players) {
         for (Player player : players) {
+            Bukkit.getLogger().info(player + " is getting loaded!");
             PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
             player.getInventory().clear();
             player.getInventory().setStorageContents(stats.getInventory());
             player.getInventory().setArmorContents(stats.getArmor());
             player.getInventory().setItemInOffHand(stats.getOffhand()[0]);
+            Bukkit.getLogger().info(Arrays.toString(stats.getInventory()) + "!");
+            stats.setInventory(new ItemStack[36]);
+            stats.setArmor(new ItemStack[4]);
+            stats.setOffhand(new ItemStack[1]);
         }
     }
 

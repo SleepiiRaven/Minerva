@@ -138,9 +138,10 @@ public class CaptureTheFlag extends Minigame {
                             );
                             player.getInventory().addItem(redFlagBreaker());
                         }
-                        inGame.remove(player);
                         i++;
                     }
+
+                    inGameSet.clear();
 
                     // Add blue flag to random player in blue team's inventory
                     if (!blue.isEmpty()) blue.get(FastUtils.randomIntInRange(0, blue.size() - 1)).getInventory().addItem(blueFlag());
@@ -191,7 +192,7 @@ public class CaptureTheFlag extends Minigame {
     public static void end() {
         inGame.forEach(player -> player.showTitle(Title.title(Component.text("Game Over!", NamedTextColor.RED), Component.empty())));
         LOGGER.info("Ended");
-        loadInventories(inGame);
+        loadInventories(new ArrayList<>(inGame));
         inGame.clear();
         blue.clear();
         red.clear();
