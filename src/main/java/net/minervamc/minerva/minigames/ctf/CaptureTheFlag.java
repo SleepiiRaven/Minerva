@@ -12,13 +12,13 @@ import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.minigames.Minigame;
 import net.minervamc.minerva.utils.FastUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
 
 public class CaptureTheFlag extends Minigame {
     public static boolean playing = false;
@@ -29,7 +29,14 @@ public class CaptureTheFlag extends Minigame {
     private static final List<Player> blue = new ArrayList<>();
     private static final List<Player> red = new ArrayList<>();
 
+    // Team stuff
+    private static Scoreboard scoreboard;
+    private static Team blueTeam;
+    private static Team redTeam;
+
     public static void addQueue(Player player) {
+
+
         if (playing || starting) {
             player.sendMessage(Component.text("Game has already started!"));
             return;
@@ -63,6 +70,17 @@ public class CaptureTheFlag extends Minigame {
     public static void start() {
         if (playing || starting) return;
         starting = true;
+
+        ScoreboardManager manager = Bukkit.getScoreboardManager();
+        scoreboard = manager.getNewScoreboard();
+
+        blueTeam = scoreboard.registerNewTeam("Blue");
+        blueTeam.color(NamedTextColor.BLUE);
+        blueTeam.setAllowFriendlyFire(false);
+
+        redTeam = scoreboard.registerNewTeam("Red");
+        redTeam.color(NamedTextColor.RED);
+        redTeam.setAllowFriendlyFire(false);
 
         inGame.addAll(queue);
         queue.clear();
@@ -104,9 +122,13 @@ public class CaptureTheFlag extends Minigame {
                     for (Player player : inGameSet) {
                         if (i % 2 == 0) {
                             blue.add(player);
+                            blueTeam.addEntry(player.getName());
+                            player.setScoreboard(scoreboard);
                             player.sendMessage("You are on the " + ChatColor.BLUE + "" + ChatColor.BOLD + "blue" + ChatColor.RESET + " team!");
                         } else {
                             red.add(player);
+                            redTeam.addEntry(player.getName());
+                            player.setScoreboard(scoreboard);
                             player.sendMessage("You are on the " + ChatColor.RED + "" + ChatColor.BOLD + "red" + ChatColor.RESET + " team!");
 
                         }
@@ -114,10 +136,8 @@ public class CaptureTheFlag extends Minigame {
                         i++;
                     }
 
-                    // Add blue flag to random player in blue team's inventory
+                    // Assign flags
                     blue.get(FastUtils.randomIntInRange(0, blue.size() - 1)).getInventory().addItem(blueFlag);
-
-                    // Same for red team
                     red.get(FastUtils.randomIntInRange(0, red.size() - 1)).getInventory().addItem(redFlag);
 
                     playing = true;
@@ -134,6 +154,8 @@ public class CaptureTheFlag extends Minigame {
         inGame.clear();
         blue.clear();
         red.clear();
+        if (blueTeam != null) blueTeam.unregister();
+        if (redTeam != null) redTeam.unregister();
         playing = false;
         starting = false;
     }
