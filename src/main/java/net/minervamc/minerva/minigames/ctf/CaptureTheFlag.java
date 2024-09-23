@@ -8,7 +8,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import net.minervamc.minerva.Minerva;
-import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.minigames.Minigame;
 import net.minervamc.minerva.utils.FastUtils;
@@ -116,6 +115,12 @@ public class CaptureTheFlag extends Minigame {
                     redFlagCr.setName(Component.text("Red Flag", NamedTextColor.RED).decorate(TextDecoration.BOLD));
                     ItemStack redFlag = ItemCreator.getPlaceable(redFlagCr.build(), Material.PODZOL);
 
+                    ItemCreator flagBreaker = ItemCreator.get(Material.WOODEN_AXE);
+                    flagBreaker.setName(Component.text("Flag Breaker", NamedTextColor.GOLD));
+                    // Flag breaker for BLUE team to break RED flag
+                    ItemStack blueFlagBreaker = ItemCreator.getBreakable(flagBreaker.build(), Material.RED_BANNER);
+                    ItemStack redFlagBreaker = ItemCreator.getBreakable(flagBreaker.build(), Material.BLUE_BANNER);
+
                     // Put into Set for randomization
                     Set<Player> inGameSet = new HashSet<>(inGame);
                     int i = 0;
@@ -125,20 +130,27 @@ public class CaptureTheFlag extends Minigame {
                             blueTeam.addEntry(player.getName());
                             player.setScoreboard(scoreboard);
                             player.sendMessage("You are on the " + ChatColor.BLUE + "" + ChatColor.BOLD + "blue" + ChatColor.RESET + " team!");
+                            player.getInventory().addItem(blueFlagBreaker);
                         } else {
                             red.add(player);
                             redTeam.addEntry(player.getName());
                             player.setScoreboard(scoreboard);
                             player.sendMessage("You are on the " + ChatColor.RED + "" + ChatColor.BOLD + "red" + ChatColor.RESET + " team!");
-
+                            player.getInventory().addItem(redFlagBreaker);
                         }
                         inGame.remove(player);
                         i++;
                     }
 
-                    // Assign flags
-                    blue.get(FastUtils.randomIntInRange(0, blue.size() - 1)).getInventory().addItem(blueFlag);
-                    red.get(FastUtils.randomIntInRange(0, red.size() - 1)).getInventory().addItem(redFlag);
+                    // Add blue flag to random player in blue team's inventory
+                    if (!blue.isEmpty()) {
+                        blue.get(FastUtils.randomIntInRange(0, blue.size() - 1)).getInventory().addItem(blueFlag);
+                    }
+
+                    // Same for red team
+                    if (!red.isEmpty()) {
+                        red.get(FastUtils.randomIntInRange(0, red.size() - 1)).getInventory().addItem(redFlag);
+                    }
 
                     playing = true;
                     starting = false;

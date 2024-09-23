@@ -137,6 +137,14 @@ public class ItemCreator {
         NBT.modifyComponents(item, nbt -> {
             nbt.getOrCreateCompound("can_place_on").setString("blocks", block);
         });
+        return item;
+    }
+    public static ItemStack getBreakable(ItemStack item, Material material) {
+        String block = "minecraft:" + material.name().toLowerCase();
+
+        NBT.modifyComponents(item, nbt -> {
+            nbt.getOrCreateCompound("can_break").setString("blocks", block);
+        });
 
         return item;
     }
