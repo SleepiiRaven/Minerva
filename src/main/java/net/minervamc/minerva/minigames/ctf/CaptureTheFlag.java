@@ -22,7 +22,7 @@ import org.bukkit.scoreboard.Team;
 import org.slf4j.Logger;
 
 public class CaptureTheFlag extends Minigame {
-    private static Logger LOGGER = Minerva.getInstance().getSLF4JLogger();
+    private static final Logger LOGGER = Minerva.getInstance().getSLF4JLogger();
 
     public static boolean playing = false;
     public static boolean starting = false;
@@ -115,30 +115,6 @@ public class CaptureTheFlag extends Minigame {
                         kits(player, "ctf");
                     });
 
-                    ItemCreator blueFlagCr = ItemCreator.get(Material.BLUE_BANNER);
-                    blueFlagCr.setName(Component.text("Blue Flag", NamedTextColor.BLUE).decorate(TextDecoration.BOLD));
-                    ItemStack blueFlag = ItemCreator.getPlaceable(blueFlagCr.build(), Material.MYCELIUM);
-
-                    ItemCreator redFlagCr = ItemCreator.get(Material.RED_BANNER);
-                    redFlagCr.setName(Component.text("Red Flag", NamedTextColor.RED).decorate(TextDecoration.BOLD));
-                    ItemStack redFlag = ItemCreator.getPlaceable(redFlagCr.build(), Material.PODZOL);
-
-                    ItemCreator blueFlagBreakerCr = ItemCreator.get(Material.WOODEN_AXE);
-                    ItemCreator redFlagBreakerCr = ItemCreator.get(Material.WOODEN_AXE);
-                    blueFlagBreakerCr.setName(Component.text("Flag Breaker", NamedTextColor.GOLD));
-                    blueFlagBreakerCr.setLore(List.of(
-                            TextContext.formatLegacy("&7Use this to break", false),
-                            TextContext.formatLegacy("&7the &cred &7team's flag", false)
-                    ));
-                    redFlagBreakerCr.setName(Component.text("Flag Breaker", NamedTextColor.GOLD));
-                    redFlagBreakerCr.setLore(List.of(
-                            TextContext.formatLegacy("&7Use this to break", false),
-                            TextContext.formatLegacy("&7the &1blue &7team's flag", false)
-                    ));
-                    // Flag breaker for BLUE team to break RED flag
-                    ItemStack blueFlagBreaker = ItemCreator.getBreakable(blueFlagBreakerCr.build(), Material.RED_BANNER);
-                    ItemStack redFlagBreaker = ItemCreator.getBreakable(redFlagBreakerCr.build(), Material.BLUE_BANNER);
-
                     // Put into Set for randomization
                     Set<Player> inGameSet = new HashSet<>(inGame);
                     int i = 0;
@@ -147,28 +123,32 @@ public class CaptureTheFlag extends Minigame {
                             blue.add(player);
                             blueTeam.addEntry(player.getName());
                             player.setScoreboard(scoreboard);
-                            player.sendMessage("You are on the " + ChatColor.BLUE + "" + ChatColor.BOLD + "blue" + ChatColor.RESET + " team!");
-                            player.getInventory().addItem(blueFlagBreaker);
+                            player.sendMessage(
+                                    Component.text("You are on the ")
+                                            .append(Component.text("blue", NamedTextColor.BLUE, TextDecoration.BOLD))
+                                            .append(Component.text(" team!", NamedTextColor.WHITE))
+                            );
+                            player.getInventory().addItem(blueFlagBreaker());
                         } else {
                             red.add(player);
                             redTeam.addEntry(player.getName());
                             player.setScoreboard(scoreboard);
-                            player.sendMessage("You are on the " + ChatColor.RED + "" + ChatColor.BOLD + "red" + ChatColor.RESET + " team!");
-                            player.getInventory().addItem(redFlagBreaker);
+                            player.sendMessage(
+                                    Component.text("You are on the ")
+                                            .append(Component.text("red", NamedTextColor.RED, TextDecoration.BOLD))
+                                            .append(Component.text(" team!", NamedTextColor.WHITE))
+                            );
+                            player.getInventory().addItem(redFlagBreaker());
                         }
                         inGame.remove(player);
                         i++;
                     }
 
                     // Add blue flag to random player in blue team's inventory
-                    if (!blue.isEmpty()) {
-                        blue.get(FastUtils.randomIntInRange(0, blue.size() - 1)).getInventory().addItem(blueFlag);
-                    }
+                    if (!blue.isEmpty()) blue.get(FastUtils.randomIntInRange(0, blue.size() - 1)).getInventory().addItem(blueFlag());
 
                     // Same for red team
-                    if (!red.isEmpty()) {
-                        red.get(FastUtils.randomIntInRange(0, red.size() - 1)).getInventory().addItem(redFlag);
-                    }
+                    if (!red.isEmpty()) red.get(FastUtils.randomIntInRange(0, red.size() - 1)).getInventory().addItem(redFlag());
 
                     playing = true;
                     starting = false;
@@ -176,6 +156,38 @@ public class CaptureTheFlag extends Minigame {
                 }
             }
         }.runTaskTimer(Minerva.getInstance(), 0, 20);
+    }
+
+    private static ItemStack blueFlag() {
+        ItemCreator blueFlagCr = ItemCreator.get(Material.BLUE_BANNER);
+        blueFlagCr.setName(TextContext.format("Blue Flag", false).color(NamedTextColor.BLUE).decorate(TextDecoration.BOLD));
+        return ItemCreator.getPlaceable(blueFlagCr.build(), Material.MYCELIUM);
+    }
+
+    private static ItemStack redFlag() {
+        ItemCreator redFlagCr = ItemCreator.get(Material.RED_BANNER);
+        redFlagCr.setName(TextContext.format("Red Flag", false).color(NamedTextColor.RED).decorate(TextDecoration.BOLD));
+        return ItemCreator.getPlaceable(redFlagCr.build(), Material.PODZOL);
+    }
+
+    private static ItemStack blueFlagBreaker() {
+        ItemCreator blueFlagBreakerCr = ItemCreator.get(Material.WOODEN_AXE);
+        blueFlagBreakerCr.setName(TextContext.format("Flag Breaker").color(NamedTextColor.GOLD));
+        blueFlagBreakerCr.setLore(List.of(
+                TextContext.formatLegacy("&7Use this to break", false),
+                TextContext.formatLegacy("&7the &cred &7team's flag", false)
+        ));
+        return ItemCreator.getBreakable(blueFlagBreakerCr.build(), Material.RED_BANNER);
+    }
+
+    private static ItemStack redFlagBreaker() {
+        ItemCreator redFlagBreakerCr = ItemCreator.get(Material.WOODEN_AXE);
+        redFlagBreakerCr.setName(TextContext.format("Flag Breaker", false).color(NamedTextColor.GOLD));
+        redFlagBreakerCr.setLore(List.of(
+                TextContext.formatLegacy("&7Use this to break", false),
+                TextContext.formatLegacy("&7the &1blue &7team's flag", false)
+        ));
+        return ItemCreator.getBreakable(redFlagBreakerCr.build(), Material.BLUE_BANNER);
     }
 
     public static void end() {
