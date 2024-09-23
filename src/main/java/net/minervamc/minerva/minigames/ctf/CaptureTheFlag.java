@@ -8,6 +8,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.minigames.Minigame;
 import net.minervamc.minerva.utils.FastUtils;
@@ -122,11 +123,21 @@ public class CaptureTheFlag extends Minigame {
                     redFlagCr.setName(Component.text("Red Flag", NamedTextColor.RED).decorate(TextDecoration.BOLD));
                     ItemStack redFlag = ItemCreator.getPlaceable(redFlagCr.build(), Material.PODZOL);
 
-                    ItemCreator flagBreaker = ItemCreator.get(Material.WOODEN_AXE);
-                    flagBreaker.setName(Component.text("Flag Breaker", NamedTextColor.GOLD));
+                    ItemCreator blueFlagBreakerCr = ItemCreator.get(Material.WOODEN_AXE);
+                    ItemCreator redFlagBreakerCr = ItemCreator.get(Material.WOODEN_AXE);
+                    blueFlagBreakerCr.setName(Component.text("Flag Breaker", NamedTextColor.GOLD));
+                    blueFlagBreakerCr.setLore(List.of(
+                            TextContext.formatLegacy("&7Use this to break", false),
+                            TextContext.formatLegacy("&7the &cred &7team's flag", false)
+                    ));
+                    redFlagBreakerCr.setName(Component.text("Flag Breaker", NamedTextColor.GOLD));
+                    redFlagBreakerCr.setLore(List.of(
+                            TextContext.formatLegacy("&7Use this to break", false),
+                            TextContext.formatLegacy("&7the &1blue &7team's flag", false)
+                    ));
                     // Flag breaker for BLUE team to break RED flag
-                    ItemStack blueFlagBreaker = ItemCreator.getBreakable(flagBreaker.build(), Material.RED_BANNER);
-                    ItemStack redFlagBreaker = ItemCreator.getBreakable(flagBreaker.build(), Material.BLUE_BANNER);
+                    ItemStack blueFlagBreaker = ItemCreator.getBreakable(blueFlagBreakerCr.build(), Material.RED_BANNER);
+                    ItemStack redFlagBreaker = ItemCreator.getBreakable(redFlagBreakerCr.build(), Material.BLUE_BANNER);
 
                     // Put into Set for randomization
                     Set<Player> inGameSet = new HashSet<>(inGame);
