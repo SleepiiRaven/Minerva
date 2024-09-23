@@ -47,6 +47,10 @@ public class CaptureTheFlag extends Minigame {
             return;
         }
         queue.add(player);
+        queue.forEach(p-> {
+            if (p.equals(player)) return;
+            p.sendActionBar(Component.text(player.getName() + " joined the queue!", NamedTextColor.GREEN));
+        });
         player.sendMessage(Component.text("Added to ctf queue"));
         if(queue.size() > 4) start();
     }
@@ -92,9 +96,10 @@ public class CaptureTheFlag extends Minigame {
             @Override
             public void run() {
                 if (count > 0) {
-                    inGame.forEach(player -> {
+                    queue.forEach(player -> {
                         Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
-                        Title title = Title.title(Component.text(count + ""), Component.text("seconds before the game starts."), times);
+                        Title title = Title.title(Component.text(count + "", NamedTextColor.GREEN),
+                                Component.text("seconds before the game starts.", NamedTextColor.GREEN), times);
 
                         player.showTitle(title);
                         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
