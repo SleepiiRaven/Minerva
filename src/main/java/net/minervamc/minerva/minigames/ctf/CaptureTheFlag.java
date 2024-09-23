@@ -5,6 +5,7 @@ import java.util.*;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import net.minervamc.minerva.Minerva;
@@ -87,10 +88,20 @@ public class CaptureTheFlag extends Minigame {
             @Override
             public void run() {
                 if (count > 0) {
+                    TextColor color = switch (count) {
+                        case 1 -> TextColor.color(0xFF0024);
+                        case 2 -> TextColor.color(0xFF4500);
+                        case 3 -> TextColor.color(0xFFA500);
+                        case 4 -> TextColor.color(0xFFFF00);
+                        case 5 -> NamedTextColor.GREEN;
+                        default -> throw new IllegalStateException("Unexpected value: " + count);
+                    };
                     queue.forEach(player -> {
                         Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
-                        Title title = Title.title(Component.text(count + "", NamedTextColor.GREEN),
-                                Component.text("seconds before the game starts.", NamedTextColor.GREEN), times);
+                        Title title = Title.title(
+                                Component.text(count + "", color),
+                                Component.text("seconds before the game starts.", NamedTextColor.GREEN), times
+                        );
 
                         player.showTitle(title);
                         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
