@@ -1,5 +1,6 @@
 package net.minervamc.minerva.minigames.ctf;
 
+import java.time.Duration;
 import java.util.*;
 
 import net.kyori.adventure.text.Component;
@@ -70,8 +71,10 @@ public class CaptureTheFlag extends Minigame {
             public void run() {
                 if (count > 0) {
                     inGame.forEach(player -> {
-                        player.sendTitle(count + "", "seconds before the game starts.", 0, 40, 0);
+                        Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
+                        Title title = Title.title(Component.text(count + ""), Component.text("seconds before the game starts."), times);
 
+                        player.showTitle(title);
                         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
                     });
                     count--;

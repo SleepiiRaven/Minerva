@@ -290,7 +290,7 @@ public class TextContext {
     }
 
     public static Component format(String text, boolean italics) {
-        return MiniMessage.miniMessage().deserialize(text).decoration(TextDecoration.ITALIC, false);
+        return MiniMessage.miniMessage().deserialize(text).decoration(TextDecoration.ITALIC, italics);
     }
 
     public static Component formatLegacy(String text) {
@@ -298,7 +298,7 @@ public class TextContext {
     }
 
     public static Component formatLegacy(String text, boolean italics) {
-        return LegacyComponentSerializer.legacyAmpersand().deserialize(text).decoration(TextDecoration.ITALIC, false);
+        return LegacyComponentSerializer.legacyAmpersand().deserialize(text).decoration(TextDecoration.ITALIC, italics);
     }
 
     public static String formatLegacy2(String text) {
