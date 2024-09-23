@@ -93,10 +93,12 @@ public class CaptureTheFlag extends Minigame {
                     int half = Math.round(fHalf);
                     inGameTemp = inGame;
                     for (int i = 0; i < half; i++) {
-                        int random = FastUtils.randomIntInRange(0, inGameTemp.size() - 1);
-                        Player randomPlayer = inGameTemp.get(random);
-                        blue.add(randomPlayer);
-                        inGameTemp.remove(random);
+                        if (!inGameTemp.isEmpty()) {
+                            int random = FastUtils.randomIntInRange(0, inGameTemp.size() - 1);
+                            Player randomPlayer = inGameTemp.get(random);
+                            blue.add(randomPlayer);
+                            inGameTemp.remove(random);
+                        }
                     }
                     while (!inGameTemp.isEmpty()) {
                         int random = FastUtils.randomIntInRange(0, inGameTemp.size() - 1);
