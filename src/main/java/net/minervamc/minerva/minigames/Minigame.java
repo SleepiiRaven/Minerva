@@ -31,8 +31,7 @@ public abstract class Minigame {
 
     public static void kits(Player player, String type) {
         switch (type) {
-            case "ctf":
-                new CTFKitGUI().open(player);
+            case "ctf" -> new CTFKitGUI().open(player);
         }
     }
 }
