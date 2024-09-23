@@ -18,8 +18,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
+import org.slf4j.Logger;
 
 public class CaptureTheFlag extends Minigame {
+    private static Logger LOGGER = Minerva.getInstance().getSLF4JLogger();
+
     public static boolean playing = false;
     public static boolean starting = false;
 
@@ -74,12 +77,16 @@ public class CaptureTheFlag extends Minigame {
         scoreboard = manager.getNewScoreboard();
 
         blueTeam = scoreboard.registerNewTeam("Blue");
+        LOGGER.info("Team created blue");
         blueTeam.color(NamedTextColor.BLUE);
         blueTeam.setAllowFriendlyFire(false);
 
         redTeam = scoreboard.registerNewTeam("Red");
+        LOGGER.info("Team created red");
         redTeam.color(NamedTextColor.RED);
         redTeam.setAllowFriendlyFire(false);
+
+        LOGGER.info("All teams {}", scoreboard.getTeams().stream().map(Team::getName).toList());
 
         inGame.addAll(queue);
         queue.clear();
