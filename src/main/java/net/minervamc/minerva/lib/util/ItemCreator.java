@@ -1,14 +1,25 @@
 package net.minervamc.minerva.lib.util;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
+import de.tr7zw.nbtapi.NBT;
+import de.tr7zw.nbtapi.NBTCompound;
+import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.iface.ReadWriteNBT;
+import de.tr7zw.nbtapi.iface.ReadWriteNBTCompoundList;
 import java.util.ArrayList;
 import net.kyori.adventure.text.Component;
+import net.minecraft.commands.arguments.NbtTagArgument;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -120,17 +131,14 @@ public class ItemCreator {
         meta.addAttributeModifier(attribute, mod);
         return this;
     }
-    public ItemCreator setPlaceable(Material... canPlaceOn) {
-        // Use the persistent data container for storing block types
-        List<String> canPlaceOnList = new ArrayList<>();
-        for (Material material : canPlaceOn) {
-            canPlaceOnList.add(material.getKey().toString()); // Convert Material to NamespacedKey format
-        }
+    public static ItemStack getPlaceable(ItemStack item, Material material) {
+        String block = "minecraft:" + material.name().toLowerCase();
 
-        // Set the CanPlaceOn tag using PersistentDataContainer (in the Adventure mode format)
-        meta.getPersistentDataContainer().set(new NamespacedKey("minecraft", "CanPlaceOn"), PersistentDataType.STRING, String.join(",", canPlaceOnList));
+        NBT.modifyComponents(item, nbt -> {
+            nbt.getOrCreateCompound("can_place_on").setString("blocks", block);
+        });
 
-        return this;
+        return item;
     }
     public ItemCreator setUnbreakable(boolean unbreakable) {
         meta.setUnbreakable(unbreakable);

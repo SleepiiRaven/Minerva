@@ -17,10 +17,15 @@ repositories {
         name = "sonatype"
         url = uri("https://oss.sonatype.org/content/groups/public/")
     }
+    maven {
+        name = "CodeMC"
+        url = uri("https://repo.codemc.io/repository/maven-public/")
+    }
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
+    compileOnly("de.tr7zw:item-nbt-api-plugin:2.13.2")
     paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
 }
 

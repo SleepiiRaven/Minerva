@@ -25,50 +25,62 @@ public class PrimalScream extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
         double distance = 10;
-        double kb = 1;
+        double kb = 2;
         int effAmp = 1;
-        int effTime = 4;
+        int effTime = 40;
 
 
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WARDEN_SONIC_CHARGE, 1f, 1f);
 
-        List<Vector> unitCircle = ParticleUtils.getVerticalCirclePoints(3, player.getPitch(), player.getYaw(), 20);
-        List<Vector> circle = ParticleUtils.getVerticalCirclePoints(0.1, player.getPitch(), player.getYaw(), 20);
-        Vector direction = player.getEyeLocation().getDirection();
-        Location loc = player.getEyeLocation().add(direction);
-
-        for (Vector vector : unitCircle) {
-            Vector inverse = vector.clone().normalize().multiply(-1);
-            player.getWorld().spawnParticle(Particle.END_ROD, loc.clone().add(vector), 0, inverse.getX(), inverse.getY(), inverse.getZ(), 0.25);
-        }
+        List<Vector> circle = ParticleUtils.getVerticalCirclePoints(1, player.getPitch(), player.getYaw(), 30);
 
         new BukkitRunnable() {
+            int ticks = 0;
+            Vector lDir;
+            Location lLoc;
 
             @Override
             public void run() {
-                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WARDEN_SONIC_BOOM, 1f, 1f);
-                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_RAVAGER_ROAR, 1f, 1f);
-                for (double i = 0; i < distance; i++) {
-                    Location currLoc = loc.clone().add(direction.clone().multiply(i));
+                Vector direction = player.getEyeLocation().getDirection();
+                Location loc = player.getEyeLocation().add(direction);
+
+
+                if (ticks == 20) {
+                    player.getWorld().playSound(loc, Sound.ENTITY_WARDEN_SONIC_BOOM, 1f, 1f);
+                    player.getWorld().playSound(loc, Sound.ENTITY_RAVAGER_ROAR, 1f, 1f);
+                    lDir = direction;
+                    lLoc = loc;
+                }
+                if (ticks >= 20 + distance) {
+                    this.cancel();
+                    return;
+                } else if (ticks >= 20) {
+                    int time = (ticks - 20);
+                    Location currLoc = lLoc.clone().add(lDir.clone().multiply(time));
 
                     for (Entity entity : player.getWorld().getNearbyEntities(currLoc, 1, 1, 1)) {
                         if (!(entity instanceof LivingEntity livingMonster) || (entity.getScoreboardTags().contains("aresSummoned") || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))))
                             continue;
                         livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, effTime, effAmp));
                         livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, effTime, effAmp));
-                        Vector viewNormalized = (ParticleUtils.getDirection(player.getLocation(), livingMonster.getLocation()).clone().normalize()).multiply(kb);
+                        Vector viewNormalized = (ParticleUtils.getDirection(loc, livingMonster.getLocation()).clone().normalize()).multiply(kb);
                         livingMonster.setVelocity(viewNormalized);
                     }
 
                     for (Vector vector : circle) {
-                        Vector inverse = vector.clone().normalize().multiply(0.2 + i/(distance/2.5));
+                        Vector inverse = vector.clone().normalize().multiply(0.2 + time / (distance / 2.5));
                         player.getWorld().spawnParticle(Particle.DUST, currLoc.clone().add(inverse), 0, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(75, 63, 61), 2f));
                         player.getWorld().spawnParticle(Particle.DUST, currLoc.clone().add(inverse), 0, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(97, 9, 26), 2f));
                         player.getWorld().spawnParticle(Particle.DUST, currLoc.clone().add(inverse), 0, 0, 0, 0, 0, new Particle.DustOptions(Color.WHITE, 1f));
                     }
+                } else {
+                    for (Vector vector : circle) {
+                        player.getWorld().spawnParticle(Particle.DUST, loc.clone().add(vector.clone().multiply((3 - (3 * ticks / 20f)))), 0, 0, 0, 0, 0, new Particle.DustOptions(Color.GRAY, 1f));
+                    }
                 }
+                ticks++;
             }
-        }.runTaskLater(Minerva.getInstance(), 20L);
+        }.runTaskTimer(Minerva.getInstance(), 0L, 1L);
     }
 
     @Override

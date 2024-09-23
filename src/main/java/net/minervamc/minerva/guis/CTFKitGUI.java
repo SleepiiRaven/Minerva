@@ -18,8 +18,7 @@ public class CTFKitGUI extends Menu {
         super(27, Component.text("Kit Selection"));
         ItemStack blank = ItemCreator.createNameless(Material.BLACK_STAINED_GLASS_PANE);
         MenuUtil.fill(getInventory(), blank);
-        ItemCreator scout = ItemCreator.get(Material.LEATHER_BOOTS);
-        scout.setPlaceable(Material.PODZOL);
+        ItemCreator scout = ItemCreator.get(Material.DIRT);
         scout.setName(Component.text("Scout", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
         List<Component> scoutLore = List.of(Component.text("Using their speed", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
             Component.text("and informative items,", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
@@ -28,8 +27,8 @@ public class CTFKitGUI extends Menu {
             Component.text("enemy and play far from the,", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
             Component.text("fight, on enemy flank turf.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
         scout.setLore(scoutLore);
-        scout.addAttribute(Attribute.GENERIC_ARMOR, 7.0, AttributeModifier.Operation.ADD_NUMBER);
-        scout.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        //scout.addAttribute(Attribute.GENERIC_ARMOR, 7.0, AttributeModifier.Operation.ADD_NUMBER);
+        //scout.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         ItemCreator attacker = ItemCreator.get(Material.WOODEN_SWORD);
         attacker.setName(Component.text("Attacker", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
         List<Component> attackerLore = List.of(Component.text("Equipped with extra", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
@@ -50,8 +49,9 @@ public class CTFKitGUI extends Menu {
                 Component.text("kit is one of the best", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                 Component.text("kits for a team.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
         defender.setLore(defenderLore);
+
+
         setItem(11, scout.build(), (p, event) -> {
-            p.getInventory().addItem(scout.build());
             close(p);
         });
         setItem(13, attacker.build(), (p, event) -> {
