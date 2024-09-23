@@ -190,6 +190,7 @@ public class CaptureTheFlag extends Minigame {
 
     public static void end() {
         inGame.forEach(player -> player.showTitle(Title.title(Component.text("Game Over!", NamedTextColor.RED), Component.empty())));
+        LOGGER.info("Ended");
         loadInventories(inGame);
         inGame.clear();
         blue.clear();

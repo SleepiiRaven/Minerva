@@ -11,11 +11,13 @@ public abstract class Minigame {
 
     public static void saveAndClearInventories(List<Player> players) {
         for (Player player : players) {
+            System.out.println(player + " is getting saved!");
             PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
             stats.setInventory(player.getInventory().getStorageContents());
             stats.setArmor(player.getInventory().getArmorContents());
             ItemStack[] offhand = {player.getInventory().getItemInOffHand()};
             stats.setOffhand(offhand);
+            stats.save();
             player.getInventory().clear();
         }
     }
