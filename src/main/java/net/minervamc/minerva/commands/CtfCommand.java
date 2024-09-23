@@ -17,7 +17,7 @@ public class CtfCommand extends Command {
     }
 
     @ICommand(user = CommandUser.PLAYER)
-    public void joinqueue(CommandContext context) {
+    public void join(CommandContext context) {
         Player player = context.getPlayer();
         assert player != null;
 
@@ -25,7 +25,7 @@ public class CtfCommand extends Command {
     }
 
     @ICommand(user = CommandUser.PLAYER)
-    public void leavequeue(CommandContext context) {
+    public void leave(CommandContext context) {
         Player player = context.getPlayer();
         assert player != null;
 
