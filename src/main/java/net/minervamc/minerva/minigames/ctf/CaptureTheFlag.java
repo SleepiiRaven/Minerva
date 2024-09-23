@@ -9,6 +9,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
+import net.minecraft.world.level.block.TripWireBlock;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
@@ -37,6 +38,8 @@ public class CaptureTheFlag extends Minigame {
     private static final List<Player> inGame = new ArrayList<>();
     private static final List<Player> blue = new ArrayList<>();
     private static final List<Player> red = new ArrayList<>();
+
+    private static final Map<TripWireBlock, Player> traps = new HashMap<>();
 
     // Team stuff
     private static Scoreboard scoreboard;
@@ -234,4 +237,10 @@ public class CaptureTheFlag extends Minigame {
         return blue.contains(player);
     }
 
+    public static void addTrap(TripWireBlock trap, Player player) {
+        traps.put(trap, player);
+    }
+
+    public static void triggerTrap(TripWireBlock trap, Player target) {
+        Player setter = traps.getOrDefault(trap, null);
 }
