@@ -3,6 +3,7 @@ package net.minervamc.minerva.minigames.ctf;
 import java.time.Duration;
 import java.util.*;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -28,6 +29,7 @@ import org.slf4j.Logger;
 public class CaptureTheFlag extends Minigame {
     private static final Logger LOGGER = Minerva.getInstance().getSLF4JLogger();
 
+    @Getter
     public static boolean playing = false;
     public static boolean starting = false;
 
@@ -232,7 +234,4 @@ public class CaptureTheFlag extends Minigame {
         return blue.contains(player);
     }
 
-    public static boolean isPlaying() {
-        return playing;
-    }
 }
