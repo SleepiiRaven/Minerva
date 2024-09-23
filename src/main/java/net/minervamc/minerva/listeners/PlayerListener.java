@@ -130,6 +130,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void playerPickUpItem(PlayerAttemptPickupItemEvent event) {
         Player player = event.getPlayer();
+        player.sendMessage("nuh u pick uph");
         if (!CaptureTheFlag.isPlaying()) return;
         if (CaptureTheFlag.inBlueTeam(player)) {
             if (event.getItem().getItemStack().getType() == Material.RED_BANNER) {
@@ -145,6 +146,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void playerDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
+        player.sendMessage("nuh udroph");
         if (!CaptureTheFlag.isPlaying()) return;
         if (!CaptureTheFlag.isInGame(player)) return;
         if (CaptureTheFlag.inBlueTeam(player)) {
