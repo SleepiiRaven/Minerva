@@ -17,6 +17,7 @@ public class CTFKitGUI extends Menu {
     public CTFKitGUI() {
         super(27, Component.text("Kit Selection"));
         ItemStack blank = ItemCreator.createNameless(Material.BLACK_STAINED_GLASS_PANE);
+        CraftPlay
         MenuUtil.fill(getInventory(), blank);
         ItemCreator scout = ItemCreator.get(Material.LEATHER_BOOTS);
         scout.setName(Component.text("Scout", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));

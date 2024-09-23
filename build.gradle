@@ -1,10 +1,11 @@
 plugins {
-    id 'java'
-    id 'io.freefair.lombok' version '8.6'
+    id ("java")
+    id ("io.freefair.lombok") version "8.6"
+    id ("io.papermc.paperweight.userdev") version "1.7.2"
 }
 
-group = 'net.minervamc'
-version = '1.0'
+group = "net.minervamc"
+version = "1.0"
 
 repositories {
     mavenCentral()
@@ -20,10 +21,7 @@ repositories {
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT"
-    // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
-    implementation group: 'com.zaxxer', name: 'HikariCP', version: '2.3.2'
-    // https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
-    implementation group: 'com.mysql', name: 'mysql-connector-j', version: '9.0.0'
+    implementation ""
 }
 
 def targetJavaVersion = 21
@@ -45,8 +43,8 @@ tasks.withType(JavaCompile).configureEach {
 processResources {
     def props = [version: version]
     inputs.properties props
-    filteringCharset 'UTF-8'
-    filesMatching('plugin.yml') {
+    filteringCharset "UTF-8"
+    filesMatching("plugin.yml") {
         expand props
     }
 }
