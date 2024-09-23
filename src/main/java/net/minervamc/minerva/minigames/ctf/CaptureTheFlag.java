@@ -49,10 +49,12 @@ public class CaptureTheFlag extends Minigame {
         }
         queue.add(player);
         queue.forEach(p-> {
-            if (p.equals(player)) return;
+            if (p.equals(player)) {
+                p.sendActionBar(Component.text("You joined the queue!", NamedTextColor.GREEN));
+                return;
+            }
             p.sendActionBar(Component.text(player.getName() + " joined the queue!", NamedTextColor.GREEN));
         });
-        player.sendMessage(Component.text("Added to ctf queue"));
         if(queue.size() > 4) start();
     }
 
@@ -63,7 +65,8 @@ public class CaptureTheFlag extends Minigame {
             return;
         }
         queue.remove(player);
-        player.sendMessage(Component.text("Removed from ctf queue"));
+        player.sendActionBar(Component.text("You left the queue!", NamedTextColor.RED));
+        queue.forEach(p-> p.sendActionBar(Component.text(player.getName() + " left the queue!", NamedTextColor.RED)));
     }
 
     public static boolean isInQueue(Player player) {
