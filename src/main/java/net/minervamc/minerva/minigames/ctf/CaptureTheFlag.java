@@ -5,11 +5,15 @@ import java.util.*;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.minigames.Minigame;
 import net.minervamc.minerva.utils.FastUtils;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -22,7 +26,6 @@ public class CaptureTheFlag extends Minigame {
 
     private static final List<Player> queue = new ArrayList<>();
     private static final List<Player> inGame = new ArrayList<>();
-    private static List<Player> inGameTemp = new ArrayList<>();
     private static final List<Player> blue = new ArrayList<>();
     private static final List<Player> red = new ArrayList<>();
 
@@ -83,44 +86,39 @@ public class CaptureTheFlag extends Minigame {
                     inGame.forEach(player -> {
                         player.showTitle(Title.title(Component.text("Game Started!", NamedTextColor.GREEN), Component.empty()));
                         player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
+                        player.setGameMode(GameMode.ADVENTURE);
                         kits(player, "ctf");
                     });
 
-                    float fHalf = count / (float) 2.0;
-                    if (fHalf % 1 == 0) {
-                        fHalf += 0.5;
-                    }
-                    int half = Math.round(fHalf);
-                    inGameTemp = inGame;
-                    for (int i = 0; i < half; i++) {
-                        if (!inGameTemp.isEmpty()) {
-                            int random = FastUtils.randomIntInRange(0, inGameTemp.size() - 1);
-                            Player randomPlayer = inGameTemp.get(random);
-                            blue.add(randomPlayer);
-                            inGameTemp.remove(random);
+                    ItemCreator blueFlagCr = ItemCreator.get(Material.BLUE_BANNER);
+                    blueFlagCr.setName(Component.text("Blue Flag", NamedTextColor.BLUE).decorate(TextDecoration.BOLD));
+                    ItemStack blueFlag = ItemCreator.getPlaceable(blueFlagCr.build(), Material.MYCELIUM);
+
+                    ItemCreator redFlagCr = ItemCreator.get(Material.RED_BANNER);
+                    redFlagCr.setName(Component.text("Red Flag", NamedTextColor.RED).decorate(TextDecoration.BOLD));
+                    ItemStack redFlag = ItemCreator.getPlaceable(redFlagCr.build(), Material.PODZOL);
+
+                    // Put into Set for randomization
+                    Set<Player> inGameSet = new HashSet<>(inGame);
+                    int i = 0;
+                    for (Player player : inGameSet) {
+                        if (i % 2 == 0) {
+                            blue.add(player);
+                            player.sendMessage("You are on the " + ChatColor.BLUE + "" + ChatColor.BOLD + "blue" + ChatColor.RESET + " team!");
+                        } else {
+                            red.add(player);
+                            player.sendMessage("You are on the " + ChatColor.RED + "" + ChatColor.BOLD + "red" + ChatColor.RESET + " team!");
+
                         }
-                    }
-                    while (!inGameTemp.isEmpty()) {
-                        int random = FastUtils.randomIntInRange(0, inGameTemp.size() - 1);
-                        Player randomPlayer = inGameTemp.get(random);
-                        red.add(randomPlayer);
-                        inGameTemp.remove(random);
+                        inGame.remove(player);
+                        i++;
                     }
 
-                    if (!blue.isEmpty()) {
-                        int random = FastUtils.randomIntInRange(0, blue.size() - 1);
-                        Player randomBlue = blue.get(random);
-                        ItemCreator blue_flag = ItemCreator.get(new ItemStack(Material.BLUE_BANNER));
-                        blue_flag.setName(Component.text("Blue Flag", NamedTextColor.DARK_BLUE));
-                        randomBlue.getInventory().addItem(ItemCreator.getPlaceable(blue_flag.build(), Material.MYCELIUM));
-                    }
-                    if (!red.isEmpty()) {
-                        int random = FastUtils.randomIntInRange(0, red.size() - 1);
-                        Player randomRed = red.get(random);
-                        ItemCreator red_flag = ItemCreator.get(new ItemStack(Material.RED_BANNER));
-                        red_flag.setName(Component.text("Red Flag", NamedTextColor.RED));
-                        randomRed.getInventory().addItem(ItemCreator.getPlaceable(red_flag.build(), Material.PODZOL));
-                    }
+                    // Add blue flag to random player in blue team's inventory
+                    blue.get(FastUtils.randomIntInRange(0, blue.size() - 1)).getInventory().addItem(blueFlag);
+
+                    // Same for red team
+                    red.get(FastUtils.randomIntInRange(0, red.size() - 1)).getInventory().addItem(redFlag);
 
                     playing = true;
                     starting = false;
@@ -136,7 +134,6 @@ public class CaptureTheFlag extends Minigame {
         inGame.clear();
         blue.clear();
         red.clear();
-        inGameTemp.clear();
         playing = false;
         starting = false;
     }
