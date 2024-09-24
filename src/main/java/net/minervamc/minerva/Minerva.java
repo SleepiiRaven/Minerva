@@ -10,6 +10,7 @@ import net.minervamc.minerva.commands.SkillsCommand;
 import net.minervamc.minerva.lib.Lib;
 import net.minervamc.minerva.listeners.PlayerListener;
 import net.minervamc.minerva.listeners.SkillListener;
+import net.minervamc.minerva.minigames.ctf.RegionManager;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,12 +32,15 @@ public final class Minerva extends JavaPlugin {
         registerListeners();
         registerCommands();
 
-        Lib.onEnable(); // Faceless
+        Lib.onEnable(); // Faceless start
+        RegionManager.loadRegionsFromFile();
+        //Faceless stop
     }
 
     @Override
     public void onDisable() {
         PlayerStats.saveAll();
+        RegionManager.saveRegionsToFile(); // not really necessary but safer
     }
 
     public void registerListeners() {

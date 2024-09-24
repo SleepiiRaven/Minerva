@@ -35,7 +35,6 @@ public class Config {
             Bukkit.getConsoleSender().sendMessage("Creation of storage file at path " + path + " failed!!");
             throw new RuntimeException(e);
         }
-        ConfigManager.getManager().register(path, this);
     }
 
     public void init() throws IOException {

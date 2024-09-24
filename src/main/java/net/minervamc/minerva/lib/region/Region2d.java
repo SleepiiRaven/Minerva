@@ -1,8 +1,10 @@
 package net.minervamc.minerva.lib.region;
 
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author BillyGalbreath
@@ -33,6 +35,37 @@ public class Region2d {
         maxX = Math.max(x1, x2);
         maxZ = Math.max(z1, z2);
     }
+
+    public Region2d(ConfigurationSection section) {
+        this.name = section.getString("name");
+        if (this.name == null || this.name.isEmpty()) {
+            throw new IllegalArgumentException("Region name is missing or empty in the configuration section");
+        }
+
+        String worldName = section.getString("world");
+        if (worldName == null || worldName.isEmpty()) {
+            throw new IllegalArgumentException("World name is missing or empty in the configuration section");
+        }
+
+        this.world = Bukkit.getWorld(worldName);
+        if (this.world == null) {
+            throw new IllegalArgumentException("World '" + worldName + "' does not exist");
+        }
+
+        if (!section.isSet("minX") || !section.isSet("maxX") || !section.isSet("minZ") || !section.isSet("maxZ")) {
+            throw new IllegalArgumentException("Region coordinates (minX, maxX, minZ, maxZ) are missing in the configuration section");
+        }
+
+        this.minX = section.getInt("minX");
+        this.maxX = section.getInt("maxX");
+        this.minZ = section.getInt("minZ");
+        this.maxZ = section.getInt("maxZ");
+
+        if (minX > maxX || minZ > maxZ) {
+            throw new IllegalArgumentException("Invalid region coordinates: minX must be <= maxX, and minZ must be <= maxZ");
+        }
+    }
+
 
     public boolean contains(Region2d region) {
         return region.getWorld().equals(world) &&

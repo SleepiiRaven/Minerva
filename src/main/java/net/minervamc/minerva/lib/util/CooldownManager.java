@@ -43,6 +43,17 @@ public class CooldownManager {
         return false;
     }
 
+    public static long getRemainingTime(String name, String command) {
+        if (!cooldownMap.containsKey(name)) return 0;
+
+        Long cooldownEndTime = cooldownMap.get(name).get(command);
+        if (cooldownEndTime == null) return 0;
+
+        long remainingTime = cooldownEndTime - System.currentTimeMillis();
+        return (remainingTime > 0) ? remainingTime : 0;
+    }
+
+
     /**
      * Removes the cooldown for the specified user and command.
      *

@@ -14,7 +14,7 @@ public @interface ICommand {
     String permissionMessage() default ""; // uses legacy and hex formatting
     String tabCompleter() default "";
     CommandUser user() default CommandUser.ALL;
-    String invalidUserMessage() default "&cInvalid User, Command must be executed by a {}"; // replaces with appropriate user
+    String invalidUserMessage() default "&cInvalid User, Command must be executed by {}"; // replaces with appropriate user
     int cooldown() default 0;
     String cooldownMessage() default "&cYou cannot run this command for another {}"; // uses legacy and hex formatting, also replaces {} with time.
     boolean noArgs() default false;

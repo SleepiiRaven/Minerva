@@ -55,7 +55,14 @@ public class Command extends org.bukkit.command.Command {
             int cooldown = annotation.cooldown();
 
             if (!isValidUser(context.sender(), user)) {
-                context.sender().sendMessage(TextContext.hexAndLegacy(formatInvalidUserMessage(invalidUserMessage, user)));
+                String userType = switch (user) {
+                    case PLAYER -> "a player";
+                    case CONSOLE -> "console";
+                    case COMMAND_BLOCK -> "a command block";
+                    default -> "user";
+                };
+                String formattedInvalidUserMessage = invalidUserMessage.replace("{}", userType);
+                context.sender().sendMessage(TextContext.hexAndLegacy(formattedInvalidUserMessage));
                 return true;
             }
 
@@ -65,7 +72,9 @@ public class Command extends org.bukkit.command.Command {
             }
 
             if (!CooldownManager.isCooldownExpired(context.sender().getName(), name)) {
-                context.sender().sendMessage(TextContext.hexAndLegacy(cooldownMessage));
+                long remainingTime = CooldownManager.getRemainingTime(context.sender().getName(), name);
+                String formattedCooldownMessage = cooldownMessage.replace("{}", String.valueOf(remainingTime / 1000));
+                context.sender().sendMessage(TextContext.hexAndLegacy(formattedCooldownMessage));
                 return true;
             }
 
@@ -92,7 +101,14 @@ public class Command extends org.bukkit.command.Command {
             int cooldown = annotation.cooldown();
 
             if (!isValidUser(context.sender(), user)) {
-                context.sender().sendMessage(TextContext.hexAndLegacy(formatInvalidUserMessage(invalidUserMessage, user)));
+                String userType = switch (user) {
+                    case PLAYER -> "a player";
+                    case CONSOLE -> "console";
+                    case COMMAND_BLOCK -> "a command block";
+                    default -> "user";
+                };
+                String formattedInvalidUserMessage = invalidUserMessage.replace("{}", userType);
+                context.sender().sendMessage(TextContext.hexAndLegacy(formattedInvalidUserMessage));
                 return;
             }
 
@@ -102,7 +118,9 @@ public class Command extends org.bukkit.command.Command {
             }
 
             if (!CooldownManager.isCooldownExpired(context.sender().getName(), "allArgs")) {
-                context.sender().sendMessage(TextContext.hexAndLegacy(cooldownMessage));
+                long remainingTime = CooldownManager.getRemainingTime(context.sender().getName(), "allArgs");
+                String formattedCooldownMessage = cooldownMessage.replace("{}", String.valueOf(remainingTime / 1000));
+                context.sender().sendMessage(TextContext.hexAndLegacy(formattedCooldownMessage));
                 return;
             }
 
@@ -127,7 +145,14 @@ public class Command extends org.bukkit.command.Command {
             int cooldown = annotation.cooldown();
 
             if (!isValidUser(context.sender(), user)) {
-                context.sender().sendMessage(TextContext.hexAndLegacy(formatInvalidUserMessage(invalidUserMessage, user)));
+                String userType = switch (user) {
+                    case PLAYER -> "a player";
+                    case CONSOLE -> "console";
+                    case COMMAND_BLOCK -> "a command block";
+                    default -> "user";
+                };
+                String formattedInvalidUserMessage = invalidUserMessage.replace("{}", userType);
+                context.sender().sendMessage(TextContext.hexAndLegacy(formattedInvalidUserMessage));
                 return;
             }
 
@@ -137,7 +162,9 @@ public class Command extends org.bukkit.command.Command {
             }
 
             if (!CooldownManager.isCooldownExpired(context.sender().getName(), "noArgs")) {
-                context.sender().sendMessage(TextContext.hexAndLegacy(cooldownMessage));
+                long remainingTime = CooldownManager.getRemainingTime(context.sender().getName(), "noArgs");
+                String formattedCooldownMessage = cooldownMessage.replace("{}", String.valueOf(remainingTime / 1000));
+                context.sender().sendMessage(TextContext.hexAndLegacy(formattedCooldownMessage));
                 return;
             }
 
