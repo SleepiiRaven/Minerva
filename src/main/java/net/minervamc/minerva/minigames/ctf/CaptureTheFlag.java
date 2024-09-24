@@ -243,4 +243,5 @@ public class CaptureTheFlag extends Minigame {
 
     public static void triggerTrap(TripWireBlock trap, Player target) {
         Player setter = traps.getOrDefault(trap, null);
+    }
 }
