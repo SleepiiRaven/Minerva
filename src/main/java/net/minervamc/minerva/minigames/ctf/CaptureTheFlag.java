@@ -254,7 +254,9 @@ public class CaptureTheFlag extends Minigame {
 
     public static void triggerTrap(Entity trap, Player target) {
         Player setter = traps.getOrDefault(trap, null);
-        if ()
+        if (inBlueTeam(setter) && inBlueTeam(target) || !inBlueTeam(setter) && !inBlueTeam(target)) {
+            return;
+        }
         target.sendMessage("You've been hit by a trap from " + setter.getName() + "!");
         trap.getWorld().createExplosion(trap, 3);
         traps.remove(trap);
