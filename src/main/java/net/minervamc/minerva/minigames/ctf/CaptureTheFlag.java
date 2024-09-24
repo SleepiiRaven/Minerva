@@ -260,5 +260,10 @@ public class CaptureTheFlag extends Minigame {
         target.sendMessage("You've been hit by a trap from " + setter.getName() + "!");
         trap.getWorld().createExplosion(trap, 3);
         traps.remove(trap);
+        trap.getPassengers().forEach(pass -> {
+            trap.removePassenger(pass);
+            pass.remove();
+        });
+        trap.remove();
     }
 }

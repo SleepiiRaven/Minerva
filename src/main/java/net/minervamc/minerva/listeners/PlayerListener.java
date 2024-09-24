@@ -196,11 +196,6 @@ public class PlayerListener implements Listener {
         for (Entity e : player.getNearbyEntities(1, 1, 1)) {
             if (e.getType() == EntityType.ARMOR_STAND && e.getScoreboardTags().contains("ctfTrap")) {
                 CaptureTheFlag.triggerTrap(e, player);
-                e.getPassengers().forEach(p -> {
-                    e.removePassenger(p);
-                    p.remove();
-                });
-                e.remove();
                 return;
             }
         }
