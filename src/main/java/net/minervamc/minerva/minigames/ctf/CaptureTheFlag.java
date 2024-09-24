@@ -242,13 +242,15 @@ public class CaptureTheFlag extends Minigame {
         return blue.contains(player);
     }
 
-    public static void addTrap(TripWireBlock trap, Player player) {
+    public static void addTrap(Entity trap, Player player) {
+        player.sendMessage("plecing trap");
         traps.put(trap, player);
     }
 
     public static void triggerTrap(TripWireBlock trap, Player target) {
         Player setter = traps.getOrDefault(trap, null);
-        //  TODO
-
+        target.sendMessage("You've been hit by a trap from " + setter.getName() + "!");
+        trap.getWorld().createExplosion(trap, 3);
+        traps.remove(trap);
     }
 }

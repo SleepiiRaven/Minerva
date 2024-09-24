@@ -175,4 +175,98 @@ public class PlayerListener implements Listener {
             }
         }
     }
+
+    @EventHandler
+    public void playerTriggerTrap(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        if (!event.hasChangedBlock()) return;
+        if (!CaptureTheFlag.isPlaying()) return;
+        if (!CaptureTheFlag.isInGame(player)) return;
+        for (Entity e : player.getNearbyEntities(1, 1, 1)) {
+            if (e.getType() == EntityType.ARMOR_STAND && e.getScoreboardTags().contains("ctfTrap")) {
+                CaptureTheFlag.triggerTrap(e, player);
+                e.getPassengers().forEach(p -> {
+                    e.removePassenger(p);
+                    p.remove();
+                });
+                e.remove();
+                return;
+            }
+        }
+    }
+
+    @EventHandler
+    public void playerDisarmTrap(PlayerAnimationEvent event) {
+        Player player = event.getPlayer();
+        if (event.getAnimationType() != PlayerAnimationType.ARM_SWING) return;
+        if (!CaptureTheFlag.isPlaying()) return;
+        if (!CaptureTheFlag.isInGame(player)) return;
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if (item.getType() == Material.AIR) return;
+        if (item.getItemMeta().itemName().toString().contains("Defuse")) {
+            player.sendMessage("Holding defuse kit");
+            RayTraceResult result = player.rayTraceBlocks(4);
+            if (result == null) return;
+            if (result.getHitBlock() == null) return;
+            player.sendMessage("You are looking at block, defusing!");
+            Location trapLoc = result.getHitBlock().getLocation();
+            for (Entity entity : trapLoc.getNearbyEntities(1, 1, 1)) {
+                if (entity.getType() == EntityType.ARMOR_STAND && entity.getScoreboardTags().contains("ctfTrap")) {
+                    CaptureTheFlag.defuseTrap(entity, player);
+                    entity.getPassengers().forEach(p -> {
+                        entity.removePassenger(p);
+                        p.remove();
+                    });
+                    entity.remove();
+                    return;
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void playerSetTrap(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if (!event.getAction().isRightClick()) return;
+        player.sendMessage("Is right click");
+        if (!CaptureTheFlag.isPlaying()) return;
+        player.sendMessage("Is playing");
+        if (!CaptureTheFlag.isInGame(player)) return;
+        player.sendMessage("Is in game");
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if (item.getType() == Material.AIR) return;
+        player.sendMessage("rah not air");
+        if (item.getItemMeta().itemName().toString().contains("Trap")) {
+            player.sendMessage("Holding trap");
+            RayTraceResult result = player.rayTraceBlocks(4);
+            if (result == null) return;
+            if (result.getHitBlock() == null || !result.getHitBlock().isSolid()) return;
+            player.sendMessage("You are looking at block, placing!");
+            Location trapLoc = result.getHitBlock().getLocation();
+            for (Entity entity : trapLoc.getNearbyEntities(1, 1, 1)) {
+                if(entity.getType() == EntityType.ARMOR_STAND && entity.getScoreboardTags().contains("ctfTrap")) {
+                    return;
+                }
+            }
+            item.setAmount(item.getAmount() - 1);
+            ArmorStand armorStand = (ArmorStand) player.getWorld().spawnEntity(trapLoc.add(new Vector(0, 0.2, 0)), EntityType.ARMOR_STAND);
+            armorStand.setSmall(true);
+            armorStand.setVisible(false);
+            armorStand.setGravity(false);
+            armorStand.setCustomName("Land-Mine Trap");
+            armorStand.setCustomNameVisible(false);
+            armorStand.addScoreboardTag("ctfTrap");
+            BlockDisplay blockDisplay = (BlockDisplay) player.getWorld().spawnEntity(armorStand.getEyeLocation(), EntityType.BLOCK_DISPLAY);
+            armorStand.setPassenger(blockDisplay);
+            blockDisplay.setBlock(Material.STONE_PRESSURE_PLATE.createBlockData());
+            blockDisplay.setTransformation(new Transformation(
+                    new Vector3f(),
+                    new AxisAngle4f(),
+                    new Vector3f(0.2f, 0.2f, 0.2f),
+                    new AxisAngle4f()
+            ));
+            blockDisplay.addScoreboardTag("ctfVisualTrap");
+            CaptureTheFlag.addTrap(armorStand, player);
+        }
+    }
 }
