@@ -9,7 +9,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
-import net.minecraft.world.level.block.TripWireBlock;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
@@ -18,6 +17,8 @@ import net.minervamc.minerva.utils.FastUtils;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -39,7 +40,7 @@ public class CaptureTheFlag extends Minigame {
     private static final List<Player> blue = new ArrayList<>();
     private static final List<Player> red = new ArrayList<>();
 
-    private static final Map<TripWireBlock, Player> traps = new HashMap<>();
+    private static final Map<Entity, Player> traps = new HashMap<>();
 
     // Team stuff
     private static Scoreboard scoreboard;
@@ -237,11 +238,19 @@ public class CaptureTheFlag extends Minigame {
         return blue.contains(player);
     }
 
-    public static void addTrap(TripWireBlock trap, Player player) {
+    public static void addTrap(Entity trap, Player player) {
         traps.put(trap, player);
     }
 
-    public static void triggerTrap(TripWireBlock trap, Player target) {
+    public static void triggerTrap(Entity trap, Player target) {
         Player setter = traps.getOrDefault(trap, null);
+        target.sendMessage("You've been hit by a trap from " + setter + "!");
+        traps.remove(trap);
+    }
+
+    public static void defuseTrap(Entity trap, Player target) {
+        Player setter = traps.getOrDefault(trap, null);
+        setter.sendMessage("Your trap at " + trap.getLocation().getX() + ", " + trap.getLocation().getY() + ", " + trap.getLocation().getZ() + " was destroyed!");
+        traps.remove(trap);
     }
 }
