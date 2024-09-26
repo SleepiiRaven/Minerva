@@ -55,6 +55,7 @@ public class RegionManager {
             creatingRegions.put(playerUUID, new Location[2]);
         }
         creatingRegions.get(playerUUID)[0] = loc;
+        player.sendMessage(Component.text("Pos 1 set.", NamedTextColor.GRAY));
     }
 
     public static void setPos2(Player player, Location loc) {
@@ -63,6 +64,7 @@ public class RegionManager {
             creatingRegions.put(playerUUID, new Location[2]);
         }
         creatingRegions.get(playerUUID)[1] = loc;
+        player.sendMessage(Component.text("Pos 2 set.", NamedTextColor.GRAY));
     }
 
     public static boolean isPos1set(Player player) {
@@ -134,5 +136,10 @@ public class RegionManager {
                 }
             }
         }
+    }
+
+    public static void deleteRegion(String regionName) {
+        savedRegions.remove(regionName);
+        regionConfig.set("regions." + regionName, null);
     }
 }

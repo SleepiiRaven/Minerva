@@ -74,6 +74,14 @@ public class CtfCommand extends Command {
                 String name = args[2];
                 RegionManager.saveRegion(player, name);
             }
+            case "delete" -> {
+                if(args.length != 3) {
+                    player.sendMessage(Component.text("Please provide a name!", NamedTextColor.RED));
+                    return;
+                }
+                String name = args[2];
+                RegionManager.deleteRegion(name);
+            }
         }
     }
 
@@ -84,7 +92,13 @@ public class CtfCommand extends Command {
 
         String[] args = context.args();
         if(args.length == 2) {
-            return Stream.of("selectmode", "list", "save").filter(s -> s.startsWith(args[1])).toList();
+            return Stream.of("selectmode", "list", "save", "delete").filter(s -> s.startsWith(args[1])).toList();
+        }
+
+        //   c    0      1      3
+        // /ctf region delete <name>
+        if(args.length == 3 && args[1].equals("delete")) {
+            return RegionManager.listRegions().stream().filter(s -> s.startsWith(args[2])).toList();
         }
         return List.of();
     }
