@@ -56,6 +56,7 @@ public class CtfCommand extends Command {
         // 0 = region
         // 1 = ?
 
+        if(args.length < 2) return;
         switch (args[1]) {
             case "selectmode" -> RegionManager.enterSelectMode(player);
             case "list" -> {

@@ -10,6 +10,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -22,6 +23,7 @@ public class Command extends org.bukkit.command.Command {
 
     private final HashMap<String, Method> cachedCommandMethods;
     private final HashMap<String, Method> cachedTabMethods;
+    private final static Logger LOGGER = Minerva.getInstance().getSLF4JLogger();
 
     public Command(@NotNull String name) {
         this(name,"","", List.of());
@@ -267,8 +269,9 @@ public class Command extends org.bukkit.command.Command {
         ICommand annotation = commandMethod.getAnnotation(ICommand.class);
         if (annotation == null) return List.of();
 
-        if(!annotation.tabCompleter().isEmpty() || !annotation.tabCompleter().isBlank()) {
-            String tabCompleter = annotation.tabCompleter().toLowerCase();
+        if(!annotation.tabCompleter().isBlank()) {
+            LOGGER.info("tab completer for command {} is not blank: {}", subcommand, annotation.tabCompleter());
+            String tabCompleter = annotation.tabCompleter();
 
             Method tabMethod = this.cachedTabMethods.get(tabCompleter);
             if(tabMethod == null) return List.of();
@@ -286,6 +289,7 @@ public class Command extends org.bukkit.command.Command {
             List<String> completions = (List<String>) method.invoke(this, context); // INVOKED HERE!
             List<String> mutableCompletions = new ArrayList<>(completions);
             mutableCompletions.addAll(allArgsCompletions);
+            LOGGER.info("Executing for tab completer {}", subcommand);
             return mutableCompletions;
         } catch (IllegalAccessException | InvocationTargetException |
                  CommandException | IllegalArgumentException ignored) {}
@@ -298,7 +302,7 @@ public class Command extends org.bukkit.command.Command {
         for (Method method  : methods) {
             method.setAccessible(true);
             if(method.getName().equals("allArgs") || method.getName().equals("noArgs")) {
-                Minerva.getInstance().getSLF4JLogger().warn("Avoid naming methods with either \"allArgs\" or \"noArgs\", Skipping registration...");
+                LOGGER.warn("Avoid naming methods with either \"allArgs\" or \"noArgs\", Skipping registration...");
                 continue;
             }
 
@@ -309,14 +313,14 @@ public class Command extends org.bukkit.command.Command {
             if (hasExactlyOneAnnotation) {
                 Class<?>[] parameterTypes = method.getParameterTypes();
                 if (parameterTypes.length != 1 || !parameterTypes[0].equals(CommandContext.class)) {
-                    Minerva.getInstance().getSLF4JLogger().warn("Method {} must have a single parameter of type CommandContext, Skipping registration...", method.getName());
+                    LOGGER.warn("Method {} must have a single parameter of type CommandContext, Skipping registration...", method.getName());
                     continue;
                 }
             }
 
             if (commandAnnotation != null) {
                 if(method.getReturnType() != void.class) {
-                    Minerva.getInstance().getSLF4JLogger().warn("All command methods must return void, Skipping registration...");
+                    LOGGER.warn("All command methods must return void, Skipping registration...");
                     continue;
                 }
                 if(commandAnnotation.allArgs()) {
@@ -329,7 +333,7 @@ public class Command extends org.bukkit.command.Command {
                 }
                 String name = (!commandAnnotation.name().isBlank()) ? commandAnnotation.name() : method.getName();
                 if(cachedCommandMethods.containsKey(name)) {
-                    Minerva.getInstance().getSLF4JLogger().warn("Attempted to register a command but it already exists with name: {}", name);
+                    LOGGER.warn("Attempted to register a command but it already exists with name: {}", name);
                     continue;
                 }
 
@@ -339,15 +343,15 @@ public class Command extends org.bukkit.command.Command {
 
             if (tabAnnotation != null) {
                 if (!List.class.isAssignableFrom(method.getReturnType())) {
-                    Minerva.getInstance().getSLF4JLogger().warn("All tabCompleter methods must return a List, Skipping registration...");
+                    LOGGER.warn("All tabCompleter methods must return a List, Skipping registration...");
                     continue;
                 }
                 String name = tabAnnotation.name();
                 if(cachedTabMethods.containsKey(name)) {
-                    Minerva.getInstance().getSLF4JLogger().warn("Attempted to register a tabCompleter but it already exists with name: {}", name);
+                    LOGGER.warn("Attempted to register a tabCompleter but it already exists with name: {}", name);
                     continue;
                 }
-
+                LOGGER.info("registering tabcompleter {}", name);
                 cachedTabMethods.put(name, method);
             }
         }
