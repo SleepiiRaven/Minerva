@@ -31,13 +31,13 @@ public class LightningToss extends Skill {
             case 2 -> {
                 maxDistance = 12;
                 maxBranches = 5;
-                damage = 14;
+                damage = 16;
                 cooldown = 2750;
             }
             case 3 -> {
                 maxDistance = 15;
                 maxBranches = 6;
-                damage = 15;
+                damage = 18;
                 cooldown = 2000;
             }
             case 4 -> {
@@ -55,7 +55,7 @@ public class LightningToss extends Skill {
             default -> {
                 maxDistance = 10;
                 maxBranches = 5;
-                damage = 160;
+                damage = 12;
                 cooldown = 4000;
             }
         }

@@ -30,7 +30,7 @@ public class TomahawkThrow extends Skill {
         double speed = 20;
         int rotationSpeed = 2; // ticks per rotation
         double kb = 0.3;
-        long cooldown = 6000;
+        long cooldown = 3000;
         double distance = 10;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "tomahawk")) {
