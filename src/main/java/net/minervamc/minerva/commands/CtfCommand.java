@@ -53,8 +53,6 @@ public class CtfCommand extends Command {
         assert player != null;
 
         String[] args = context.args();
-        // 0 = region
-        // 1 = ?
 
         if(args.length < 2) return;
         switch (args[1]) {

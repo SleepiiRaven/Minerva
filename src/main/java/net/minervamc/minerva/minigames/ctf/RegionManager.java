@@ -41,6 +41,10 @@ public class RegionManager {
         );
     }
 
+    public static boolean isSelectMode(Player player) {
+        return creatingRegions.containsKey(player.getUniqueId());
+    }
+
     public static List<String> listRegions() {
         return new ArrayList<>(savedRegions.keySet().stream().toList());
     }
