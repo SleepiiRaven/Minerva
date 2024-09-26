@@ -10,7 +10,7 @@ public class RegionListener {
     private static final GlobalEventHandler eventHandler = GlobalEventHandler.get();
 
     public static void register() {
-        GlobalEventHandler.get().addListener(PlayerInteractEvent.class, event -> {
+        eventHandler.addListener(PlayerInteractEvent.class, event -> {
             Player player = event.getPlayer();
             if(!RegionManager.isSelectMode(player)) return;
 
