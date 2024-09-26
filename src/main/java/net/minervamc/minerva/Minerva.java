@@ -9,6 +9,7 @@ import net.minervamc.minerva.commands.SkillModeToggle;
 import net.minervamc.minerva.commands.SkillsCommand;
 import net.minervamc.minerva.lib.Lib;
 import net.minervamc.minerva.listeners.PlayerListener;
+import net.minervamc.minerva.listeners.RegionListener;
 import net.minervamc.minerva.listeners.SkillListener;
 import net.minervamc.minerva.minigames.ctf.RegionManager;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
@@ -34,6 +35,7 @@ public final class Minerva extends JavaPlugin {
 
         Lib.onEnable(); // Faceless start
         RegionManager.loadRegionsFromFile();
+        RegionListener.register();
         //Faceless stop
     }
 
