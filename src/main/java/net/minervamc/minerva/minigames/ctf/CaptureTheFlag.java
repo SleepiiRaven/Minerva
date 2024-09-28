@@ -20,6 +20,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -34,6 +35,7 @@ public class CaptureTheFlag extends Minigame {
     @Getter
     public static boolean playing = false;
     public static boolean starting = false;
+    public static boolean preparePhase = false;
 
     private static final List<Player> queue = new ArrayList<>();
     private static final List<Player> inGame = new ArrayList<>();
@@ -90,6 +92,7 @@ public class CaptureTheFlag extends Minigame {
     public static void start() {
         if (playing || starting) return;
         starting = true;
+        preparePhase = true;
 
         new BukkitRunnable() {
             int count = 5;
@@ -130,6 +133,7 @@ public class CaptureTheFlag extends Minigame {
                     redTeam.setAllowFriendlyFire(false);
 
                     inGame.addAll(queue);
+                    Collections.shuffle(inGame);
                     queue.clear();
 
                     saveAndClearInventories(inGame);
@@ -141,10 +145,9 @@ public class CaptureTheFlag extends Minigame {
                     });
 
                     // Put into Set for randomization
-                    Set<Player> inGameSet = new HashSet<>(inGame);
                     int i = 0;
-                    for (Player player : inGameSet) {
-                        boolean randBool = FastUtils.randomIntInRange(0, 1) == 0;
+                    for (Player player : inGame) {
+                        boolean randBool = new Random().nextBoolean();
                         if ((i % 2 == 0) == randBool) {
                             blue.add(player);
                             blueTeam.addEntry(player.getName());
@@ -168,9 +171,6 @@ public class CaptureTheFlag extends Minigame {
                         }
                         i++;
                     }
-
-                    inGameSet.clear();
-
                     // Add blue flag to random player in blue team's inventory
                     if (!blue.isEmpty()) blue.get(FastUtils.randomIntInRange(0, blue.size() - 1)).getInventory().addItem(blueFlag());
 
@@ -265,5 +265,18 @@ public class CaptureTheFlag extends Minigame {
             pass.remove();
         });
         trap.remove();
+    }
+
+    public static void changedRegion(String region1, String region2, PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        if (region2.contains("barrier") && preparePhase) {
+            event.setCancelled(true);
+        } else if (region2.contains("blue") && blue.contains(player)) {  // if a red team crosses over into blue territory
+            if (!player.getInventory().contains(redFlag())) return;
+            player.sendMessage("U WON!!");
+        } else if (region2.contains("red") && red.contains(player)) {
+            if (!player.getInventory().contains(blueFlag())) return;
+            player.sendMessage("U WON!!");
+        }
     }
 }

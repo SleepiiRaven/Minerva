@@ -12,12 +12,15 @@ import net.minervamc.minerva.guis.MythicalCreaturesGUI;
 import net.minervamc.minerva.guis.RomanGodsGUI;
 import net.minervamc.minerva.guis.SkillsGUI;
 import net.minervamc.minerva.guis.TitansGUI;
+import net.minervamc.minerva.lib.region.Region2d;
 import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
+import net.minervamc.minerva.minigames.ctf.RegionManager;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.utils.ItemUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -274,5 +277,27 @@ public class PlayerListener implements Listener {
             blockDisplay.addScoreboardTag("ctfVisualTrap");
             CaptureTheFlag.addTrap(armorStand, player);
         }
+    }
+
+    @EventHandler
+    public void playerMoveIntoRegion(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        if (!CaptureTheFlag.isPlaying()) return;
+        if (!CaptureTheFlag.isInGame(player)) return;
+        Bukkit.getLogger().info("In game");
+        if (!event.hasChangedBlock()) return;
+        Bukkit.getLogger().info("Changed block");
+        String regionOri = "";
+        String regionAft = "";
+        for (String regionName : RegionManager.listRegions()) {
+            Region2d region = RegionManager.getRegion(regionName);
+            if (region.contains(event.getFrom())) regionOri = regionName;
+            if (region.contains(event.getTo())) regionAft = regionName;
+        }
+        if (regionAft.isEmpty()) return;
+        Bukkit.getLogger().info("Region is not empty!");
+        if (regionOri.equals(regionAft)) return;
+        Bukkit.getLogger().info("Changed Region!");
+        CaptureTheFlag.changedRegion(regionOri, regionAft, event);
     }
 }
