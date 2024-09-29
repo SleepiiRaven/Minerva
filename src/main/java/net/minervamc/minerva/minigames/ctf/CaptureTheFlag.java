@@ -9,16 +9,13 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
-import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.level.block.TripWireBlock;
 import net.minervamc.minerva.Minerva;
-import net.minervamc.minerva.guis.CTFKitGUI;
-import net.minervamc.minerva.lib.region.Region2d;
 import net.minervamc.minerva.lib.storage.yaml.Config;
 import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.minigames.Minigame;
+import net.minervamc.minerva.utils.Board;
 import net.minervamc.minerva.utils.FastUtils;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -29,12 +26,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
-import org.bukkit.scoreboard.Team;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.scoreboard.*;
 import org.bukkit.util.Vector;
 import org.slf4j.Logger;
 
@@ -60,6 +54,9 @@ public class CaptureTheFlag extends Minigame {
     public static Location redFlagLocation;
     private static Location blueSpawn;
     private static Location redSpawn;
+
+    private static BukkitTask scoreboardUpdater;
+    private static int count = 5;
 
     // Team stuff
     private static Scoreboard scoreboard;
@@ -210,8 +207,47 @@ public class CaptureTheFlag extends Minigame {
         starting = true;
         preparePhase = true;
 
+        scoreboardUpdater = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (starting) {
+                    for (Player player : queue) {
+                        // Show player count in the queue
+                        player.sendActionBar(Component.text("Players in queue: " + queue.size(), NamedTextColor.GREEN));
+
+                        // Update sidebar for players in queue
+                        Scoreboard board = player.getScoreboard();
+                        Objective objective = board.getObjective("ctf");
+
+                        if (objective == null) {
+                            objective = board.registerNewObjective("ctf", Criteria.DUMMY, Component.text("Capture The Flag"));
+                            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+                        }
+
+                        objective.getScore("Players in Queue:").setScore(queue.size());
+                        objective.getScore("Starting in: " + count).setScore(1);
+                    }
+                } else if (playing) {
+                    // Update the sidebar during gameplay
+                    for (Player player : inGame) {
+                        Scoreboard board = player.getScoreboard();
+                        Objective objective = board.getObjective("ctf");
+
+                        if (objective == null) {
+                            objective = board.registerNewObjective("ctf", Criteria.DUMMY, Component.text("Capture The Flag"));
+                            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+                        }
+
+                        objective.getScore("Blue Team: " + blue.size()).setScore(3);
+                        objective.getScore("Red Team: " + red.size()).setScore(2);
+                        objective.getScore("Players in Game:").setScore(inGame.size());
+                    }
+                }
+            }
+        }.runTaskTimer(Minerva.getInstance(), 0, 10);
+
+
         new BukkitRunnable() {
-            int count = 5;
 
             @Override
             public void run() {
@@ -401,6 +437,10 @@ public class CaptureTheFlag extends Minigame {
         kits.clear();
         blueFlagLocation = null;
         redFlagLocation = null;
+        if(scoreboardUpdater != null) {
+            scoreboardUpdater.cancel();
+            scoreboardUpdater = null;
+        }
     }
 
     public static boolean inBlueTeam(Player player) {
