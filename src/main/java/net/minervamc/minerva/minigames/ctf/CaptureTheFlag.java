@@ -9,8 +9,11 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.level.block.TripWireBlock;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.lib.text.TextContext;
+import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.minigames.Minigame;
 import net.minervamc.minerva.utils.FastUtils;
@@ -22,6 +25,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
@@ -255,19 +260,19 @@ public class CaptureTheFlag extends Minigame {
                     title = Component.text("You Won!", NamedTextColor.BLUE);
                 } else {
                     title = Component.text("You Lost!", NamedTextColor.RED);
+                    player.playSound(player, Sound.BLOCK_ANVIL_FALL, 0.8f, 0.8f);
+                    player.playSound(player, Sound.ENTITY_ENDER_DRAGON_HURT, 0.3f, 0.7f);
+                    player.playSound(player, Sound.ENTITY_CREEPER_PRIMED, 0.4f, 0.6f);
                 }
             } else if (winningTeam.equals("red")) {
                 subtitle = Component.text("The RED team won!", NamedTextColor.GOLD);
                 if (isRed) {
                     title = Component.text("You Won!", NamedTextColor.RED);
-                    // player.playSound(); //  0.8 0.8
-                    // player.playSound(); // ENDER DRAGON HURT 0.3 0.7
-                    // player.playSound(); // CREEPER PRIMED 0.4 0.6
                 } else {
                     title = Component.text("You Lost!", NamedTextColor.BLUE);
-                    // player.playSound(); // ANVIL 0.8 0.8
-                    // player.playSound(); // ENDER DRAGON HURT 0.3 0.7
-                    // player.playSound(); // CREEPER PRIMED 0.4 0.6
+                    player.playSound(player, Sound.BLOCK_ANVIL_FALL, 0.8f, 0.8f);
+                    player.playSound(player, Sound.ENTITY_ENDER_DRAGON_HURT, 0.3f, 0.7f);
+                    player.playSound(player, Sound.ENTITY_CREEPER_PRIMED, 0.4f, 0.6f);
                 }
             } else {
                 subtitle = Component.text("The game was ended early", NamedTextColor.GOLD);
@@ -293,7 +298,7 @@ public class CaptureTheFlag extends Minigame {
     }
 
     public static void addTrap(Entity trap, Player player) {
-        player.sendMessage("placing trap");
+        player.sendMessage("plecing trap");
         traps.put(trap, player);
     }
 
@@ -329,39 +334,51 @@ public class CaptureTheFlag extends Minigame {
         }
     }
 
-    public static void skillCast(Player player) {
+    public static void skillCast(Player player, CooldownManager cdInstance) {
         String kit = kits.getOrDefault(player, null);
         if (kit == null) return;
         switch (kit) {
             case "scout":
-                scoutSkill(player);
+                scoutSkill(player, cdInstance);
                 break;
             case "attacker":
-                attackerSkill(player);
+                attackerSkill(player, cdInstance);
                 break;
             case "defender":
-                defenderSkill(player);
+                defenderSkill(player, cdInstance);
                 break;
-            default:
-                LOGGER.error("Invalid kit: {}. Error in skillCast() function in CaptureTheFlag.java.", kit);
+            default: LOGGER.error("Invalid kit: " + kit + ". Error in skillCast() function in CaptureTheFlag.java.");
         }
     }
 
-    private static void scoutSkill(Player player) {
+    private static void scoutSkill(Player player, CooldownManager cdInstance) {
         player.sendMessage("You are a scout and you are, in fact, casting a skill."); // Point towards banner
     }
 
-    private static void attackerSkill(Player player) {
-        player.sendMessage("You are an attacker and you are, in fact, casting a skill."); // Dash
+    private static void attackerSkill(Player player, CooldownManager cdInstance) {
+        long cd = 6000;
+
+        cdInstance.setCooldownFromNow(player.getUniqueId(), "ctfSkill", cd);
+
         Vector dir = player.getLocation().getDirection();
-        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 0.4f, 0.7f);
-        player.getWorld().playSound(player.getLocation(), Sound.ITEM_ELYTRA_FLYING, 1f, 1f);
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 0.7f, 0.7f);
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FISHING_BOBBER_THROW, 1.2f, 1.3f);
-        dir.setY(1);
-        player.setVelocity(dir.normalize().multiply(2));
+        player.setVelocity(dir.setY(1).normalize().multiply(2));
+
+        if (player.getAttribute(Attribute.GENERIC_FALL_DAMAGE_MULTIPLIER) == null) return;
+        double currAttribute = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_FALL_DAMAGE_MULTIPLIER)).getBaseValue();
+        Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_FALL_DAMAGE_MULTIPLIER)).setBaseValue(0);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (player.isOnGround()) {
+                    Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_FALL_DAMAGE_MULTIPLIER)).setBaseValue(currAttribute);
+                }
+            }
+        }.runTaskTimer(Minerva.getInstance(), 5L, 5L);
     }
 
-    private static void defenderSkill(Player player) {
+    private static void defenderSkill(Player player, CooldownManager cdInstance) {
         player.sendMessage("You are a defender and you are, in fact, casting a skill."); // Parry
     }
 

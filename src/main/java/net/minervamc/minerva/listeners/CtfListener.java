@@ -9,9 +9,10 @@ import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import net.minervamc.minerva.minigames.ctf.RegionManager;
+import net.minervamc.minerva.skills.cooldown.CooldownManager;
+import net.minervamc.minerva.types.Skill;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -187,7 +188,12 @@ public class CtfListener implements Listener {
         if (!CaptureTheFlag.isPlaying()) return;
         if (!CaptureTheFlag.isInGame(player)) return;
 
-        CaptureTheFlag.skillCast(player);
+        CooldownManager cdInstance = Minerva.getInstance().getCdInstance();
+        if (!cdInstance.isCooldownDone(player.getUniqueId(), "ctfSkill")) {
+            Skill.onCooldown(player);
+            return;
+        }
+        CaptureTheFlag.skillCast(player, cdInstance);
     }
 
     @EventHandler

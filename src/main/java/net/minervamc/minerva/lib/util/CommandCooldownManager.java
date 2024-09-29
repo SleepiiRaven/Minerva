@@ -1,7 +1,7 @@
 package net.minervamc.minerva.lib.util;
 
 import java.util.HashMap;
-public class CooldownManager {
+public class CommandCooldownManager {
 
     private static final HashMap<String, HashMap<String, Long>> cooldownMap = new HashMap<>();
 
