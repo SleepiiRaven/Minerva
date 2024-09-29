@@ -111,7 +111,7 @@ public class ItemCreator {
     }
 
     public ItemCreator setName(Component name) {
-        meta.displayName(name);
+        meta.itemName(name);
         return this;
     }
     public ItemCreator setLore(List<Component> lore) {

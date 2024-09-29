@@ -125,7 +125,6 @@ public class CtfListener implements Listener {
         if (item.getType() == Material.AIR) return;
         player.sendMessage("rah not air");
         if (item.getItemMeta().itemName().toString().strip().contains("Trap")) {
-            player.sendMessage("Holding trap");
             RayTraceResult result = player.rayTraceBlocks(4);
             if (result == null) return;
             if (result.getHitBlock() == null || !result.getHitBlock().isSolid()) return;
