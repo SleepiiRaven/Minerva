@@ -27,6 +27,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
+import org.bukkit.util.Vector;
 import org.slf4j.Logger;
 
 public class CaptureTheFlag extends Minigame {
@@ -326,15 +327,21 @@ public class CaptureTheFlag extends Minigame {
     }
 
     private static void scoutSkill(Player player) {
-        player.sendMessage("You are a scout and you are, in fact, casting a skill.");
+        player.sendMessage("You are a scout and you are, in fact, casting a skill."); // Point towards banner
     }
 
     private static void attackerSkill(Player player) {
-        player.sendMessage("You are an attacker and you are, in fact, casting a skill.");
+        player.sendMessage("You are an attacker and you are, in fact, casting a skill."); // Dash
+        Vector dir = player.getLocation().getDirection();
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 0.4f, 0.7f);
+        player.getWorld().playSound(player.getLocation(), Sound.ITEM_ELYTRA_FLYING, 1f, 1f);
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FISHING_BOBBER_THROW, 1.2f, 1.3f);
+        dir.setY(1);
+        player.setVelocity(dir.normalize().multiply(2));
     }
 
     private static void defenderSkill(Player player) {
-        player.sendMessage("You are a defender and you are, in fact, casting a skill.");
+        player.sendMessage("You are a defender and you are, in fact, casting a skill."); // Parry
     }
 
     public static void kitChoose(Player player, String kit) {
