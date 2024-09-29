@@ -208,9 +208,10 @@ public class CtfListener implements Listener {
             redFlagLocation.getBlock().setType(Material.RED_BANNER);
             player.sendMessage(Component.text("You lost the flag."));
         }
-        event.setCancelled(true);
+
         player.getInventory().clear();
         CaptureTheFlag.tpSpawn(player);
+        event.setCancelled(true);
     }
 
     @EventHandler
