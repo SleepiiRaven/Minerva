@@ -9,7 +9,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
-import net.minecraft.world.level.block.TripWireBlock;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
@@ -273,7 +272,7 @@ public class CaptureTheFlag extends Minigame {
     }
 
     public static void addTrap(Entity trap, Player player) {
-        player.sendMessage("plecing trap");
+        player.sendMessage("placing trap");
         traps.put(trap, player);
     }
 
@@ -322,7 +321,8 @@ public class CaptureTheFlag extends Minigame {
             case "defender":
                 defenderSkill(player);
                 break;
-            default: LOGGER.error("Invalid kit: " + kit + ". Error in skillCast() function in CaptureTheFlag.java.");
+            default:
+                LOGGER.error("Invalid kit: {}. Error in skillCast() function in CaptureTheFlag.java.", kit);
         }
     }
 

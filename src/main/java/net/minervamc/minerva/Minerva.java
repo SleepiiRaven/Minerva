@@ -1,6 +1,7 @@
 package net.minervamc.minerva;
 
 import java.io.File;
+import java.util.Objects;
 
 import lombok.Getter;
 import net.minervamc.minerva.commands.CtfCommand;
@@ -8,12 +9,14 @@ import net.minervamc.minerva.commands.PartyCommand;
 import net.minervamc.minerva.commands.SkillModeToggle;
 import net.minervamc.minerva.commands.SkillsCommand;
 import net.minervamc.minerva.lib.Lib;
+import net.minervamc.minerva.listeners.CtfListener;
 import net.minervamc.minerva.listeners.PlayerListener;
 import net.minervamc.minerva.listeners.RegionListener;
 import net.minervamc.minerva.listeners.SkillListener;
 import net.minervamc.minerva.minigames.ctf.RegionManager;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import org.bukkit.NamespacedKey;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Minerva extends JavaPlugin {
@@ -48,12 +51,13 @@ public final class Minerva extends JavaPlugin {
     public void registerListeners() {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new SkillListener(), this);
+        getServer().getPluginManager().registerEvents(new CtfListener(), this);
     }
 
     public void registerCommands() {
-        getCommand("mskills").setExecutor(new SkillsCommand());
-        getCommand("skillmode").setExecutor(new SkillModeToggle());
-        getCommand("party").setExecutor(new PartyCommand());
+        Objects.requireNonNull(getCommand("mskills")).setExecutor(new SkillsCommand());
+        Objects.requireNonNull(getCommand("skillmode")).setExecutor(new SkillModeToggle());
+        Objects.requireNonNull(getCommand("party")).setExecutor(new PartyCommand());
         CtfCommand.register(this);
     }
 
