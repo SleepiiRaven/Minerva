@@ -55,6 +55,7 @@ public class CaptureTheFlag extends Minigame {
     private static Location blueSpawn;
     private static Location redSpawn;
 
+    private static final HashMap<UUID, FastBoard> boards = new HashMap<>();
     private static BukkitTask scoreboardUpdater;
     private static int globalCountdown = 5;
 
@@ -212,7 +213,7 @@ public class CaptureTheFlag extends Minigame {
             public void run() {
                 if (starting) {
                     for (Player player : queue) {
-                        FastBoard board = new FastBoard(player);
+                        FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
                         board.updateTitle(ChatColor.GOLD + "Capture the Flag");
                         board.updateLine(1, ChatColor.AQUA + "In Queue: ");
                         board.updateLine(2, ChatColor.YELLOW + "Players: " + queue.size());
@@ -220,7 +221,7 @@ public class CaptureTheFlag extends Minigame {
                     }
                 } else if (playing) {
                     for (Player player : inGame) {
-                        FastBoard board = new FastBoard(player);
+                        FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
                         board.updateTitle(ChatColor.GOLD + "Capture the Flag");
                         board.updateLine(1, ChatColor.BLUE + "Blue Team: " + blue.size());
                         board.updateLine(2, ChatColor.RED + "Red Team: " + red.size());
@@ -229,7 +230,6 @@ public class CaptureTheFlag extends Minigame {
                 }
             }
         }.runTaskTimer(Minerva.getInstance(), 0, 10);
-
 
         new BukkitRunnable() {
 
@@ -411,6 +411,10 @@ public class CaptureTheFlag extends Minigame {
             player.showTitle(Title.title(title, subtitle));
             GameMode gameMode = player.getPreviousGameMode() == null ? GameMode.SURVIVAL : player.getPreviousGameMode();
             player.setGameMode(gameMode);
+
+            // handle board?
+            FastBoard board = boards.remove(player.getUniqueId());
+            if (board != null) board.delete();
         });
         //LOGGER.info("Ended");
         loadInventories(new ArrayList<>(inGame));
@@ -427,6 +431,7 @@ public class CaptureTheFlag extends Minigame {
         kits.clear();
         blueFlagLocation = null;
         redFlagLocation = null;
+        boards.clear();
         if(scoreboardUpdater != null) {
             scoreboardUpdater.cancel();
             scoreboardUpdater = null;
