@@ -42,7 +42,7 @@ public class CtfCommand extends Command {
     @ICommand(user = CommandUser.ALL,
             permission = "ctf.forcestop")
     public void forcestop(CommandContext context) {
-        CaptureTheFlag.stop();
+        CaptureTheFlag.stop("");
     }
 
     @ICommand(user = CommandUser.ALL,

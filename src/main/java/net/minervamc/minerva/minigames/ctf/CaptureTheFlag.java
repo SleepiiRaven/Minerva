@@ -43,6 +43,7 @@ public class CaptureTheFlag extends Minigame {
     private static final List<Player> red = new ArrayList<>();
 
     private static final Map<Entity, Player> traps = new HashMap<>();
+    private static final Map<Player, String> kits = new HashMap<>();
 
     // Team stuff
     private static Scoreboard scoreboard;
@@ -221,10 +222,37 @@ public class CaptureTheFlag extends Minigame {
         return ItemCreator.getBreakable(redFlagBreakerCr.build(), Material.BLUE_BANNER);
     }
 
-    public static void stop() {
+    public static void stop(String winningTeam) {
         if(!playing) return;
         inGame.forEach(player -> {
-            player.showTitle(Title.title(Component.text("Game Over!", NamedTextColor.RED), Component.empty()));
+            boolean isRed = red.contains(player);
+            Component title;
+            Component subtitle;
+            if (winningTeam.equals("blue")) {
+                subtitle = Component.text("The RED team won!", NamedTextColor.GOLD);
+                if (!isRed) {
+                    title = Component.text("You Won!", NamedTextColor.BLUE);
+                } else {
+                    title = Component.text("You Lost!", NamedTextColor.RED);
+                }
+            } else if (winningTeam.equals("red")) {
+                subtitle = Component.text("The RED team won!", NamedTextColor.GOLD);
+                if (isRed) {
+                    title = Component.text("You Won!", NamedTextColor.RED);
+                    // player.playSound(); //  0.8 0.8
+                    // player.playSound(); // ENDER DRAGON HURT 0.3 0.7
+                    // player.playSound(); // CREEPER PRIMED 0.4 0.6
+                } else {
+                    title = Component.text("You Lost!", NamedTextColor.BLUE);
+                    // player.playSound(); // ANVIL 0.8 0.8
+                    // player.playSound(); // ENDER DRAGON HURT 0.3 0.7
+                    // player.playSound(); // CREEPER PRIMED 0.4 0.6
+                }
+            } else {
+                subtitle = Component.text("The game was ended early", NamedTextColor.GOLD);
+                title = Component.text("Game Over!", NamedTextColor.RED);
+            }
+            player.showTitle(Title.title(title, subtitle));
             GameMode gameMode = player.getPreviousGameMode() == null ? GameMode.SURVIVAL : player.getPreviousGameMode();
             player.setGameMode(gameMode);
         });
@@ -273,10 +301,43 @@ public class CaptureTheFlag extends Minigame {
             event.setCancelled(true);
         } else if (region2.contains("blue") && blue.contains(player)) {  // if a red team crosses over into blue territory
             if (!player.getInventory().contains(redFlag())) return;
-            player.sendMessage("U WON!!");
+            stop("blue");
         } else if (region2.contains("red") && red.contains(player)) {
             if (!player.getInventory().contains(blueFlag())) return;
-            player.sendMessage("U WON!!");
+            stop("red");
         }
+    }
+
+    public static void skillCast(Player player) {
+        String kit = kits.getOrDefault(player, null);
+        if (kit == null) return;
+        switch (kit) {
+            case "scout":
+                scoutSkill(player);
+                break;
+            case "attacker":
+                attackerSkill(player);
+                break;
+            case "defender":
+                defenderSkill(player);
+                break;
+            default: LOGGER.error("Invalid kit: " + kit + ". Error in skillCast() function in CaptureTheFlag.java.");
+        }
+    }
+
+    private static void scoutSkill(Player player) {
+        player.sendMessage("You are a scout and you are, in fact, casting a skill.");
+    }
+
+    private static void attackerSkill(Player player) {
+        player.sendMessage("You are an attacker and you are, in fact, casting a skill.");
+    }
+
+    private static void defenderSkill(Player player) {
+        player.sendMessage("You are a defender and you are, in fact, casting a skill.");
+    }
+
+    public static void kitChoose(Player player, String kit) {
+        kits.put(player, kit);
     }
 }

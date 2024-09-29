@@ -300,4 +300,15 @@ public class PlayerListener implements Listener {
         Bukkit.getLogger().info("Changed Region!");
         CaptureTheFlag.changedRegion(regionOri, regionAft, event);
     }
+
+    @EventHandler
+    public void playerShiftLeftClick(PlayerAnimationEvent event) {
+        Player player = event.getPlayer();
+        if (event.getAnimationType() != PlayerAnimationType.ARM_SWING) return;
+        if (!player.isSneaking()) return;
+        if (!CaptureTheFlag.isPlaying()) return;
+        if (!CaptureTheFlag.isInGame(player)) return;
+
+        CaptureTheFlag.skillCast(player);
+    }
 }

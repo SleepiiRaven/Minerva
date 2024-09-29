@@ -9,6 +9,7 @@ import net.minervamc.minerva.lib.menu.Menu;
 import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.lib.util.MenuUtil;
+import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -33,14 +34,17 @@ public class CTFKitGUI extends Menu {
         MenuUtil.fill(getInventory(), ItemCreator.createNameless(Material.BLACK_STAINED_GLASS_PANE));
         setItem(scoutIndex, getScout(), (p, event) -> {
             giveScoutKit(p);
+            CaptureTheFlag.kitChoose(p, "scout");
             close(p);
         });
         setItem(attackerIndex, getAttacker(), (p, event) -> {
             giveAttackerKit(p);
+            CaptureTheFlag.kitChoose(p, "attacker");
             close(p);
         });
         setItem(defenderIndex, getDefender(), (p, event) -> {
             giveDefenderKit(p);
+            CaptureTheFlag.kitChoose(p, "defender");
             close(p);
         });
     }
