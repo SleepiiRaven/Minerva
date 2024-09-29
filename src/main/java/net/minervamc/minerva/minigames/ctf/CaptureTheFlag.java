@@ -285,14 +285,19 @@ public class CaptureTheFlag extends Minigame {
                     redTeam.setAllowFriendlyFire(false);
 
                     inGame.addAll(queue);
+                    Collections.shuffle(inGame);
                     queue.clear();
 
                     saveAndClearInventories(inGame);
 
                     boolean startWithBlue = new Random().nextBoolean();
-                    LOGGER.info("Start with blue: {}", startWithBlue);
+                    int i = 0;
+                    int blueRemainder = 0;
+                    if (!startWithBlue) {
+                        blueRemainder = 1;
+                    }
                     for (Player player : inGame) {
-                        if ((blue.size() <= red.size() && startWithBlue) || (red.size() < blue.size() && !startWithBlue)) {
+                        if (i % 2 == blueRemainder) {
                             blue.add(player);
                             blueTeam.addEntry(player.getName());
                             player.setScoreboard(scoreboard);
@@ -320,6 +325,7 @@ public class CaptureTheFlag extends Minigame {
                         player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
                         player.setGameMode(GameMode.ADVENTURE);
                         kits(player, "ctf");
+                        i++;
                     }
                     // Add blue flag to random player in blue team's inventory
                     LOGGER.info(blue.size() + " " + red.size());
@@ -537,6 +543,7 @@ public class CaptureTheFlag extends Minigame {
     }
 
     public static void tpSpawn(Player player) {
+        player.sendMessage("weh");
         if (blue.contains(player)) {
             player.teleport(blueSpawn);
         } else {

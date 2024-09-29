@@ -124,7 +124,7 @@ public class CtfListener implements Listener {
         ItemStack item = player.getInventory().getItemInMainHand();
         if (item.getType() == Material.AIR) return;
         player.sendMessage("rah not air");
-        if (item.getItemMeta().itemName().toString().contains("Trap")) {
+        if (item.getItemMeta().itemName().toString().strip().contains("Trap")) {
             player.sendMessage("Holding trap");
             RayTraceResult result = player.rayTraceBlocks(4);
             if (result == null) return;
@@ -202,7 +202,7 @@ public class CtfListener implements Listener {
             if (blueFlagLocation == null) throw new IllegalStateException(player + " died with the blue flag but it has no original location, how was it captured?");
             blueFlagLocation.getBlock().setType(Material.BLUE_BANNER);
             player.sendMessage(Component.text("You lost the flag."));
-        } else {
+        } else if (CaptureTheFlag.hasRedFlag(player)) {
             Location redFlagLocation = CaptureTheFlag.redFlagLocation;
             if(redFlagLocation == null) throw new IllegalStateException(player + " died with the red flag but it has no original location, how was it captured?");
             redFlagLocation.getBlock().setType(Material.RED_BANNER);
