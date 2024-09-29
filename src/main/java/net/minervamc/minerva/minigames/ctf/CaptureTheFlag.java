@@ -9,6 +9,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.TripWireBlock;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.lib.text.TextContext;
@@ -23,6 +24,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
@@ -333,11 +336,11 @@ public class CaptureTheFlag extends Minigame {
     private static void attackerSkill(Player player) {
         player.sendMessage("You are an attacker and you are, in fact, casting a skill."); // Dash
         Vector dir = player.getLocation().getDirection();
-        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 0.4f, 0.7f);
-        player.getWorld().playSound(player.getLocation(), Sound.ITEM_ELYTRA_FLYING, 1f, 1f);
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 0.7f, 0.7f);
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FISHING_BOBBER_THROW, 1.2f, 1.3f);
-        dir.setY(1);
         player.setVelocity(dir.normalize().multiply(2));
+        dir.setY(1);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 60, 1));
     }
 
     private static void defenderSkill(Player player) {
