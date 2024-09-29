@@ -15,6 +15,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
@@ -59,15 +60,7 @@ public class CtfListener implements Listener {
         Player player = event.getPlayer();
         if (!CaptureTheFlag.isPlaying()) return;
         if (!CaptureTheFlag.isInGame(player)) return;
-        if (CaptureTheFlag.inBlueTeam(player)) {
-            if (event.getItemDrop().getItemStack().getType() == Material.BLUE_BANNER) {
-                event.setCancelled(true);
-            }
-        } else {
-            if (event.getItemDrop().getItemStack().getType() == Material.RED_BANNER) {
-                event.setCancelled(true);
-            }
-        }
+        event.setCancelled(true);
     }
 
     @EventHandler
@@ -190,5 +183,14 @@ public class CtfListener implements Listener {
         if (!CaptureTheFlag.isInGame(player)) return;
 
         CaptureTheFlag.skillCast(player);
+    }
+
+    @EventHandler
+    public void playerDeath(PlayerDeathEvent event) {
+        Player player = event.getPlayer();
+        if (!CaptureTheFlag.isPlaying()) return;
+        if (!CaptureTheFlag.isInGame(player)) return;
+
+        event.getDrops().clear();
     }
 }
