@@ -270,7 +270,6 @@ public class Command extends org.bukkit.command.Command {
         if (annotation == null) return List.of();
 
         if(!annotation.tabCompleter().isBlank()) {
-            LOGGER.info("tab completer for command {} is not blank: {}", subcommand, annotation.tabCompleter());
             String tabCompleter = annotation.tabCompleter();
 
             Method tabMethod = this.cachedTabMethods.get(tabCompleter);
@@ -289,7 +288,6 @@ public class Command extends org.bukkit.command.Command {
             List<String> completions = (List<String>) method.invoke(this, context); // INVOKED HERE!
             List<String> mutableCompletions = new ArrayList<>(completions);
             mutableCompletions.addAll(allArgsCompletions);
-            LOGGER.info("Executing for tab completer {}", subcommand);
             return mutableCompletions;
         } catch (IllegalAccessException | InvocationTargetException |
                  CommandException | IllegalArgumentException ignored) {}

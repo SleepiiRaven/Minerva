@@ -11,10 +11,13 @@ import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import net.minervamc.minerva.minigames.ctf.RegionManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Banner;
+import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
@@ -38,7 +41,8 @@ public class CtfListener implements Listener {
 
                 ItemCreator flagCr = ItemCreator.get(Material.RED_BANNER);
                 flagCr.setName(TextContext.format("Red Flag", false).color(NamedTextColor.RED).decorate(TextDecoration.BOLD));
-                player.getInventory().addItem(flagCr.build());
+                //player.getInventory().addItem(flagCr.build());
+                player.getInventory().setHelmet(flagCr.build()); // banner on head
                 
                 player.sendMessage(Component.text("You are carrying the red flag. Take it to your team's side to win!", NamedTextColor.RED));
             }
@@ -48,7 +52,8 @@ public class CtfListener implements Listener {
 
                 ItemCreator flagCr = ItemCreator.get(Material.BLUE_BANNER);
                 flagCr.setName(TextContext.format("Blue Flag", false).color(NamedTextColor.BLUE).decorate(TextDecoration.BOLD));
-                player.getInventory().addItem(flagCr.build());
+                //player.getInventory().addItem(flagCr.build());
+                player.getInventory().setHelmet(flagCr.build()); // banner on head
                 
                 player.sendMessage(Component.text("You are carrying the blue flag. Take it to your team's side to win!", NamedTextColor.BLUE));
             }
@@ -190,7 +195,30 @@ public class CtfListener implements Listener {
         Player player = event.getPlayer();
         if (!CaptureTheFlag.isPlaying()) return;
         if (!CaptureTheFlag.isInGame(player)) return;
-
+        if(CaptureTheFlag.hasBlueFlag(player)) {
+            Location blueFlagLocation = CaptureTheFlag.blueFlagLocation;
+            if (blueFlagLocation == null) throw new IllegalStateException(player + " died with the blue flag but it has no original location, how was it captured?");
+            blueFlagLocation.getBlock().setType(Material.BLUE_BANNER);
+            player.sendMessage(Component.text("You lost the flag."));
+        } else {
+            Location redFlagLocation = CaptureTheFlag.redFlagLocation;
+            if(redFlagLocation == null) throw new IllegalStateException(player + " died with the red flag but it has no original location, how was it captured?");
+            redFlagLocation.getBlock().setType(Material.RED_BANNER);
+            player.sendMessage(Component.text("You lost the flag."));
+        }
         event.getDrops().clear();
+    }
+
+    @EventHandler
+    public void playerPlaceBanner(BlockPlaceEvent event) {
+        Player player = event.getPlayer();
+        if (!CaptureTheFlag.isPlaying()) return;
+        if (!CaptureTheFlag.isInGame(player)) return;
+        Block block = event.getBlock();
+
+        switch (block.getType()) {
+            case RED_BANNER -> CaptureTheFlag.redFlagLocation = block.getLocation();
+            case BLUE_BANNER -> CaptureTheFlag.blueFlagLocation = block.getLocation();
+        }
     }
 }

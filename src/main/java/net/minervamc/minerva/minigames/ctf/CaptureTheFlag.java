@@ -45,6 +45,9 @@ public class CaptureTheFlag extends Minigame {
     private static final Map<Entity, Player> traps = new HashMap<>();
     private static final Map<Player, String> kits = new HashMap<>();
 
+    public static Location blueFlagLocation;
+    public static Location redFlagLocation;
+
     // Team stuff
     private static Scoreboard scoreboard;
     private static Team blueTeam;
@@ -88,6 +91,24 @@ public class CaptureTheFlag extends Minigame {
 
     public static boolean isInGame(Player player) {
         return inGame.contains(player);
+    }
+
+    public static boolean hasFlag(Player player) {
+        ItemStack flag = player.getInventory().getHelmet();
+        if(flag == null) return false;
+        return flag.getType().equals(Material.RED_BANNER) || flag.getType().equals(Material.BLUE_BANNER);
+    }
+
+    public static boolean hasRedFlag(Player player) {
+        ItemStack flag = player.getInventory().getHelmet();
+        if(flag == null) return false;
+        return flag.getType().equals(Material.RED_BANNER);
+    }
+
+    public static boolean hasBlueFlag(Player player) {
+        ItemStack flag = player.getInventory().getHelmet();
+        if(flag == null) return false;
+        return flag.getType().equals(Material.BLUE_BANNER);
     }
 
     public static void start() {
