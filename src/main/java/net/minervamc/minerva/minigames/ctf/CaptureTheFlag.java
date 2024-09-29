@@ -85,11 +85,21 @@ public class CaptureTheFlag extends Minigame {
         });
         if(queue.size() > 4) start();
 
-        if(scoreboardUpdater != null) return;
-        scoreboardUpdater = new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (starting) {
+        if(scoreboardUpdater == null) {
+            scoreboardUpdater = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (playing) {
+                        for (Player player : inGame) {
+                            FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
+                            board.updateTitle(ChatColor.GOLD + "Capture the Flag");
+                            board.updateLine(0, ChatColor.GRAY +"+=+=+=+=+=+=+=+=+=+");
+                            board.updateLine(1, ChatColor.BLUE + "Blue Team: " + blue.size());
+                            board.updateLine(2, ChatColor.RED + "Red Team: " + red.size());
+                            board.updateLine(3, ChatColor.AQUA + "Players in Game: " + inGame.size());
+                        }
+                        return;
+                    }
                     for (Player player : queue) {
                         FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
                         board.updateTitle(ChatColor.GOLD + "Capture the Flag");
@@ -98,18 +108,11 @@ public class CaptureTheFlag extends Minigame {
                         board.updateLine(2, ChatColor.YELLOW + "Players: " + queue.size());
                         board.updateLine(3, ChatColor.RED + "Starting in: " + globalCountdown);
                     }
-                } else if (playing) {
-                    for (Player player : inGame) {
-                        FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
-                        board.updateTitle(ChatColor.GOLD + "Capture the Flag");
-                        board.updateLine(0, ChatColor.GRAY +"+=+=+=+=+=+=+=+=+=+");
-                        board.updateLine(1, ChatColor.BLUE + "Blue Team: " + blue.size());
-                        board.updateLine(2, ChatColor.RED + "Red Team: " + red.size());
-                        board.updateLine(3, ChatColor.AQUA + "Players in Game: " + inGame.size());
-                    }
                 }
-            }
-        }.runTaskTimer(Minerva.getInstance(), 0, 10);
+            }.runTaskTimer(Minerva.getInstance(), 0, 5);
+        }else {
+            LOGGER.info("scoreboard updater is not null");
+        }
     }
 
     public static void removeQueue(Player player) {
