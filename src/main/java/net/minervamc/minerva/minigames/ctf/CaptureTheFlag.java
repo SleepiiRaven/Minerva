@@ -212,39 +212,37 @@ public class CaptureTheFlag extends Minigame {
             public void run() {
                 if (starting) {
                     for (Player player : queue) {
-                        // Show player count in the queue
-                        player.sendActionBar(Component.text("Players in queue: " + queue.size(), NamedTextColor.GREEN));
-
-                        // Update sidebar for players in queue
                         Scoreboard board = player.getScoreboard();
                         Objective objective = board.getObjective("ctf");
 
                         if (objective == null) {
-                            objective = board.registerNewObjective("ctf", Criteria.DUMMY, Component.text("Capture The Flag"));
+                            objective = board.registerNewObjective("ctf", Criteria.DUMMY, ChatColor.GOLD + "Capture The Flag");
                             objective.setDisplaySlot(DisplaySlot.SIDEBAR);
                         }
 
-                        objective.getScore("Players in Queue:").setScore(queue.size());
-                        objective.getScore("Starting in: " + count).setScore(1);
+                        objective.getScore(ChatColor.YELLOW + "Players in Queue:").setScore(queue.size());
+                        objective.getScore(ChatColor.RED + "Starting in: " + count).setScore(1);
+                        objective.getScore(" ").setScore(0);
                     }
                 } else if (playing) {
-                    // Update the sidebar during gameplay
                     for (Player player : inGame) {
                         Scoreboard board = player.getScoreboard();
                         Objective objective = board.getObjective("ctf");
 
                         if (objective == null) {
-                            objective = board.registerNewObjective("ctf", Criteria.DUMMY, Component.text("Capture The Flag"));
+                            objective = board.registerNewObjective("ctf", Criteria.DUMMY, ChatColor.GOLD + "Capture The Flag");
                             objective.setDisplaySlot(DisplaySlot.SIDEBAR);
                         }
 
-                        objective.getScore("Blue Team: " + blue.size()).setScore(3);
-                        objective.getScore("Red Team: " + red.size()).setScore(2);
-                        objective.getScore("Players in Game:").setScore(inGame.size());
+                        objective.getScore(ChatColor.BLUE + "Blue Team: " + blue.size()).setScore(3);
+                        objective.getScore(ChatColor.RED + "Red Team: " + red.size()).setScore(2);
+                        objective.getScore(ChatColor.YELLOW + "Players in Game: " + inGame.size()).setScore(1);
+                        objective.getScore(" ").setScore(0);
                     }
                 }
             }
         }.runTaskTimer(Minerva.getInstance(), 0, 10);
+
 
 
         new BukkitRunnable() {
