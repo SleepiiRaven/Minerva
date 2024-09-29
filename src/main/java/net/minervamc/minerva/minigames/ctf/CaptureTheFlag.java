@@ -21,6 +21,7 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -440,11 +441,23 @@ public class CaptureTheFlag extends Minigame {
         playing = false;
         starting = false;
         preparePhase = false;
+
+        for (Entity trap : traps.keySet()) {
+            for (Entity entity : trap.getPassengers()) {
+                trap.removePassenger(entity);
+                entity.remove();
+            }
+            trap.remove();
+        }
         traps.clear();
         kits.clear();
+
+        blueFlagLocation.getBlock().setType(Material.AIR);
+        redFlagLocation.getBlock().setType(Material.AIR);
         blueFlagLocation = null;
         redFlagLocation = null;
         boards.clear();
+
         if(scoreboardUpdater != null) {
             scoreboardUpdater.cancel();
             scoreboardUpdater = null;
