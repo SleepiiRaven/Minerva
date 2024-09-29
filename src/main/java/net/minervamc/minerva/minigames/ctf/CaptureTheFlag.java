@@ -114,7 +114,7 @@ public class CaptureTheFlag extends Minigame {
                         board.updateLine(3, ChatColor.RED + "Waiting for more players...");
                     }
                 }
-            }.runTaskTimer(Minerva.getInstance(), 0, 1);
+            }.runTaskTimer(Minerva.getInstance(), 0, 20);
         }else {
             LOGGER.info("scoreboard updater is not null");
         }
