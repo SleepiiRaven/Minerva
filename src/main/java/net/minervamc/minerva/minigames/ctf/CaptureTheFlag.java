@@ -253,10 +253,8 @@ public class CaptureTheFlag extends Minigame {
 
                     saveAndClearInventories(inGame);
 
-                    int i = 0;
                     for (Player player : inGame) {
-                        boolean randBool = new Random().nextBoolean();
-                        if ((i % 2 == 0) == randBool) {
+                        if (blue.size() <= red.size()) {
                             blue.add(player);
                             blueTeam.addEntry(player.getName());
                             player.setScoreboard(scoreboard);
@@ -279,12 +277,6 @@ public class CaptureTheFlag extends Minigame {
                             player.getInventory().addItem(redFlagBreaker());
                             player.teleport(redSpawn);
                         }
-
-                        player.showTitle(Title.title(Component.text("Game Started!", NamedTextColor.GREEN), Component.empty()));
-                        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
-                        player.setGameMode(GameMode.ADVENTURE);
-                        kits(player, "ctf");
-                        i++;
                     }
                     // Add blue flag to random player in blue team's inventory
                     LOGGER.info(blue.size() + " " + red.size());
