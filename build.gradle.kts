@@ -61,6 +61,7 @@ tasks.assemble {
 }
 
 tasks.shadowJar {
+    archiveClassifier.set("shadow")
     //relocate ("fr.mrmicky.fastboard", "net.minervamc.minerva.fastboard")
     destinationDirectory.set(file("D:/Servers/Minerva/plugins"))
     //destinationDirectory.set(file("run/plugins")) //Faceless

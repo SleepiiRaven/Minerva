@@ -3,7 +3,7 @@ package net.minervamc.minerva.minigames.ctf;
 import java.time.Duration;
 import java.util.*;
 
-import fr.mrmicky.fastboard.adventure.FastBoard;
+import fr.mrmicky.fastboard.FastBoard;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -213,32 +213,23 @@ public class CaptureTheFlag extends Minigame {
                 if (starting) {
                     for (Player player : queue) {
                         FastBoard board = new FastBoard(player);
-                        board.updateTitle(Component.text("Capture the Flag"));
-                        board.updateLine(1, Component.text("In Queue: " + queue.size()));
-
-                        int count = 2;
-                        for (Player inQueue : queue) {
-                            board.updateLine(count, Component.text(inQueue.getName()));
-                            count++;
-                        }
-
-                        if (count < 16) {
-                            for (int i = count; i < 16; i++) {
-                                board.updateLine(i, Component.text(""));
-                            }
-                        }
+                        board.updateTitle(ChatColor.GOLD + "Capture the Flag");
+                        board.updateLine(1, ChatColor.AQUA + "In Queue: ");
+                        board.updateLine(2, ChatColor.YELLOW + "Players: " + queue.size());
+                        board.updateLine(3, ChatColor.RED + "Starting in: " + globalCountdown);
                     }
                 } else if (playing) {
                     for (Player player : inGame) {
                         FastBoard board = new FastBoard(player);
-                        board.updateTitle(Component.text("Capture the Flag"));
-                        board.updateLine(1, Component.text("Blue Team: " + blue.size()));
-                        board.updateLine(2, Component.text("Red Team: " + red.size()));
-                        board.updateLine(3, Component.text("Players in Game: " + inGame.size()));
+                        board.updateTitle(ChatColor.GOLD + "Capture the Flag");
+                        board.updateLine(1, ChatColor.BLUE + "Blue Team: " + blue.size());
+                        board.updateLine(2, ChatColor.RED + "Red Team: " + red.size());
+                        board.updateLine(3, ChatColor.AQUA + "Players in Game: " + inGame.size());
                     }
                 }
             }
         }.runTaskTimer(Minerva.getInstance(), 0, 10);
+
 
         new BukkitRunnable() {
 
