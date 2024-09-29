@@ -2,7 +2,7 @@ package net.minervamc.minerva.lib.command;
 
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.lib.text.TextContext;
-import net.minervamc.minerva.lib.util.CooldownManager;
+import net.minervamc.minerva.lib.util.CommandCooldownManager;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
@@ -73,14 +73,14 @@ public class Command extends org.bukkit.command.Command {
                 return true;
             }
 
-            if (!CooldownManager.isCooldownExpired(context.sender().getName(), name)) {
-                long remainingTime = CooldownManager.getRemainingTime(context.sender().getName(), name);
+            if (!CommandCooldownManager.isCooldownExpired(context.sender().getName(), name)) {
+                long remainingTime = CommandCooldownManager.getRemainingTime(context.sender().getName(), name);
                 String formattedCooldownMessage = cooldownMessage.replace("{}", String.valueOf(remainingTime / 1000));
                 context.sender().sendMessage(TextContext.hexAndLegacy(formattedCooldownMessage));
                 return true;
             }
 
-            CooldownManager.setCooldown(context.sender().getName(), name, cooldown);
+            CommandCooldownManager.setCooldown(context.sender().getName(), name, cooldown);
             try {
                 method.invoke(this, context);
             } catch (IllegalAccessException | InvocationTargetException e) {
@@ -119,14 +119,14 @@ public class Command extends org.bukkit.command.Command {
                 return;
             }
 
-            if (!CooldownManager.isCooldownExpired(context.sender().getName(), "allArgs")) {
-                long remainingTime = CooldownManager.getRemainingTime(context.sender().getName(), "allArgs");
+            if (!CommandCooldownManager.isCooldownExpired(context.sender().getName(), "allArgs")) {
+                long remainingTime = CommandCooldownManager.getRemainingTime(context.sender().getName(), "allArgs");
                 String formattedCooldownMessage = cooldownMessage.replace("{}", String.valueOf(remainingTime / 1000));
                 context.sender().sendMessage(TextContext.hexAndLegacy(formattedCooldownMessage));
                 return;
             }
 
-            CooldownManager.setCooldown(context.sender().getName(), "allArgs", cooldown);
+            CommandCooldownManager.setCooldown(context.sender().getName(), "allArgs", cooldown);
             try {
                 method.invoke(this, new CommandContext(context.sender(), this, context.args()));
             } catch (IllegalAccessException | InvocationTargetException e) {
@@ -163,14 +163,14 @@ public class Command extends org.bukkit.command.Command {
                 return;
             }
 
-            if (!CooldownManager.isCooldownExpired(context.sender().getName(), "noArgs")) {
-                long remainingTime = CooldownManager.getRemainingTime(context.sender().getName(), "noArgs");
+            if (!CommandCooldownManager.isCooldownExpired(context.sender().getName(), "noArgs")) {
+                long remainingTime = CommandCooldownManager.getRemainingTime(context.sender().getName(), "noArgs");
                 String formattedCooldownMessage = cooldownMessage.replace("{}", String.valueOf(remainingTime / 1000));
                 context.sender().sendMessage(TextContext.hexAndLegacy(formattedCooldownMessage));
                 return;
             }
 
-            CooldownManager.setCooldown(context.sender().getName(), "noArgs", cooldown);
+            CommandCooldownManager.setCooldown(context.sender().getName(), "noArgs", cooldown);
             try {
                 method.invoke(this, context);
             } catch (IllegalAccessException | InvocationTargetException e) {

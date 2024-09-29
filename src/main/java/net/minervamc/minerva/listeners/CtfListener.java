@@ -9,6 +9,8 @@ import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import net.minervamc.minerva.minigames.ctf.RegionManager;
+import net.minervamc.minerva.skills.cooldown.CooldownManager;
+import net.minervamc.minerva.types.Skill;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
@@ -27,7 +29,7 @@ import org.slf4j.Logger;
 
 public class CtfListener implements Listener {
     private static final Logger LOGGER = Minerva.getInstance().getSLF4JLogger();
-    
+
     @EventHandler
     public void playerPickUpItem(BlockBreakEvent event) {
         Player player = event.getPlayer();
@@ -39,7 +41,7 @@ public class CtfListener implements Listener {
                 ItemCreator flagCr = ItemCreator.get(Material.RED_BANNER);
                 flagCr.setName(TextContext.format("Red Flag", false).color(NamedTextColor.RED).decorate(TextDecoration.BOLD));
                 player.getInventory().addItem(flagCr.build());
-                
+
                 player.sendMessage(Component.text("You are carrying the red flag. Take it to your team's side to win!", NamedTextColor.RED));
             }
         } else {
@@ -49,7 +51,7 @@ public class CtfListener implements Listener {
                 ItemCreator flagCr = ItemCreator.get(Material.BLUE_BANNER);
                 flagCr.setName(TextContext.format("Blue Flag", false).color(NamedTextColor.BLUE).decorate(TextDecoration.BOLD));
                 player.getInventory().addItem(flagCr.build());
-                
+
                 player.sendMessage(Component.text("You are carrying the blue flag. Take it to your team's side to win!", NamedTextColor.BLUE));
             }
         }
@@ -157,9 +159,7 @@ public class CtfListener implements Listener {
         Player player = event.getPlayer();
         if (!CaptureTheFlag.isPlaying()) return;
         if (!CaptureTheFlag.isInGame(player)) return;
-        LOGGER.info("In game");
         if (!event.hasChangedBlock()) return;
-        LOGGER.info("Changed block");
         String regionOri = "";
         String regionAft = "";
         for (String regionName : RegionManager.listRegions()) {
@@ -168,9 +168,7 @@ public class CtfListener implements Listener {
             if (region.contains(event.getTo())) regionAft = regionName;
         }
         if (regionAft.isEmpty()) return;
-        LOGGER.info("Region is not empty!");
         if (regionOri.equals(regionAft)) return;
-        LOGGER.info("Changed Region!");
         CaptureTheFlag.changedRegion(regionOri, regionAft, event);
     }
 
@@ -182,7 +180,12 @@ public class CtfListener implements Listener {
         if (!CaptureTheFlag.isPlaying()) return;
         if (!CaptureTheFlag.isInGame(player)) return;
 
-        CaptureTheFlag.skillCast(player);
+        CooldownManager cdInstance = Minerva.getInstance().getCdInstance();
+        if (!cdInstance.isCooldownDone(player.getUniqueId(), "ctfSkill")) {
+            Skill.onCooldown(player);
+            return;
+        }
+        CaptureTheFlag.skillCast(player, cdInstance);
     }
 
     @EventHandler
