@@ -1,6 +1,7 @@
 plugins {
     id ("java")
     id ("io.freefair.lombok") version "8.6"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     id ("io.papermc.paperweight.userdev") version "1.7.2"
 }
 
@@ -26,6 +27,7 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
     compileOnly("de.tr7zw:item-nbt-api-plugin:2.13.2")
+    implementation ("fr.mrmicky:fastboard:2.1.3")
     paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
 }
 
@@ -54,7 +56,13 @@ tasks.processResources {
     }
 }
 
-tasks.jar {
+tasks.assemble {
+    dependsOn(tasks.shadowJar)
+}
+
+tasks.shadowJar {
+    //relocate ("fr.mrmicky.fastboard", "net.minervamc.minerva.fastboard")
     destinationDirectory.set(file("D:/Servers/Minerva/plugins"))
     //destinationDirectory.set(file("run/plugins")) //Faceless
 }
+

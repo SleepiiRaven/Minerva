@@ -3,6 +3,7 @@ package net.minervamc.minerva.minigames.ctf;
 import java.time.Duration;
 import java.util.*;
 
+import fr.mrmicky.fastboard.adventure.FastBoard;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -15,7 +16,6 @@ import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.minigames.Minigame;
-import net.minervamc.minerva.utils.Board;
 import net.minervamc.minerva.utils.FastUtils;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -56,7 +56,7 @@ public class CaptureTheFlag extends Minigame {
     private static Location redSpawn;
 
     private static BukkitTask scoreboardUpdater;
-    private static int count = 5;
+    private static int globalCountdown = 5;
 
     // Team stuff
     private static Scoreboard scoreboard;
@@ -212,63 +212,58 @@ public class CaptureTheFlag extends Minigame {
             public void run() {
                 if (starting) {
                     for (Player player : queue) {
-                        Scoreboard board = player.getScoreboard();
-                        Objective objective = board.getObjective("ctf");
+                        FastBoard board = new FastBoard(player);
+                        board.updateTitle(Component.text("Capture the Flag"));
+                        board.updateLine(1, Component.text("In Queue: " + queue.size()));
 
-                        if (objective == null) {
-                            objective = board.registerNewObjective("ctf", Criteria.DUMMY, ChatColor.GOLD + "Capture The Flag");
-                            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+                        int count = 2;
+                        for (Player inQueue : queue) {
+                            board.updateLine(count, Component.text(inQueue.getName()));
+                            count++;
                         }
 
-                        objective.getScore(ChatColor.YELLOW + "Players in Queue:").setScore(queue.size());
-                        objective.getScore(ChatColor.RED + "Starting in: " + count).setScore(1);
-                        objective.getScore(" ").setScore(0);
+                        if (count < 16) {
+                            for (int i = count; i < 16; i++) {
+                                board.updateLine(i, Component.text(""));
+                            }
+                        }
                     }
                 } else if (playing) {
                     for (Player player : inGame) {
-                        Scoreboard board = player.getScoreboard();
-                        Objective objective = board.getObjective("ctf");
-
-                        if (objective == null) {
-                            objective = board.registerNewObjective("ctf", Criteria.DUMMY, ChatColor.GOLD + "Capture The Flag");
-                            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-                        }
-
-                        objective.getScore(ChatColor.BLUE + "Blue Team: " + blue.size()).setScore(3);
-                        objective.getScore(ChatColor.RED + "Red Team: " + red.size()).setScore(2);
-                        objective.getScore(ChatColor.YELLOW + "Players in Game: " + inGame.size()).setScore(1);
-                        objective.getScore(" ").setScore(0);
+                        FastBoard board = new FastBoard(player);
+                        board.updateTitle(Component.text("Capture the Flag"));
+                        board.updateLine(1, Component.text("Blue Team: " + blue.size()));
+                        board.updateLine(2, Component.text("Red Team: " + red.size()));
+                        board.updateLine(3, Component.text("Players in Game: " + inGame.size()));
                     }
                 }
             }
         }.runTaskTimer(Minerva.getInstance(), 0, 10);
 
-
-
         new BukkitRunnable() {
 
             @Override
             public void run() {
-                if (count > 0) {
-                    TextColor color = switch (count) {
+                if (globalCountdown > 0) {
+                    TextColor color = switch (globalCountdown) {
                         case 1 -> TextColor.color(0xFF0024);
                         case 2 -> TextColor.color(0xFF4500);
                         case 3 -> TextColor.color(0xFFA500);
                         case 4 -> TextColor.color(0xFFFF00);
                         case 5 -> NamedTextColor.GREEN;
-                        default -> throw new IllegalStateException("Unexpected value: " + count);
+                        default -> throw new IllegalStateException("Unexpected value: " + globalCountdown);
                     };
                     queue.forEach(player -> {
                         Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
                         Title title = Title.title(
-                                Component.text(count + "", color),
+                                Component.text(globalCountdown + "", color),
                                 Component.text("seconds before the game starts."), times
                         );
 
                         player.showTitle(title);
                         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
                     });
-                    count--;
+                    globalCountdown--;
                 }
                 else {
                     ScoreboardManager manager = Bukkit.getScoreboardManager();
