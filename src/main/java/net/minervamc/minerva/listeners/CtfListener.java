@@ -163,9 +163,7 @@ public class CtfListener implements Listener {
         Player player = event.getPlayer();
         if (!CaptureTheFlag.isPlaying()) return;
         if (!CaptureTheFlag.isInGame(player)) return;
-        LOGGER.info("In game");
         if (!event.hasChangedBlock()) return;
-        LOGGER.info("Changed block");
         String regionOri = "";
         String regionAft = "";
         for (String regionName : RegionManager.listRegions()) {
@@ -174,9 +172,7 @@ public class CtfListener implements Listener {
             if (region.contains(event.getTo())) regionAft = regionName;
         }
         if (regionAft.isEmpty()) return;
-        LOGGER.info("Region is not empty!");
         if (regionOri.equals(regionAft)) return;
-        LOGGER.info("Changed Region!");
         CaptureTheFlag.changedRegion(regionOri, regionAft, event);
     }
 
@@ -212,7 +208,9 @@ public class CtfListener implements Listener {
             redFlagLocation.getBlock().setType(Material.RED_BANNER);
             player.sendMessage(Component.text("You lost the flag."));
         }
-        event.getDrops().clear();
+        event.setCancelled(true);
+        player.getInventory().clear();
+        CaptureTheFlag.tpSpawn(player);
     }
 
     @EventHandler

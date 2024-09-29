@@ -12,6 +12,7 @@ import net.kyori.adventure.title.Title;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.TripWireBlock;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.guis.CTFKitGUI;
 import net.minervamc.minerva.lib.region.Region2d;
 import net.minervamc.minerva.lib.storage.yaml.Config;
 import net.minervamc.minerva.lib.text.TextContext;
@@ -40,7 +41,7 @@ import org.slf4j.Logger;
 public class CaptureTheFlag extends Minigame {
     private static final Logger LOGGER = Minerva.getInstance().getSLF4JLogger();
 
-    private static final Config regionConfig = new Config("ctf/regions.yml");
+    private static final Config regionConfig = new Config("ctf/spawns.yml");
 
     @Getter
     public static boolean playing = false;
@@ -251,14 +252,7 @@ public class CaptureTheFlag extends Minigame {
                     queue.clear();
 
                     saveAndClearInventories(inGame);
-                    inGame.forEach(player -> {
-                        player.showTitle(Title.title(Component.text("Game Started!", NamedTextColor.GREEN), Component.empty()));
-                        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
-                        player.setGameMode(GameMode.ADVENTURE);
-                        kits(player, "ctf");
-                    });
 
-                    // Put into Set for randomization
                     int i = 0;
                     for (Player player : inGame) {
                         boolean randBool = new Random().nextBoolean();
@@ -272,7 +266,7 @@ public class CaptureTheFlag extends Minigame {
                                             .append(Component.text(" team!"))
                             );
                             player.getInventory().addItem(blueFlagBreaker());
-                            player.teleport(redSpawn);
+                            player.teleport(blueSpawn);
                         } else {
                             red.add(player);
                             redTeam.addEntry(player.getName());
@@ -285,20 +279,42 @@ public class CaptureTheFlag extends Minigame {
                             player.getInventory().addItem(redFlagBreaker());
                             player.teleport(redSpawn);
                         }
+
+                        player.showTitle(Title.title(Component.text("Game Started!", NamedTextColor.GREEN), Component.empty()));
+                        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
+                        player.setGameMode(GameMode.ADVENTURE);
+                        kits(player, "ctf");
                         i++;
                     }
                     // Add blue flag to random player in blue team's inventory
-                    if (!blue.isEmpty()) blue.get(FastUtils.randomIntInRange(0, blue.size() - 1)).getInventory().addItem(blueFlag());
+                    LOGGER.info(blue.size() + " " + red.size());
+                    if (!blue.isEmpty()) {
+                        int randomIndex = FastUtils.randomIntInRange(0, blue.size() - 1);
+                        if (randomIndex >= 0 && randomIndex < blue.size()) {
+                            blue.get(randomIndex).getInventory().addItem(blueFlag());
+                        }
+                    }
 
-                    // Same for red team
-                    if (!red.isEmpty()) red.get(FastUtils.randomIntInRange(0, red.size() - 1)).getInventory().addItem(redFlag());
-
+                    if (!red.isEmpty()) {
+                        int randomIndex = FastUtils.randomIntInRange(0, red.size() - 1);
+                        if (randomIndex >= 0 && randomIndex < red.size()) {
+                            red.get(randomIndex).getInventory().addItem(redFlag());
+                        }
+                    }
                     playing = true;
                     starting = false;
                     this.cancel();
                 }
             }
         }.runTaskTimer(Minerva.getInstance(), 0, 20);
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                preparePhase = false;
+                Bukkit.broadcast(Component.text("STARTING GAME"));
+            }
+        }.runTaskLater(Minerva.getInstance(), 200);
     }
 
     private static ItemStack blueFlag() {
@@ -373,6 +389,7 @@ public class CaptureTheFlag extends Minigame {
         });
         //LOGGER.info("Ended");
         loadInventories(new ArrayList<>(inGame));
+        queue.clear();
         inGame.clear();
         blue.clear();
         red.clear();
@@ -380,6 +397,11 @@ public class CaptureTheFlag extends Minigame {
         if (redTeam != null && scoreboard.getTeam("Red") != null) redTeam.unregister();
         playing = false;
         starting = false;
+        preparePhase = false;
+        traps.clear();
+        kits.clear();
+        blueFlagLocation = null;
+        redFlagLocation = null;
     }
 
     public static boolean inBlueTeam(Player player) {
@@ -415,10 +437,10 @@ public class CaptureTheFlag extends Minigame {
         if (region2.contains("barrier") && preparePhase) {
             event.setCancelled(true);
         } else if (region2.contains("blue") && blue.contains(player)) {  // if a red team crosses over into blue territory
-            if (!player.getInventory().contains(redFlag())) return;
+            if (!hasRedFlag(player)) return;
             stop("blue");
         } else if (region2.contains("red") && red.contains(player)) {
-            if (!player.getInventory().contains(blueFlag())) return;
+            if (!hasBlueFlag(player)) return;
             stop("red");
         }
     }
@@ -473,5 +495,14 @@ public class CaptureTheFlag extends Minigame {
 
     public static void kitChoose(Player player, String kit) {
         kits.put(player, kit);
+    }
+
+    public static void tpSpawn(Player player) {
+        if (blue.contains(player)) {
+            player.teleport(blueSpawn);
+        } else {
+            player.teleport(redSpawn);
+        }
+        kits(player, "ctf");
     }
 }

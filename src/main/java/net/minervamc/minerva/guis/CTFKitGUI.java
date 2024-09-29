@@ -95,93 +95,29 @@ public class CTFKitGUI extends Menu {
                 .build();
     }
 
-    private void giveScoutKit(Player player) {
-        int swordLoc = 27;
-        ItemCreator sword = ItemCreator.get(Material.GOLDEN_SWORD);
-        sword.setName(Component.text("Celestial Bronze Dagger", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
-        sword.setUnbreakable(true);
-
-        int bowLoc = 28;
-        ItemCreator bow = ItemCreator.get(Material.BOW);
-        bow.setName(Component.text("Reinforced Bow", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
-        bow.setUnbreakable(true);
-        bow.addEnchantment(Enchantment.POWER, 2);
-        bow.addEnchantment(Enchantment.INFINITY, 1);
-
-        int trapLoc = 29;
-        int trapAmount = 4;
-        ItemCreator trap = ItemCreator.get(Material.STONE_PRESSURE_PLATE);
-        trap.setName(Component.text("Weakened Land Mine Trap", NamedTextColor.GRAY).decorate(TextDecoration.BOLD));
-        ItemStack trapBuilt = trap.build();
-        trapBuilt.setAmount(trapAmount);
-
-        int foodLoc = 30;
-        int foodAmount = 64;
-        ItemCreator food = ItemCreator.get(Material.GOLDEN_CARROT);
-        food.setName(Component.text("Ambrosia-Infused Carrot", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
-        ItemStack foodBuilt = food.build();
-        foodBuilt.setAmount(foodAmount);
-
-        int potLoc = 31;
-        ItemStack potion = new ItemStack(Material.SPLASH_POTION);
-        PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
-        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 1200, 2), false);
-        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1200, 1), false);
-        potionMeta.setItemName(ChatColor.AQUA + "" + ChatColor.BOLD + "Stealth Enhancing Potion");
-        potionMeta.setColor(Color.AQUA);
-        potion.setItemMeta(potionMeta);
-
-        int pearlLoc = 34;
-        int pearlAmount = 4;
-        ItemCreator pearl = ItemCreator.get(Material.ENDER_PEARL);
-        pearl.setName(Component.text("Pearl of the Gods", NamedTextColor.WHITE).decorate(TextDecoration.BOLD));
-        ItemStack pearlBuilt = pearl.build();
-        pearlBuilt.setAmount(pearlAmount);
-
-        int spyglassLoc = 35;
-        ItemCreator spyglass = ItemCreator.get(Material.SPYGLASS);
-
-        int arrowLoc = 0;
-        ItemStack arrow = new ItemStack(Material.ARROW);
-
-        player.getInventory().setItem(swordLoc, sword.build());
-        player.getInventory().setItem(bowLoc, bow.build());
-        player.getInventory().setItem(trapLoc, trapBuilt);
-        player.getInventory().setItem(foodLoc, foodBuilt);
-        player.getInventory().setItem(potLoc, potion);
-        player.getInventory().setItem(pearlLoc, pearlBuilt);
-        player.getInventory().setItem(spyglassLoc, spyglass.build());
-        player.getInventory().setItem(arrowLoc, arrow);
-    }
-
     private void giveAttackerKit(Player player) {
-        int swordLoc = 27;
         ItemCreator sword = ItemCreator.get(Material.GOLDEN_SWORD);
         sword.setName(Component.text("Celestial Bronze Dagger", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
         sword.setUnbreakable(true);
 
-        int bowLoc = 28;
         ItemCreator bow = ItemCreator.get(Material.BOW);
         bow.setName(Component.text("Reinforced Bow", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
         bow.setUnbreakable(true);
         bow.addEnchantment(Enchantment.POWER, 2);
         bow.addEnchantment(Enchantment.INFINITY, 1);
 
-        int trapLoc = 29;
         int trapAmount = 4;
         ItemCreator trap = ItemCreator.get(Material.STONE_PRESSURE_PLATE);
         trap.setName(Component.text("Weakened Land Mine Trap", NamedTextColor.GRAY).decorate(TextDecoration.BOLD));
         ItemStack trapBuilt = trap.build();
         trapBuilt.setAmount(trapAmount);
 
-        int foodLoc = 30;
         int foodAmount = 64;
         ItemCreator food = ItemCreator.get(Material.GOLDEN_CARROT);
         food.setName(Component.text("Ambrosia-Infused Carrot", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
         ItemStack foodBuilt = food.build();
         foodBuilt.setAmount(foodAmount);
 
-        int potLoc = 31;
         ItemStack potion = new ItemStack(Material.SPLASH_POTION);
         PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
         potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 1200, 2), false);
@@ -190,58 +126,42 @@ public class CTFKitGUI extends Menu {
         potionMeta.setColor(Color.AQUA);
         potion.setItemMeta(potionMeta);
 
-        int pearlLoc = 34;
         int pearlAmount = 4;
         ItemCreator pearl = ItemCreator.get(Material.ENDER_PEARL);
         pearl.setName(Component.text("Pearl of the Gods", NamedTextColor.WHITE).decorate(TextDecoration.BOLD));
         ItemStack pearlBuilt = pearl.build();
         pearlBuilt.setAmount(pearlAmount);
 
-        int spyglassLoc = 35;
         ItemCreator spyglass = ItemCreator.get(Material.SPYGLASS);
 
-        int arrowLoc = 0;
         ItemStack arrow = new ItemStack(Material.ARROW);
-        arrow.setAmount(64);
 
-        player.getInventory().setItem(swordLoc, sword.build());
-        player.getInventory().setItem(bowLoc, bow.build());
-        player.getInventory().setItem(trapLoc, trapBuilt);
-        player.getInventory().setItem(foodLoc, foodBuilt);
-        player.getInventory().setItem(potLoc, potion);
-        player.getInventory().setItem(pearlLoc, pearlBuilt);
-        player.getInventory().setItem(spyglassLoc, spyglass.build());
-        player.getInventory().setItem(arrowLoc, arrow);
+        player.getInventory().addItem(sword.build(), bow.build(), trapBuilt, foodBuilt, potion, pearlBuilt, spyglass.build(), arrow);
     }
 
     private void giveDefenderKit(Player player) {
-        int swordLoc = 27;
         ItemCreator sword = ItemCreator.get(Material.GOLDEN_SWORD);
         sword.setName(Component.text("Celestial Bronze Dagger", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
         sword.setUnbreakable(true);
 
-        int bowLoc = 28;
         ItemCreator bow = ItemCreator.get(Material.BOW);
         bow.setName(Component.text("Reinforced Bow", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
         bow.setUnbreakable(true);
         bow.addEnchantment(Enchantment.POWER, 2);
         bow.addEnchantment(Enchantment.INFINITY, 1);
 
-        int trapLoc = 29;
         int trapAmount = 4;
         ItemCreator trap = ItemCreator.get(Material.STONE_PRESSURE_PLATE);
         trap.setName(Component.text("Weakened Land Mine Trap", NamedTextColor.GRAY).decorate(TextDecoration.BOLD));
         ItemStack trapBuilt = trap.build();
         trapBuilt.setAmount(trapAmount);
 
-        int foodLoc = 30;
         int foodAmount = 64;
         ItemCreator food = ItemCreator.get(Material.GOLDEN_CARROT);
         food.setName(Component.text("Ambrosia-Infused Carrot", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
         ItemStack foodBuilt = food.build();
         foodBuilt.setAmount(foodAmount);
 
-        int potLoc = 31;
         ItemStack potion = new ItemStack(Material.SPLASH_POTION);
         PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
         potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 1200, 2), false);
@@ -250,26 +170,60 @@ public class CTFKitGUI extends Menu {
         potionMeta.setColor(Color.AQUA);
         potion.setItemMeta(potionMeta);
 
-        int pearlLoc = 34;
         int pearlAmount = 4;
         ItemCreator pearl = ItemCreator.get(Material.ENDER_PEARL);
         pearl.setName(Component.text("Pearl of the Gods", NamedTextColor.WHITE).decorate(TextDecoration.BOLD));
         ItemStack pearlBuilt = pearl.build();
         pearlBuilt.setAmount(pearlAmount);
 
-        int spyglassLoc = 35;
         ItemCreator spyglass = ItemCreator.get(Material.SPYGLASS);
 
-        int arrowLoc = 0;
         ItemStack arrow = new ItemStack(Material.ARROW);
 
-        player.getInventory().setItem(swordLoc, sword.build());
-        player.getInventory().setItem(bowLoc, bow.build());
-        player.getInventory().setItem(trapLoc, trapBuilt);
-        player.getInventory().setItem(foodLoc, foodBuilt);
-        player.getInventory().setItem(potLoc, potion);
-        player.getInventory().setItem(pearlLoc, pearlBuilt);
-        player.getInventory().setItem(spyglassLoc, spyglass.build());
-        player.getInventory().setItem(arrowLoc, arrow);
+        player.getInventory().addItem(sword.build(), bow.build(), trapBuilt, foodBuilt, potion, pearlBuilt, spyglass.build(), arrow);
+    }
+
+    private void giveScoutKit(Player player) {
+        ItemCreator sword = ItemCreator.get(Material.GOLDEN_SWORD);
+        sword.setName(Component.text("Celestial Bronze Dagger", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
+        sword.setUnbreakable(true);
+
+        ItemCreator bow = ItemCreator.get(Material.BOW);
+        bow.setName(Component.text("Reinforced Bow", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
+        bow.setUnbreakable(true);
+        bow.addEnchantment(Enchantment.POWER, 2);
+        bow.addEnchantment(Enchantment.INFINITY, 1);
+
+        int trapAmount = 4;
+        ItemCreator trap = ItemCreator.get(Material.STONE_PRESSURE_PLATE);
+        trap.setName(Component.text("Weakened Land Mine Trap", NamedTextColor.GRAY).decorate(TextDecoration.BOLD));
+        ItemStack trapBuilt = trap.build();
+        trapBuilt.setAmount(trapAmount);
+
+        int foodAmount = 64;
+        ItemCreator food = ItemCreator.get(Material.GOLDEN_CARROT);
+        food.setName(Component.text("Ambrosia-Infused Carrot", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
+        ItemStack foodBuilt = food.build();
+        foodBuilt.setAmount(foodAmount);
+
+        ItemStack potion = new ItemStack(Material.SPLASH_POTION);
+        PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
+        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 1200, 2), false);
+        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1200, 1), false);
+        potionMeta.setItemName(ChatColor.AQUA + "" + ChatColor.BOLD + "Stealth Enhancing Potion");
+        potionMeta.setColor(Color.AQUA);
+        potion.setItemMeta(potionMeta);
+
+        int pearlAmount = 4;
+        ItemCreator pearl = ItemCreator.get(Material.ENDER_PEARL);
+        pearl.setName(Component.text("Pearl of the Gods", NamedTextColor.WHITE).decorate(TextDecoration.BOLD));
+        ItemStack pearlBuilt = pearl.build();
+        pearlBuilt.setAmount(pearlAmount);
+
+        ItemCreator spyglass = ItemCreator.get(Material.SPYGLASS);
+
+        ItemStack arrow = new ItemStack(Material.ARROW);
+
+        player.getInventory().addItem(sword.build(), bow.build(), trapBuilt, foodBuilt, potion, pearlBuilt, spyglass.build(), arrow);
     }
 }
