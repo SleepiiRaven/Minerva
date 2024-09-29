@@ -83,6 +83,32 @@ public class CaptureTheFlag extends Minigame {
             p.sendActionBar(Component.text(player.getName() + " joined the queue!", NamedTextColor.GREEN));
         });
         if(queue.size() > 4) start();
+
+        if(scoreboardUpdater != null) return;
+        scoreboardUpdater = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (starting) {
+                    for (Player player : queue) {
+                        FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
+                        board.updateTitle(ChatColor.GOLD + "Capture the Flag");
+                        board.updateLine(0, ChatColor.GRAY +"+=+=+=+=+=+=+=+=+=+=+=+=+=+=");
+                        board.updateLine(1, ChatColor.AQUA + "In Queue: ");
+                        board.updateLine(2, ChatColor.YELLOW + "Players: " + queue.size());
+                        board.updateLine(3, ChatColor.RED + "Starting in: " + globalCountdown);
+                    }
+                } else if (playing) {
+                    for (Player player : inGame) {
+                        FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
+                        board.updateTitle(ChatColor.GOLD + "Capture the Flag");
+                        board.updateLine(0, ChatColor.GRAY +"+=+=+=+=+=+=+=+=+=+=+=+=+=+=");
+                        board.updateLine(1, ChatColor.BLUE + "Blue Team: " + blue.size());
+                        board.updateLine(2, ChatColor.RED + "Red Team: " + red.size());
+                        board.updateLine(3, ChatColor.AQUA + "Players in Game: " + inGame.size());
+                    }
+                }
+            }
+        }.runTaskTimer(Minerva.getInstance(), 0, 10);
     }
 
     public static void removeQueue(Player player) {
@@ -94,6 +120,16 @@ public class CaptureTheFlag extends Minigame {
         queue.remove(player);
         player.sendActionBar(Component.text("You left the queue!", NamedTextColor.RED));
         queue.forEach(p-> p.sendActionBar(Component.text(player.getName() + " left the queue!", NamedTextColor.RED)));
+
+        FastBoard board = boards.remove(player.getUniqueId());
+        if (board != null) board.delete();
+        if(queue.isEmpty()) {
+            boards.clear();
+            if(scoreboardUpdater != null) {
+                scoreboardUpdater.cancel();
+                scoreboardUpdater = null;
+            }
+        }
     }
 
     public static boolean isInQueue(Player player) {
@@ -207,29 +243,6 @@ public class CaptureTheFlag extends Minigame {
 
         starting = true;
         preparePhase = true;
-
-        scoreboardUpdater = new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (starting) {
-                    for (Player player : queue) {
-                        FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
-                        board.updateTitle(ChatColor.GOLD + "Capture the Flag");
-                        board.updateLine(1, ChatColor.AQUA + "In Queue: ");
-                        board.updateLine(2, ChatColor.YELLOW + "Players: " + queue.size());
-                        board.updateLine(3, ChatColor.RED + "Starting in: " + globalCountdown);
-                    }
-                } else if (playing) {
-                    for (Player player : inGame) {
-                        FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
-                        board.updateTitle(ChatColor.GOLD + "Capture the Flag");
-                        board.updateLine(1, ChatColor.BLUE + "Blue Team: " + blue.size());
-                        board.updateLine(2, ChatColor.RED + "Red Team: " + red.size());
-                        board.updateLine(3, ChatColor.AQUA + "Players in Game: " + inGame.size());
-                    }
-                }
-            }
-        }.runTaskTimer(Minerva.getInstance(), 0, 10);
 
         new BukkitRunnable() {
 
