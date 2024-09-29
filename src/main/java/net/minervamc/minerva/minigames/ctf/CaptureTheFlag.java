@@ -201,13 +201,14 @@ public class CaptureTheFlag extends Minigame {
 
     public static void start() {
         if (playing || starting) return;
-        starting = true;
-        preparePhase = true;
 
         if (blueSpawn == null || redSpawn == null) {
             LOGGER.error("Fatal error! Set spawns before attempting to begin a game");
             return;
         }
+
+        starting = true;
+        preparePhase = true;
 
         new BukkitRunnable() {
             int count = 5;
