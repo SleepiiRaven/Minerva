@@ -106,10 +106,14 @@ public class CaptureTheFlag extends Minigame {
                         board.updateLine(0, ChatColor.GRAY +"+=+=+=+=+=+=+=+=+=+");
                         board.updateLine(1, ChatColor.AQUA + "In Queue: ");
                         board.updateLine(2, ChatColor.YELLOW + "Players: " + queue.size());
-                        board.updateLine(3, ChatColor.RED + "Starting in: " + globalCountdown);
+                        if(starting) {
+                            board.updateLine(3, ChatColor.RED + "Starting in: " + globalCountdown);
+                            return;
+                        }
+                        board.updateLine(3, ChatColor.RED + "Waiting for more players...");
                     }
                 }
-            }.runTaskTimer(Minerva.getInstance(), 0, 5);
+            }.runTaskTimer(Minerva.getInstance(), 0, 1);
         }else {
             LOGGER.info("scoreboard updater is not null");
         }
