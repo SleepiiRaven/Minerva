@@ -12,6 +12,8 @@ import net.kyori.adventure.title.Title;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.TripWireBlock;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.lib.region.Region2d;
+import net.minervamc.minerva.lib.storage.yaml.Config;
 import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.lib.util.ItemCreator;
@@ -20,6 +22,7 @@ import net.minervamc.minerva.utils.FastUtils;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -37,6 +40,8 @@ import org.slf4j.Logger;
 public class CaptureTheFlag extends Minigame {
     private static final Logger LOGGER = Minerva.getInstance().getSLF4JLogger();
 
+    private static final Config regionConfig = new Config("ctf/regions.yml");
+
     @Getter
     public static boolean playing = false;
     public static boolean starting = false;
@@ -52,6 +57,8 @@ public class CaptureTheFlag extends Minigame {
 
     public static Location blueFlagLocation;
     public static Location redFlagLocation;
+    private static Location blueSpawn;
+    private static Location redSpawn;
 
     // Team stuff
     private static Scoreboard scoreboard;
@@ -114,12 +121,90 @@ public class CaptureTheFlag extends Minigame {
         ItemStack flag = player.getInventory().getHelmet();
         if(flag == null) return false;
         return flag.getType().equals(Material.BLUE_BANNER);
+    public static void setSpawnPos(Location loc, String team) {
+        if (team == null) return;
+        if (team.equals("blue")) {
+            blueSpawn = loc;
+            try {
+                regionConfig.set("spawn.blue.world", loc.getWorld().getName());
+                regionConfig.set("spawn.blue.x", loc.getX());
+                regionConfig.set("spawn.blue.y", loc.getY());
+                regionConfig.set("spawn.blue.z", loc.getZ());
+                regionConfig.set("spawn.blue.dir.x", loc.getDirection().getX());
+                regionConfig.set("spawn.blue.dir.y", loc.getDirection().getY());
+                regionConfig.set("spawn.blue.dir.z", loc.getDirection().getZ());
+                regionConfig.save();
+            } catch (Exception e){
+                LOGGER.error("Error saving region '{}': {}", "blue", e.getMessage());
+            } finally {
+                LOGGER.info("Blue spawn saved!");
+            }
+        } else if (team.equals("red")) {
+            redSpawn = loc;
+            try {
+                regionConfig.set("spawn.red.world", loc.getWorld().getName());
+                regionConfig.set("spawn.red.x", loc.getX());
+                regionConfig.set("spawn.red.y", loc.getY());
+                regionConfig.set("spawn.red.z", loc.getZ());
+                regionConfig.set("spawn.red.dir.x", loc.getDirection().getX());
+                regionConfig.set("spawn.red.dir.y", loc.getDirection().getY());
+                regionConfig.set("spawn.red.dir.z", loc.getDirection().getZ());
+                regionConfig.save();
+            } catch (Exception e){
+                LOGGER.error("Error saving region '{}': {}", "red", e.getMessage());
+            } finally {
+                LOGGER.info("Red spawn saved!");
+            }
+        }
+    }
+
+    public static void loadSpawnsFromFile() {
+        ConfigurationSection regionsSection = regionConfig.getConfig().getConfigurationSection("spawn");
+        if (regionsSection == null) return;
+        ConfigurationSection blue = regionsSection.getConfigurationSection("blue");
+        ConfigurationSection red = regionsSection.getConfigurationSection("red");
+        if (blue != null) {
+            try {
+                blueSpawn = new Location(Bukkit.getWorld(Objects.requireNonNull(blue.getString("world"))),
+                    blue.getInt("x"),
+                    blue.getInt("y"),
+                    blue.getInt("z"))
+                    .setDirection(new Vector(
+                            Objects.requireNonNull(blue.getConfigurationSection("dir")).getInt("x"),
+                            Objects.requireNonNull(blue.getConfigurationSection("dir")).getInt("y"),
+                            Objects.requireNonNull(blue.getConfigurationSection("dir")).getInt("z")
+                    ));
+            } catch (IllegalArgumentException e) {
+                LOGGER.error("Error loading region '{}': {}", "blue", e.getMessage());
+            }
+        }
+
+        if (red != null) {
+            try {
+                redSpawn = new Location(Bukkit.getWorld(Objects.requireNonNull(red.getString("world"))),
+                        red.getInt("x"),
+                        red.getInt("y"),
+                        red.getInt("z"))
+                        .setDirection(new Vector(
+                                Objects.requireNonNull(red.getConfigurationSection("dir")).getInt("x"),
+                                Objects.requireNonNull(red.getConfigurationSection("dir")).getInt("y"),
+                                Objects.requireNonNull(red.getConfigurationSection("dir")).getInt("z")
+                        ));
+            } catch (IllegalArgumentException e) {
+                LOGGER.error("Error loading region '{}': {}", "red", e.getMessage());
+            }
+        }
     }
 
     public static void start() {
         if (playing || starting) return;
         starting = true;
         preparePhase = true;
+
+        if (blueSpawn == null || redSpawn == null) {
+            LOGGER.error("Fatal error! Set spawns before attempting to begin a game");
+            return;
+        }
 
         new BukkitRunnable() {
             int count = 5;
@@ -185,6 +270,7 @@ public class CaptureTheFlag extends Minigame {
                                             .append(Component.text(" team!"))
                             );
                             player.getInventory().addItem(blueFlagBreaker());
+                            player.teleport(redSpawn);
                         } else {
                             red.add(player);
                             redTeam.addEntry(player.getName());
@@ -195,6 +281,7 @@ public class CaptureTheFlag extends Minigame {
                                             .append(Component.text(" team!"))
                             );
                             player.getInventory().addItem(redFlagBreaker());
+                            player.teleport(redSpawn);
                         }
                         i++;
                     }

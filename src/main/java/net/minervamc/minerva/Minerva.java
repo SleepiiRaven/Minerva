@@ -13,6 +13,7 @@ import net.minervamc.minerva.listeners.CtfListener;
 import net.minervamc.minerva.listeners.PlayerListener;
 import net.minervamc.minerva.listeners.RegionListener;
 import net.minervamc.minerva.listeners.SkillListener;
+import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import net.minervamc.minerva.minigames.ctf.RegionManager;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import org.bukkit.NamespacedKey;
@@ -38,6 +39,7 @@ public final class Minerva extends JavaPlugin {
 
         Lib.onEnable(); // Faceless start
         RegionManager.loadRegionsFromFile();
+        CaptureTheFlag.loadSpawnsFromFile();
         RegionListener.register();
         //Faceless stop
     }
