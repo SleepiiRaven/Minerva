@@ -536,12 +536,17 @@ public class CaptureTheFlag extends Minigame {
     }
 
     public static void tpSpawn(Player player) {
-        player.sendMessage("weh");
-        if (blue.contains(player)) {
-            player.teleport(blueSpawn);
-        } else {
-            player.teleport(redSpawn);
-        }
-        kits(player, "ctf");
+        kits.remove(player);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (blue.contains(player)) {
+                    player.teleport(blueSpawn);
+                } else {
+                    player.teleport(redSpawn);
+                }
+                kits(player, "ctf");
+            }
+        }.runTaskLater(Minerva.getInstance(), 2L);
     }
 }
