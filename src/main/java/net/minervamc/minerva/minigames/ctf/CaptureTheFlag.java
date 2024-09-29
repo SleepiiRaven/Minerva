@@ -93,7 +93,7 @@ public class CaptureTheFlag extends Minigame {
                     for (Player player : queue) {
                         FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
                         board.updateTitle(ChatColor.GOLD + "Capture the Flag");
-                        board.updateLine(0, ChatColor.GRAY +"+=+=+=+=+=+=+=+=+=+=+=+=+=+=");
+                        board.updateLine(0, ChatColor.GRAY +"+=+=+=+=+=+=+=+=+=+");
                         board.updateLine(1, ChatColor.AQUA + "In Queue: ");
                         board.updateLine(2, ChatColor.YELLOW + "Players: " + queue.size());
                         board.updateLine(3, ChatColor.RED + "Starting in: " + globalCountdown);
@@ -102,7 +102,7 @@ public class CaptureTheFlag extends Minigame {
                     for (Player player : inGame) {
                         FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
                         board.updateTitle(ChatColor.GOLD + "Capture the Flag");
-                        board.updateLine(0, ChatColor.GRAY +"+=+=+=+=+=+=+=+=+=+=+=+=+=+=");
+                        board.updateLine(0, ChatColor.GRAY +"+=+=+=+=+=+=+=+=+=+");
                         board.updateLine(1, ChatColor.BLUE + "Blue Team: " + blue.size());
                         board.updateLine(2, ChatColor.RED + "Red Team: " + red.size());
                         board.updateLine(3, ChatColor.AQUA + "Players in Game: " + inGame.size());
