@@ -173,9 +173,9 @@ public class CaptureTheFlag extends Minigame {
                     blue.getInt("y"),
                     blue.getInt("z"))
                     .setDirection(new Vector(
-                            Objects.requireNonNull(blue.getConfigurationSection("dir")).getInt("x"),
-                            Objects.requireNonNull(blue.getConfigurationSection("dir")).getInt("y"),
-                            Objects.requireNonNull(blue.getConfigurationSection("dir")).getInt("z")
+                            (float) Objects.requireNonNull(blue.getConfigurationSection("dir")).getDouble("x"),
+                            (float) Objects.requireNonNull(blue.getConfigurationSection("dir")).getDouble("y"),
+                            (float) Objects.requireNonNull(blue.getConfigurationSection("dir")).getDouble("z")
                     ));
             } catch (IllegalArgumentException e) {
                 LOGGER.error("Error loading region '{}': {}", "blue", e.getMessage());
@@ -189,9 +189,9 @@ public class CaptureTheFlag extends Minigame {
                         red.getInt("y"),
                         red.getInt("z"))
                         .setDirection(new Vector(
-                                Objects.requireNonNull(red.getConfigurationSection("dir")).getInt("x"),
-                                Objects.requireNonNull(red.getConfigurationSection("dir")).getInt("y"),
-                                Objects.requireNonNull(red.getConfigurationSection("dir")).getInt("z")
+                                (float) Objects.requireNonNull(red.getConfigurationSection("dir")).getDouble("x"),
+                                (float) Objects.requireNonNull(red.getConfigurationSection("dir")).getDouble("y"),
+                                (float) Objects.requireNonNull(red.getConfigurationSection("dir")).getDouble("z")
                         ));
             } catch (IllegalArgumentException e) {
                 LOGGER.error("Error loading region '{}': {}", "red", e.getMessage());
@@ -248,13 +248,14 @@ public class CaptureTheFlag extends Minigame {
                     redTeam.setAllowFriendlyFire(false);
 
                     inGame.addAll(queue);
-                    Collections.shuffle(inGame);
                     queue.clear();
 
                     saveAndClearInventories(inGame);
 
+                    boolean startWithBlue = new Random().nextBoolean();
+                    LOGGER.info("Start with blue: {}", startWithBlue);
                     for (Player player : inGame) {
-                        if (blue.size() <= red.size()) {
+                        if ((blue.size() <= red.size() && startWithBlue) || (red.size() < blue.size() && !startWithBlue)) {
                             blue.add(player);
                             blueTeam.addEntry(player.getName());
                             player.setScoreboard(scoreboard);
@@ -277,6 +278,11 @@ public class CaptureTheFlag extends Minigame {
                             player.getInventory().addItem(redFlagBreaker());
                             player.teleport(redSpawn);
                         }
+
+                        player.showTitle(Title.title(Component.text("Game Started!", NamedTextColor.GREEN), Component.empty()));
+                        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
+                        player.setGameMode(GameMode.ADVENTURE);
+                        kits(player, "ctf");
                     }
                     // Add blue flag to random player in blue team's inventory
                     LOGGER.info(blue.size() + " " + red.size());
