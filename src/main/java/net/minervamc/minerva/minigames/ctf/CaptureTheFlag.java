@@ -119,8 +119,10 @@ public class CaptureTheFlag extends Minigame {
 
     public static boolean hasBlueFlag(Player player) {
         ItemStack flag = player.getInventory().getHelmet();
-        if(flag == null) return false;
+        if (flag == null) return false;
         return flag.getType().equals(Material.BLUE_BANNER);
+    }
+
     public static void setSpawnPos(Location loc, String team) {
         if (team == null) return;
         if (team.equals("blue")) {
