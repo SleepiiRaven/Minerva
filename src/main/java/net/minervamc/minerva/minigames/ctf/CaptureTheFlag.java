@@ -57,7 +57,7 @@ public class CaptureTheFlag extends Minigame {
     private static Location redSpawn;
 
     private static final HashMap<UUID, FastBoard> boards = new HashMap<>();
-    private static BukkitTask scoreboardUpdater;
+    private static BukkitTask scoreboardUpdater = null;
     private static int globalCountdown = 5;
 
     // Team stuff
