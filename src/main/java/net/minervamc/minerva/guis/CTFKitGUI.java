@@ -47,6 +47,9 @@ public class CTFKitGUI extends Menu {
             CaptureTheFlag.kitChoose(p, "defender");
             close(p);
         });
+
+        // open gui if closed
+        setCloseAction(this::open);
     }
 
     private ItemStack getScout() {

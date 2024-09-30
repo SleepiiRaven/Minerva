@@ -162,6 +162,11 @@ public class CtfListener implements Listener {
         Player player = event.getPlayer();
         if (!CaptureTheFlag.isPlaying()) return;
         if (!CaptureTheFlag.isInGame(player)) return;
+        // check if player is in water
+        if(player.isInWater()) {
+            player.setHealth(0);
+        }
+
         if (!event.hasChangedBlock()) return;
         String regionOri = "";
         String regionAft = "";
