@@ -350,6 +350,38 @@ public class CaptureTheFlag extends Minigame {
 
                     saveAndClearInventories(inGame);
 
+                    new BukkitRunnable() {
+                        int ticks = 0;
+                        @Override
+                        public void run() {
+                            if (ticks == 4) {
+                                autoPlaceBanner("blue");
+                                autoPlaceBanner("red");
+                                preparePhase = false;
+                                this.cancel();
+                            } else {
+                                TextColor color = switch (3 - ticks) {
+                                    case 1 -> TextColor.color(0xFF0024);
+                                    case 2 -> TextColor.color(0xFFA500);
+                                    case 3 -> NamedTextColor.GREEN;
+                                    default -> NamedTextColor.WHITE;
+                                };
+
+                                Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
+                                Title title = Title.title(
+                                        Component.text((3 - ticks) + "", color),
+                                        Component.text("seconds before the barrier drops."), times
+                                );
+
+                                for (Player player : inGame) {
+                                    player.showTitle(title);
+                                }
+                            }
+
+                            ticks++;
+                        }
+                    }.runTaskTimer(Minerva.getInstance(), 140L, 20L);
+
                     boolean startWithBlue = new Random().nextBoolean();
                     int i = 0;
                     int blueRemainder = 0;
@@ -414,38 +446,6 @@ public class CaptureTheFlag extends Minigame {
                 }
             }
         }.runTaskTimer(Minerva.getInstance(), 0, 20);
-
-        new BukkitRunnable() {
-            int ticks = 0;
-            @Override
-            public void run() {
-                if (ticks == 4) {
-                    autoPlaceBanner("blue");
-                    autoPlaceBanner("red");
-                    preparePhase = false;
-                    this.cancel();
-                } else {
-                    TextColor color = switch (3 - ticks) {
-                        case 1 -> TextColor.color(0xFF0024);
-                        case 2 -> TextColor.color(0xFFA500);
-                        case 3 -> NamedTextColor.GREEN;
-                        default -> NamedTextColor.WHITE;
-                    };
-
-                    Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
-                    Title title = Title.title(
-                            Component.text((3 - ticks) + "", color),
-                            Component.text("seconds before the barrier drops."), times
-                    );
-
-                    for (Player player : inGame) {
-                        player.showTitle(title);
-                    }
-                }
-
-                ticks++;
-            }
-        }.runTaskTimer(Minerva.getInstance(), 140L, 20L);
     }
 
     public static void autoPlaceBanner(String team) {
@@ -726,18 +726,20 @@ public class CaptureTheFlag extends Minigame {
             int ticks = 0;
             @Override
             public void run() {
-                if (ticks == duration) {
+                if (ticks * 5 >= duration) {
                     player.removeScoreboardTag("ctfParryAbility");
+                    LOGGER.info(String.valueOf(player.getScoreboardTags().contains("ctfParryAbility")));
                     player.getWorld().playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 1f, 0.5f);
                     this.cancel();
                 } else {
                     List<Vector> shield = ParticleUtils.getCylinderPoints(1, 3);
                     for (Vector vec : shield) {
-                        player.getWorld().spawnParticle(Particle.FIREWORK, player.getLocation().add(vec), 0, 0, 0, 0, 0);
+                        player.getWorld().spawnParticle(Particle.FIREWORK, player.getEyeLocation().add(vec), 0, 0, 0, 0, 0);
                     }
                 }
+                ticks++;
             }
-        }.runTaskLater(Minerva.getInstance(), duration);
+        }.runTaskTimer(Minerva.getInstance(), 0L, 5L);
     }
 
     public static void kitChoose(Player player, String kit) {
