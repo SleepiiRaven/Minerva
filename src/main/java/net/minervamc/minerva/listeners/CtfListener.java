@@ -1,5 +1,6 @@
 package net.minervamc.minerva.listeners;
 
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -11,6 +12,7 @@ import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import net.minervamc.minerva.minigames.ctf.RegionManager;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
+import net.minervamc.minerva.utils.ParticleUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -101,9 +103,8 @@ public class CtfListener implements Listener {
             for (Entity entity : trapLoc.getNearbyEntities(1, 1, 1)) {
                 if (entity.getType() == EntityType.ARMOR_STAND && entity.getScoreboardTags().contains("ctfTrap")) {
                     CaptureTheFlag.defuseTrap(entity, player);
-                    entity.getPassengers().forEach(p -> {
-                        entity.removePassenger(p);
-                        p.remove();
+                    entity.getNearbyEntities(0.1, 0.1, 0.1).forEach(p -> {
+                        if (p instanceof BlockDisplay && p.getScoreboardTags().contains("ctfVisualTrap")) p.remove();
                     });
                     entity.remove();
                     return;
@@ -116,20 +117,20 @@ public class CtfListener implements Listener {
     public void playerSetTrap(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (!event.getAction().isRightClick()) return;
-        player.sendMessage("Is right click");
         if (!CaptureTheFlag.isPlaying()) return;
-        player.sendMessage("Is playing");
         if (!CaptureTheFlag.isInGame(player)) return;
-        player.sendMessage("Is in game");
         ItemStack item = player.getInventory().getItemInMainHand();
         if (item.getType() == Material.AIR) return;
-        player.sendMessage("rah not air");
         if (item.getItemMeta().itemName().toString().strip().contains("Trap")) {
-            RayTraceResult result = player.rayTraceBlocks(4);
-            if (result == null) return;
-            if (result.getHitBlock() == null || !result.getHitBlock().isSolid()) return;
-            player.sendMessage("You are looking at block, placing!");
-            Location trapLoc = result.getHitBlock().getLocation();
+            List<Vector> linePoints = ParticleUtils.getLinePoints(player.getLocation().getDirection(), 4, 0.2);
+            Location trapLoc = null;
+            for (Vector v : linePoints) {
+                if (player.getLocation().add(v).getBlock().isSolid()) {
+                    trapLoc = player.getLocation().add(v).setDirection(new Vector(0, 0, 0));
+                    break;
+                }
+            }
+            if (trapLoc == null) return;
             for (Entity entity : trapLoc.getNearbyEntities(1, 1, 1)) {
                 if (entity.getType() == EntityType.ARMOR_STAND && entity.getScoreboardTags().contains("ctfTrap")) {
                     return;
@@ -143,8 +144,7 @@ public class CtfListener implements Listener {
             armorStand.customName(Component.text("Land-Mine Trap"));
             armorStand.setCustomNameVisible(false);
             armorStand.addScoreboardTag("ctfTrap");
-            BlockDisplay blockDisplay = (BlockDisplay) player.getWorld().spawnEntity(armorStand.getEyeLocation(), EntityType.BLOCK_DISPLAY);
-            armorStand.addPassenger(blockDisplay);
+            BlockDisplay blockDisplay = (BlockDisplay) player.getWorld().spawnEntity(trapLoc, EntityType.BLOCK_DISPLAY);
             blockDisplay.setBlock(Material.STONE_PRESSURE_PLATE.createBlockData());
             blockDisplay.setTransformation(new Transformation(
                     new Vector3f(),
