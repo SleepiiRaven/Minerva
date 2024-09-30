@@ -21,7 +21,6 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -103,12 +102,8 @@ public class CaptureTheFlag extends Minigame {
                         return;
                     }
                     for (Player player : queue) {
-                        FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
-                        board.updateTitle(ChatColor.GOLD + "Capture the Flag");
-                        board.updateLine(0, ChatColor.GRAY +"+=+=+=+=+=+=+=+=+=+");
-                        board.updateLine(1, ChatColor.AQUA + "In Queue: ");
-                        board.updateLine(2, ChatColor.YELLOW + "Players: " + queue.size());
                         if(starting) {
+                            FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
                             board.updateLine(3, ChatColor.RED + "Starting in: " + globalCountdown);
                             TextColor color = switch (globalCountdown) {
                                 case 1 -> TextColor.color(0xFF0024);
@@ -116,7 +111,7 @@ public class CaptureTheFlag extends Minigame {
                                 case 3 -> TextColor.color(0xFFA500);
                                 case 4 -> TextColor.color(0xFFFF00);
                                 case 5 -> NamedTextColor.GREEN;
-                                default -> throw new IllegalStateException("Unexpected value: " + globalCountdown);
+                                default -> NamedTextColor.WHITE;
                             };
 
                             Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
@@ -129,13 +124,16 @@ public class CaptureTheFlag extends Minigame {
                             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
 
                             return;
+                        } else {
+                            FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
+                            board.updateTitle(ChatColor.GOLD + "Capture the Flag");
+                            board.updateLine(0, ChatColor.GRAY +"+=+=+=+=+=+=+=+=+=+");
+                            board.updateLine(1, ChatColor.AQUA + "In Queue: " + ChatColor.YELLOW + queue.size());
+                            board.updateLine(3, ChatColor.RED + "Waiting for more players...");
                         }
-                        board.updateLine(3, ChatColor.RED + "Waiting for more players...");
                     }
                 }
             }.runTaskTimer(Minerva.getInstance(), 0, 20);
-        }else {
-            LOGGER.info("scoreboard updater is not null");
         }
     }
 
@@ -276,7 +274,7 @@ public class CaptureTheFlag extends Minigame {
 
             @Override
             public void run() {
-                if (globalCountdown > 1) globalCountdown--;
+                if (globalCountdown > 0) globalCountdown--;
                 else {
                     ScoreboardManager manager = Bukkit.getScoreboardManager();
                     scoreboard = manager.getNewScoreboard();
