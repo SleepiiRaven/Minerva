@@ -17,7 +17,6 @@ import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import net.minervamc.minerva.minigames.ctf.RegionManager;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import org.bukkit.NamespacedKey;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Minerva extends JavaPlugin {
@@ -39,7 +38,7 @@ public final class Minerva extends JavaPlugin {
 
         Lib.onEnable(); // Faceless start
         RegionManager.loadRegionsFromFile();
-        CaptureTheFlag.loadSpawnsFromFile();
+        CaptureTheFlag.loadDefaultsFromFile();
         RegionListener.register();
         //Faceless stop
     }

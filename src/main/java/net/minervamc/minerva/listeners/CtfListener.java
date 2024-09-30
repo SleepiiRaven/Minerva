@@ -15,12 +15,16 @@ import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ParticleUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
@@ -94,21 +98,16 @@ public class CtfListener implements Listener {
         ItemStack item = player.getInventory().getItemInMainHand();
         if (item.getType() == Material.AIR) return;
         if (item.getItemMeta().itemName().toString().contains("Defuse")) {
-            player.sendMessage("Holding defuse kit");
-            RayTraceResult result = player.rayTraceBlocks(4);
+            RayTraceResult result = player.rayTraceEntities(4);
             if (result == null) return;
-            if (result.getHitBlock() == null) return;
-            player.sendMessage("You are looking at block, defusing!");
-            Location trapLoc = result.getHitBlock().getLocation();
-            for (Entity entity : trapLoc.getNearbyEntities(1, 1, 1)) {
-                if (entity.getType() == EntityType.ARMOR_STAND && entity.getScoreboardTags().contains("ctfTrap")) {
-                    CaptureTheFlag.defuseTrap(entity, player);
-                    entity.getNearbyEntities(0.1, 0.1, 0.1).forEach(p -> {
-                        if (p instanceof BlockDisplay && p.getScoreboardTags().contains("ctfVisualTrap")) p.remove();
-                    });
-                    entity.remove();
-                    return;
-                }
+            if (result.getHitEntity() == null) return;
+            Entity entity = result.getHitEntity();
+            if (entity.getType() == EntityType.ARMOR_STAND && entity.getScoreboardTags().contains("ctfTrap")) {
+                CaptureTheFlag.defuseTrap(entity, player);
+                entity.getNearbyEntities(0.1, 0.1, 0.1).forEach(p -> {
+                    if (p instanceof BlockDisplay && p.getScoreboardTags().contains("ctfVisualTrap")) p.remove();
+                });
+                entity.remove();
             }
         }
     }
@@ -125,8 +124,8 @@ public class CtfListener implements Listener {
             List<Vector> linePoints = ParticleUtils.getLinePoints(player.getLocation().getDirection(), 4, 0.2);
             Location trapLoc = null;
             for (Vector v : linePoints) {
-                if (player.getLocation().add(v).getBlock().isSolid()) {
-                    trapLoc = player.getLocation().add(v).setDirection(new Vector(0, 0, 0));
+                if (player.getEyeLocation().add(v).getBlock().isSolid()) {
+                    trapLoc = player.getEyeLocation().add(v).setDirection(new Vector(1, 0, 0));
                     break;
                 }
             }
@@ -163,8 +162,27 @@ public class CtfListener implements Listener {
         if (!CaptureTheFlag.isPlaying()) return;
         if (!CaptureTheFlag.isInGame(player)) return;
         // check if player is in water
-        if(player.isInWater()) {
-            player.setHealth(0);
+        if (player.isInWater()) {
+            CooldownManager cdInstance = Minerva.getInstance().getCdInstance();
+            if (!cdInstance.isCooldownDone(player.getUniqueId(), "waterDeathCTF")) return;
+
+            cdInstance.setCooldownFromNow(player.getUniqueId(), "waterDeathCTF", 200L);
+            if (!CaptureTheFlag.isPlaying()) return;
+            if (!CaptureTheFlag.isInGame(player)) return;
+            if(CaptureTheFlag.hasBlueFlag(player)) {
+                Location blueFlagLocation = CaptureTheFlag.blueFlagLocation;
+                if (blueFlagLocation == null) throw new IllegalStateException(player + " died with the blue flag but it has no original location, how was it captured?");
+                blueFlagLocation.getBlock().setType(Material.BLUE_BANNER);
+                player.sendMessage(Component.text("You lost the flag."));
+            } else if (CaptureTheFlag.hasRedFlag(player)) {
+                Location redFlagLocation = CaptureTheFlag.redFlagLocation;
+                if(redFlagLocation == null) throw new IllegalStateException(player + " died with the red flag but it has no original location, how was it captured?");
+                redFlagLocation.getBlock().setType(Material.RED_BANNER);
+                player.sendMessage(Component.text("You lost the flag."));
+            }
+
+            player.getInventory().clear();
+            CaptureTheFlag.tpSpawn(player);
         }
 
         if (!event.hasChangedBlock()) return;
@@ -201,7 +219,12 @@ public class CtfListener implements Listener {
         Player player = event.getPlayer();
         if (!CaptureTheFlag.isPlaying()) return;
         if (!CaptureTheFlag.isInGame(player)) return;
-        if(CaptureTheFlag.hasBlueFlag(player)) {
+        if (CaptureTheFlag.inBlueTeam(player)) {
+            CaptureTheFlag.autoPlaceBanner("blue");
+        } else {
+            CaptureTheFlag.autoPlaceBanner("red");
+        }
+        if (CaptureTheFlag.hasBlueFlag(player)) {
             Location blueFlagLocation = CaptureTheFlag.blueFlagLocation;
             if (blueFlagLocation == null) throw new IllegalStateException(player + " died with the blue flag but it has no original location, how was it captured?");
             blueFlagLocation.getBlock().setType(Material.BLUE_BANNER);
@@ -229,5 +252,20 @@ public class CtfListener implements Listener {
             case RED_BANNER -> CaptureTheFlag.redFlagLocation = block.getLocation();
             case BLUE_BANNER -> CaptureTheFlag.blueFlagLocation = block.getLocation();
         }
+    }
+
+    @EventHandler
+    public void playerTakeDamage(EntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!CaptureTheFlag.isPlaying()) return;
+        if (!CaptureTheFlag.isInGame(player)) return;
+        if (!player.getScoreboardTags().contains("ctfParryAbility")) return;
+
+        player.getWorld().playSound(player.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1f, 1f);
+
+        Entity damager = event.getDamager();
+        if (!(damager instanceof LivingEntity lE)) return;
+        lE.damage(event.getDamage() / 2);
+        event.setCancelled(true);
     }
 }

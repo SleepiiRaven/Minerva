@@ -67,7 +67,6 @@ public class PlayerStats {
                 playerStats.put(uuid, data);
                 return data;
             }
-            System.out.println("File exists but wasn't saved." + uuid);
             try {
                 // getting the data
                 String json = Files.readString(path);
@@ -79,7 +78,7 @@ public class PlayerStats {
             playerStats.put(uuid, data);
         }
         if (data == null) {
-            System.out.println("Somehow passed data check with null.\nUUID: " + uuid);
+            Minerva.getInstance().getSLF4JLogger().error("PlayerStats.java, somehow got past all the checks as null. UUID: " + uuid);
         }
         return data;
     }

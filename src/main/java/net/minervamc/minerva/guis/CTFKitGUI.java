@@ -35,18 +35,22 @@ public class CTFKitGUI extends Menu {
         setItem(scoutIndex, getScout(), (p, event) -> {
             giveScoutKit(p);
             CaptureTheFlag.kitChoose(p, "scout");
+            setStopClosing(false);
             close(p);
         });
         setItem(attackerIndex, getAttacker(), (p, event) -> {
             giveAttackerKit(p);
             CaptureTheFlag.kitChoose(p, "attacker");
+            setStopClosing(false);
             close(p);
         });
         setItem(defenderIndex, getDefender(), (p, event) -> {
             giveDefenderKit(p);
             CaptureTheFlag.kitChoose(p, "defender");
+            setStopClosing(false);
             close(p);
         });
+        setStopClosing(true);
     }
 
     private ItemStack getScout() {
@@ -126,17 +130,11 @@ public class CTFKitGUI extends Menu {
         potionMeta.setColor(Color.AQUA);
         potion.setItemMeta(potionMeta);
 
-        int pearlAmount = 4;
-        ItemCreator pearl = ItemCreator.get(Material.ENDER_PEARL);
-        pearl.setName(Component.text("Pearl of the Gods", NamedTextColor.WHITE).decorate(TextDecoration.BOLD));
-        ItemStack pearlBuilt = pearl.build();
-        pearlBuilt.setAmount(pearlAmount);
-
         ItemCreator spyglass = ItemCreator.get(Material.SPYGLASS);
 
         ItemStack arrow = new ItemStack(Material.ARROW);
 
-        player.getInventory().addItem(sword.build(), bow.build(), trapBuilt, foodBuilt, potion, pearlBuilt, spyglass.build(), arrow);
+        player.getInventory().addItem(sword.build(), bow.build(), trapBuilt, foodBuilt, potion, spyglass.build(), arrow);
     }
 
     private void giveDefenderKit(Player player) {
@@ -170,17 +168,11 @@ public class CTFKitGUI extends Menu {
         potionMeta.setColor(Color.AQUA);
         potion.setItemMeta(potionMeta);
 
-        int pearlAmount = 4;
-        ItemCreator pearl = ItemCreator.get(Material.ENDER_PEARL);
-        pearl.setName(Component.text("Pearl of the Gods", NamedTextColor.WHITE).decorate(TextDecoration.BOLD));
-        ItemStack pearlBuilt = pearl.build();
-        pearlBuilt.setAmount(pearlAmount);
-
         ItemCreator spyglass = ItemCreator.get(Material.SPYGLASS);
 
         ItemStack arrow = new ItemStack(Material.ARROW);
 
-        player.getInventory().addItem(sword.build(), bow.build(), trapBuilt, foodBuilt, potion, pearlBuilt, spyglass.build(), arrow);
+        player.getInventory().addItem(sword.build(), bow.build(), trapBuilt, foodBuilt, potion, spyglass.build(), arrow);
     }
 
     private void giveScoutKit(Player player) {
@@ -214,16 +206,10 @@ public class CTFKitGUI extends Menu {
         potionMeta.setColor(Color.AQUA);
         potion.setItemMeta(potionMeta);
 
-        int pearlAmount = 4;
-        ItemCreator pearl = ItemCreator.get(Material.ENDER_PEARL);
-        pearl.setName(Component.text("Pearl of the Gods", NamedTextColor.WHITE).decorate(TextDecoration.BOLD));
-        ItemStack pearlBuilt = pearl.build();
-        pearlBuilt.setAmount(pearlAmount);
-
         ItemCreator spyglass = ItemCreator.get(Material.SPYGLASS);
 
         ItemStack arrow = new ItemStack(Material.ARROW);
 
-        player.getInventory().addItem(sword.build(), bow.build(), trapBuilt, foodBuilt, potion, pearlBuilt, spyglass.build(), arrow);
+        player.getInventory().addItem(sword.build(), bow.build(), trapBuilt, foodBuilt, potion, spyglass.build(), arrow);
     }
 }

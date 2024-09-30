@@ -24,6 +24,7 @@ public abstract class Menu {
     @Setter @Getter private MenuDrag generalDragAction;
     @Setter @Getter private MenuOpen openAction;
     @Setter @Getter private MenuClose closeAction;
+    @Setter @Getter private boolean stopClosing = false;
     @Getter public final UUID uuid;
     @Getter private final Inventory inventory;
 

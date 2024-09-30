@@ -83,12 +83,20 @@ public class CtfCommand extends Command {
                 RegionManager.deleteRegion(name);
             }
             case "setspawn" -> {
-                if (args.length != 3) {
+                if (args.length < 3) {
                     player.sendMessage(Component.text("Please provide a team name! (blue/red)", NamedTextColor.RED));
                     return;
                 }
                 String name = args[2];
                 CaptureTheFlag.setSpawnPos(player.getLocation(), name);
+            }
+            case "setdefaultflagpos" -> {
+                if (args.length < 3) {
+                    player.sendMessage(Component.text("Please provide a team name! (blue/red)", NamedTextColor.RED));
+                    return;
+                }
+                String name = args[2];
+                CaptureTheFlag.setDefaultFlagPos(player.getLocation(), name);
             }
         }
     }
@@ -100,7 +108,7 @@ public class CtfCommand extends Command {
 
         String[] args = context.args();
         if(args.length == 2) {
-            return Stream.of("selectmode", "list", "save", "delete", "setspawn").filter(s -> s.startsWith(args[1])).toList();
+            return Stream.of("selectmode", "list", "save", "delete", "setspawn", "setdefaultflagpos").filter(s -> s.startsWith(args[1])).toList();
         }
 
         //   c    0      1      3

@@ -1,5 +1,6 @@
 package net.minervamc.minerva.lib.listeners;
 
+import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.lib.menu.Menu;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -7,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class MenuListener implements Listener {
 
@@ -45,6 +47,16 @@ public class MenuListener implements Listener {
     private void inventoryClose(InventoryCloseEvent event) {
         Player p = (Player) event.getPlayer();
         Menu menu = Menu.getMenu(p);
-        if(menu != null) menu.remove();
+        if(menu != null) {
+            if (menu.isStopClosing()) {
+                new BukkitRunnable() {
+                    public void run() {
+                        menu.open(p);
+                    }
+                }.runTaskLater(Minerva.getInstance(), 1L);
+            } else {
+                menu.remove();
+            }
+        }
     }
 }
