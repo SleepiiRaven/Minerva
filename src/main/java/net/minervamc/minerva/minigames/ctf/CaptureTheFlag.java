@@ -21,7 +21,6 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -59,7 +58,7 @@ public class CaptureTheFlag extends Minigame {
 
     private static final HashMap<UUID, FastBoard> boards = new HashMap<>();
     private static BukkitTask scoreboardUpdater = null;
-    private static int globalCountdown = 5;
+    private static int globalCountdown = 6;
 
     // Team stuff
     private static Scoreboard scoreboard;
@@ -109,6 +108,24 @@ public class CaptureTheFlag extends Minigame {
                         board.updateLine(2, ChatColor.YELLOW + "Players: " + queue.size());
                         if(starting) {
                             board.updateLine(3, ChatColor.RED + "Starting in: " + globalCountdown);
+                            TextColor color = switch (globalCountdown) {
+                                case 1 -> TextColor.color(0xFF0024);
+                                case 2 -> TextColor.color(0xFF4500);
+                                case 3 -> TextColor.color(0xFFA500);
+                                case 4 -> TextColor.color(0xFFFF00);
+                                case 5 -> NamedTextColor.GREEN;
+                                default -> throw new IllegalStateException("Unexpected value: " + globalCountdown);
+                            };
+
+                            Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
+                            Title title = Title.title(
+                                    Component.text(globalCountdown + "", color),
+                                    Component.text("seconds before the game starts."), times
+                            );
+
+                            player.showTitle(title);
+                            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
+
                             return;
                         }
                         board.updateLine(3, ChatColor.RED + "Waiting for more players...");
@@ -257,27 +274,7 @@ public class CaptureTheFlag extends Minigame {
 
             @Override
             public void run() {
-                if (globalCountdown > 0) {
-                    TextColor color = switch (globalCountdown) {
-                        case 1 -> TextColor.color(0xFF0024);
-                        case 2 -> TextColor.color(0xFF4500);
-                        case 3 -> TextColor.color(0xFFA500);
-                        case 4 -> TextColor.color(0xFFFF00);
-                        case 5 -> NamedTextColor.GREEN;
-                        default -> throw new IllegalStateException("Unexpected value: " + globalCountdown);
-                    };
-                    queue.forEach(player -> {
-                        Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
-                        Title title = Title.title(
-                                Component.text(globalCountdown + "", color),
-                                Component.text("seconds before the game starts."), times
-                        );
-
-                        player.showTitle(title);
-                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
-                    });
-                    globalCountdown--;
-                }
+                if (globalCountdown > 1) globalCountdown--;
                 else {
                     ScoreboardManager manager = Bukkit.getScoreboardManager();
                     scoreboard = manager.getNewScoreboard();
