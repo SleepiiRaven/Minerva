@@ -29,36 +29,23 @@ public class CTFKitGUI extends Menu {
     private final int attackerIndex = 13;
     private final int defenderIndex = 15;
 
-    private static boolean chosenKit = false;
-
     public CTFKitGUI() {
         super(27, Component.text("Kit Selection"));
         MenuUtil.fill(getInventory(), ItemCreator.createNameless(Material.BLACK_STAINED_GLASS_PANE));
         setItem(scoutIndex, getScout(), (p, event) -> {
             giveScoutKit(p);
             CaptureTheFlag.kitChoose(p, "scout");
-            chosenKit = true;
             close(p);
         });
         setItem(attackerIndex, getAttacker(), (p, event) -> {
             giveAttackerKit(p);
             CaptureTheFlag.kitChoose(p, "attacker");
-            chosenKit = true;
             close(p);
         });
         setItem(defenderIndex, getDefender(), (p, event) -> {
             giveDefenderKit(p);
             CaptureTheFlag.kitChoose(p, "defender");
-            chosenKit = true;
             close(p);
-        });
-
-        // open gui if closed
-        setCloseAction(p -> {
-            if(!chosenKit) {
-                chosenKit = true;
-                new CTFKitGUI().open(p);
-            }
         });
     }
 
