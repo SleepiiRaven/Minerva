@@ -21,6 +21,8 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -448,10 +450,9 @@ public class CaptureTheFlag extends Minigame {
         preparePhase = false;
 
         for (Entity trap : traps.keySet()) {
-            for (Entity entity : trap.getPassengers()) {
-                trap.removePassenger(entity);
-                entity.remove();
-            }
+            trap.getNearbyEntities(0.1, 0.1, 0.1).forEach(p -> {
+                if (p instanceof BlockDisplay && p.getScoreboardTags().contains("ctfVisualTrap")) p.remove();
+            });
             trap.remove();
         }
         traps.clear();
@@ -505,10 +506,10 @@ public class CaptureTheFlag extends Minigame {
         target.sendMessage("You've been hit by a trap from " + setter.getName() + "!");
         trap.getWorld().createExplosion(trap, 3);
         traps.remove(trap);
-        trap.getPassengers().forEach(pass -> {
-            trap.removePassenger(pass);
-            pass.remove();
+        trap.getNearbyEntities(0.1, 0.1, 0.1).forEach(p -> {
+            if (p instanceof BlockDisplay && p.getScoreboardTags().contains("ctfVisualTrap")) p.remove();
         });
+        trap.remove();
         trap.remove();
     }
 
