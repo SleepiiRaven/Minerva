@@ -30,7 +30,7 @@ public class TomahawkThrow extends Skill {
         double speed = 20;
         int rotationSpeed = 2; // ticks per rotation
         double kb = 0.3;
-        long cooldown = 6000;
+        long cooldown = 3000;
         double distance = 10;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "tomahawk")) {
@@ -80,7 +80,7 @@ public class TomahawkThrow extends Skill {
 
 
                 for (Entity entity : display.getWorld().getNearbyEntities(display.getLocation(), 1, 1, 1)) {
-                    if (!(entity instanceof LivingEntity livingMonster) || (entity == display) || (entity.getScoreboardTags().contains("aresSummoned")) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
+                    if (!(entity instanceof LivingEntity livingMonster) || (entity == display) || entity.getScoreboardTags().contains(player.getUniqueId().toString()) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
                         continue;
                     SkillUtils.damage(livingMonster, damage, player);
                     livingMonster.setVelocity(livingMonster.getVelocity().add(direction.clone().multiply(kb)));

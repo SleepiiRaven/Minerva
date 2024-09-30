@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import net.minervamc.minerva.skills.SkillTriggers;
@@ -13,6 +15,8 @@ import net.minervamc.minerva.types.HeritageType;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.JsonUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Item;
+import org.bukkit.inventory.ItemStack;
 
 public class PlayerStats {
     private static final Path STORAGE_FOLDER = Minerva.getInstance().getDataFolder().toPath().resolve("PlayerData");
@@ -42,6 +46,9 @@ public class PlayerStats {
     private int maxLevel = 1;
     private int maxPoints = 0;
     private int points = 0;
+    private ItemStack[] inventory = new ItemStack[36];
+    private ItemStack[] armor = new ItemStack[4];
+    private ItemStack[] offhand = new ItemStack[1];
     //endregion
 
     public PlayerStats(UUID uuid) {
@@ -60,6 +67,7 @@ public class PlayerStats {
                 playerStats.put(uuid, data);
                 return data;
             }
+            System.out.println("File exists but wasn't saved." + uuid);
             try {
                 // getting the data
                 String json = Files.readString(path);
@@ -69,6 +77,9 @@ public class PlayerStats {
                 e.printStackTrace();
             }
             playerStats.put(uuid, data);
+        }
+        if (data == null) {
+            System.out.println("Somehow passed data check with null.\nUUID: " + uuid);
         }
         return data;
     }
@@ -237,6 +248,30 @@ public class PlayerStats {
 
     public void setMaxPoints(int points) {
         maxPoints = points;
+    }
+
+    public ItemStack[] getInventory() {
+        return inventory;
+    }
+
+    public ItemStack[] getArmor() {
+        return armor;
+    }
+
+    public ItemStack[] getOffhand() {
+        return offhand;
+    }
+
+    public void setInventory(ItemStack[] inventory) {
+        this.inventory = inventory;
+    }
+
+    public void setArmor(ItemStack[] armor) {
+        this.armor = armor;
+    }
+
+    public void setOffhand(ItemStack[] offhand) {
+        this.offhand = offhand;
     }
 
     public void createJSON() throws IOException {

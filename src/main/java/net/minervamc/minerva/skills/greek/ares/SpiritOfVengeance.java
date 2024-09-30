@@ -125,7 +125,7 @@ public class SpiritOfVengeance extends Skill {
 
                     for (Pillager pillager : pillagers) {
                         for (Entity entity : pillager.getWorld().getNearbyEntities(pillager.getLocation(), angerRadius, angerRadius, angerRadius)) {
-                            if (!(entity instanceof LivingEntity potentialTarget) || (potentialTarget instanceof Tameable && ((Tameable) potentialTarget).getOwner() != null) || potentialTarget.getScoreboardTags().contains("aresSummoned") || potentialTarget == player || (potentialTarget instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
+                            if (!(entity instanceof LivingEntity potentialTarget) || (potentialTarget instanceof Tameable && ((Tameable) potentialTarget).getOwner() != null) || potentialTarget.getScoreboardTags().contains(player.getUniqueId().toString()) || potentialTarget == player || (potentialTarget instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
                                 if (pillager.getTarget() == player) {
                                     pillager.setTarget(null);
                                 }

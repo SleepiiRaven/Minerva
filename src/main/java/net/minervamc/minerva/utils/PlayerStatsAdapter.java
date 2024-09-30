@@ -1,5 +1,6 @@
 package net.minervamc.minerva.utils;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -7,11 +8,20 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.UUID;
 import net.minervamc.minerva.PlayerStats;
+import net.minervamc.minerva.lib.storage.json.JsonConfig;
 import net.minervamc.minerva.types.HeritageType;
 import net.minervamc.minerva.types.Skill;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 public class PlayerStatsAdapter implements JsonSerializer<PlayerStats>, JsonDeserializer<PlayerStats> {
     @Override
@@ -37,7 +47,31 @@ public class PlayerStatsAdapter implements JsonSerializer<PlayerStats>, JsonDese
         object.addProperty("maxLevel", data.getMaxLevel());
         object.addProperty("points", data.getPoints());
         object.addProperty("maxPoints", data.getMaxPoints());
+        object.addProperty("inventory", itemStackArrayToBase64(data.getInventory()));
+        object.addProperty("armor", itemStackArrayToBase64(data.getArmor()));
+        object.addProperty("offhand", itemStackArrayToBase64(data.getOffhand()));
         return object;
+    }
+
+    public static String itemStackArrayToBase64(ItemStack[] items) throws IllegalStateException {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
+
+            // Write the size of the inventory
+            dataOutput.writeInt(items.length);
+
+            // Save every element in the list
+            for (int i = 0; i < items.length; i++) {
+                dataOutput.writeObject(items[i]);
+            }
+
+            // Serialize that array
+            dataOutput.close();
+            return Base64Coder.encodeLines(outputStream.toByteArray());
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to save item stacks.", e);
+        }
     }
 
     @Override
@@ -65,8 +99,48 @@ public class PlayerStatsAdapter implements JsonSerializer<PlayerStats>, JsonDese
             playerDataJSON.setMaxLevel(object.get("maxLevel").getAsInt());
             playerDataJSON.setPoints(object.get("points").getAsInt());
             playerDataJSON.setMaxPoints(object.get("maxPoints").getAsInt());
+
+            try {
+                if (object.has("inventory")) {
+                    playerDataJSON.setInventory(itemStackArrayFromBase64(object.get("inventory").getAsString()));
+                } else {
+                    playerDataJSON.setInventory(new ItemStack[36]);
+                }
+                
+                if (object.has("armor")) {
+                    playerDataJSON.setArmor(itemStackArrayFromBase64(object.get("armor").getAsString()));
+                } else {
+                    playerDataJSON.setArmor(new ItemStack[4]);
+                }
+
+                if (object.has("offhand")) {
+                    playerDataJSON.setOffhand(itemStackArrayFromBase64(object.get("offhand").getAsString()));
+                } else {
+                    playerDataJSON.setOffhand(new ItemStack[1]);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return playerDataJSON;
         }
         return null;
+    }
+
+    public static ItemStack[] itemStackArrayFromBase64(String data) throws IOException {
+        try {
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
+            BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
+            ItemStack[] items = new ItemStack[dataInput.readInt()];
+
+            // Read the serialized inventory
+            for (int i = 0; i < items.length; i++) {
+                items[i] = (ItemStack) dataInput.readObject();
+            }
+
+            dataInput.close();
+            return items;
+        } catch (ClassNotFoundException e) {
+            throw new IOException("Unable to decode class type.", e);
+        }
     }
 }
