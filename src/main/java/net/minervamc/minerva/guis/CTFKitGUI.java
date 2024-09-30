@@ -55,7 +55,10 @@ public class CTFKitGUI extends Menu {
 
         // open gui if closed
         setCloseAction(p -> {
-            if(!chosenKit) this.open(p);
+            if(!chosenKit) {
+                chosenKit = true;
+                new CTFKitGUI().open(p);
+            }
         });
     }
 
