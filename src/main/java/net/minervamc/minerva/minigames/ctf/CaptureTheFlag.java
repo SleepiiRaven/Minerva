@@ -102,8 +102,8 @@ public class CaptureTheFlag extends Minigame {
                         return;
                     }
                     for (Player player : queue) {
+                        FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
                         if(starting) {
-                            FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
                             board.updateLine(3, ChatColor.RED + "Starting in: " + globalCountdown);
                             TextColor color = switch (globalCountdown) {
                                 case 1 -> TextColor.color(0xFF0024);
@@ -122,14 +122,14 @@ public class CaptureTheFlag extends Minigame {
 
                             player.showTitle(title);
                             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
-
+                            LOGGER.info("sending starting messages to player {}", player.getName());
                             return;
                         } else {
-                            FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
                             board.updateTitle(ChatColor.GOLD + "Capture the Flag");
                             board.updateLine(0, ChatColor.GRAY +"+=+=+=+=+=+=+=+=+=+");
                             board.updateLine(1, ChatColor.AQUA + "In Queue: " + ChatColor.YELLOW + queue.size());
                             board.updateLine(3, ChatColor.RED + "Waiting for more players...");
+                            LOGGER.info("sending dormant message to player {}", player.getName());
                         }
                     }
                 }
