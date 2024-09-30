@@ -123,7 +123,7 @@ public class CaptureTheFlag extends Minigame {
                             player.showTitle(title);
                             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
                             LOGGER.info("sending starting messages to player {}", player.getName());
-                            return;
+                            continue;
                         } else {
                             board.updateTitle(ChatColor.GOLD + "Capture the Flag");
                             board.updateLine(0, ChatColor.GRAY +"+=+=+=+=+=+=+=+=+=+");
