@@ -479,6 +479,7 @@ public class CaptureTheFlag extends Minigame {
         blueFlagLocation = null;
         redFlagLocation = null;
         boards.clear();
+        globalCountdown = 5;
 
         if(scoreboardUpdater != null) {
             scoreboardUpdater.cancel();
@@ -586,8 +587,10 @@ public class CaptureTheFlag extends Minigame {
             public void run() {
                 if (blue.contains(player)) {
                     player.teleport(blueSpawn);
+                    player.getInventory().addItem(blueFlagBreaker());
                 } else {
                     player.teleport(redSpawn);
+                    player.getInventory().addItem(redFlagBreaker());
                 }
                 kits(player, "ctf");
             }
