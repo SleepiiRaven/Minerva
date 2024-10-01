@@ -100,7 +100,11 @@ public class PlayerStats {
 
     //region Setters
     public void setHeritage(HeritageType heritage) {
-        this.heritage = heritage;
+        if (heritage == null) {
+            this.heritage = HeritageType.NONE;
+        } else {
+            this.heritage = heritage;
+        }
     }
 
     public Skill getSkillRRR() {
@@ -108,7 +112,11 @@ public class PlayerStats {
     }
 
     public void setSkillRRR(Skill skillRRR) {
-        this.skillRRR = skillRRR;
+        if (skillRRR == null) {
+            this.skillRRR = Skills.DEFAULT;
+        } else {
+            this.skillRRR = skillRRR;
+        }
     }
 
     public Skill getSkillRLR() {
@@ -116,7 +124,11 @@ public class PlayerStats {
     }
 
     public void setSkillRLR(Skill skillRLR) {
-        this.skillRLR = skillRLR;
+        if (skillRLR == null) {
+            this.skillRLR = Skills.DEFAULT;
+        } else {
+            this.skillRLR = skillRLR;
+        }
     }
 
     public Skill getSkillRLL() {
@@ -124,7 +136,11 @@ public class PlayerStats {
     }
 
     public void setSkillRLL(Skill skillRLL) {
-        this.skillRLL = skillRLL;
+        if (skillRLL == null) {
+            this.skillRLL = Skills.DEFAULT;
+        } else {
+            this.skillRLL = skillRLL;
+        }
     }
 
     public Skill getSkillRRL() {
@@ -132,7 +148,11 @@ public class PlayerStats {
     }
 
     public void setSkillRRL(Skill skillRRL) {
-        this.skillRRL = skillRRL;
+        if (skillRRL == null) {
+            this.skillRRL = Skills.DEFAULT;
+        } else {
+            this.skillRRL = skillRLR;
+        }
     }
 
     public Skill getPassive() {
@@ -140,7 +160,11 @@ public class PlayerStats {
     }
 
     public void setPassive(Skill passive) {
-        this.passive = passive;
+        if (passive == null) {
+            this.passive = Skills.DEFAULT;
+        } else {
+            this.passive = passive;
+        }
     }
 
     public boolean getRRRActive() {
@@ -262,15 +286,27 @@ public class PlayerStats {
     }
 
     public void setInventory(ItemStack[] inventory) {
-        this.inventory = inventory;
+        if (inventory == null) {
+            this.inventory = new ItemStack[36];
+        } else {
+            this.inventory = inventory;
+        }
     }
 
     public void setArmor(ItemStack[] armor) {
-        this.armor = armor;
+        if (armor == null) {
+            this.armor = new ItemStack[4];
+        } else {
+            this.armor = armor;
+        }
     }
 
     public void setOffhand(ItemStack[] offhand) {
-        this.offhand = offhand;
+        if (offhand == null) {
+            this.offhand = new ItemStack[1];
+        } else {
+            this.offhand = offhand;
+        }
     }
 
     public void createJSON() throws IOException {

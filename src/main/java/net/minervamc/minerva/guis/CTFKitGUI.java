@@ -62,7 +62,12 @@ public class CTFKitGUI extends Menu {
                         TextContext.formatLegacy("&7they can gather critical", false),
                         TextContext.formatLegacy("&7information about the", false),
                         TextContext.formatLegacy("&7enemy and play far from the", false),
-                        TextContext.formatLegacy("&7fight, on enemy flank turf.", false)
+                        TextContext.formatLegacy("&7fight, on enemy flank turf.", false),
+                        TextContext.formatLegacy("", false),
+                        TextContext.formatLegacy("Ping (SNEAK + LEFT CLICK)", false).color(NamedTextColor.GOLD),
+                        TextContext.formatLegacy("&7A trail of particles shows the", false),
+                        TextContext.formatLegacy("&7direction to the opposing flag.", false),
+                        TextContext.formatLegacy("&7Cooldown: 20 seconds.", false)
                 ))
                 .addAttribute(Attribute.GENERIC_ARMOR, 7.0, AttributeModifier.Operation.ADD_NUMBER)
                 .addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP)
@@ -74,11 +79,16 @@ public class CTFKitGUI extends Menu {
                 .setName(TextContext.formatLegacy("&cAttacker", false))
                 .setLore(List.of(
                         TextContext.formatLegacy("&7Equipped with extra", false),
-                        TextContext.formatLegacy("&7offensive utilities,", false),
-                        TextContext.formatLegacy("&7an attacker kit is", false),
-                        TextContext.formatLegacy("&7used to attack the", false),
-                        TextContext.formatLegacy("&7enemy, steal the flag,", false),
-                        TextContext.formatLegacy("&7and is crucial to win.", false)
+                        TextContext.formatLegacy("&7damaging weapons and,", false),
+                        TextContext.formatLegacy("&7high armor, the attacker", false),
+                        TextContext.formatLegacy("&7kit is used to quickly steal", false),
+                        TextContext.formatLegacy("&7the flag, and is crucial", false),
+                        TextContext.formatLegacy("&7to any team.", false),
+                        TextContext.formatLegacy("", false),
+                        TextContext.formatLegacy("Leap (SNEAK + LEFT CLICK)", false).color(NamedTextColor.GOLD),
+                        TextContext.formatLegacy("&7Jump up and forward in a swift", false),
+                        TextContext.formatLegacy("&7manner without taking fall damage.", false),
+                        TextContext.formatLegacy("&7Cooldown: 6 seconds", false)
                 ))
                 .addAttribute(Attribute.GENERIC_ATTACK_DAMAGE, 7.0, AttributeModifier.Operation.ADD_NUMBER)
                 .addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP)
@@ -94,85 +104,15 @@ public class CTFKitGUI extends Menu {
                         TextContext.formatLegacy("&7to place, shields, traps,", false),
                         TextContext.formatLegacy("&7and more, the defender", false),
                         TextContext.formatLegacy("&7kit is one of the best", false),
-                        TextContext.formatLegacy("&7kits for a team.", false)
+                        TextContext.formatLegacy("&7kits for a team.", false),
+                        TextContext.formatLegacy("", false),
+                        TextContext.formatLegacy("Parry (SNEAK + LEFT CLICK)", false).color(NamedTextColor.GOLD),
+                        TextContext.formatLegacy("&7Block all incoming damage", false),
+                        TextContext.formatLegacy("&7for 1 second, dealing half", false),
+                        TextContext.formatLegacy("&7back to the perpetrator", false),
+                        TextContext.formatLegacy("&7Cooldown: 15 seconds", false)
                 ))
                 .build();
-    }
-
-    private void giveAttackerKit(Player player) {
-        ItemCreator sword = ItemCreator.get(Material.GOLDEN_SWORD);
-        sword.setName(Component.text("Celestial Bronze Dagger", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
-        sword.setUnbreakable(true);
-
-        ItemCreator bow = ItemCreator.get(Material.BOW);
-        bow.setName(Component.text("Reinforced Bow", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
-        bow.setUnbreakable(true);
-        bow.addEnchantment(Enchantment.POWER, 2);
-        bow.addEnchantment(Enchantment.INFINITY, 1);
-
-        int trapAmount = 4;
-        ItemCreator trap = ItemCreator.get(Material.STONE_PRESSURE_PLATE);
-        trap.setName(Component.text("Weakened Land Mine Trap", NamedTextColor.GRAY).decorate(TextDecoration.BOLD));
-        ItemStack trapBuilt = trap.build();
-        trapBuilt.setAmount(trapAmount);
-
-        int foodAmount = 64;
-        ItemCreator food = ItemCreator.get(Material.GOLDEN_CARROT);
-        food.setName(Component.text("Ambrosia-Infused Carrot", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
-        ItemStack foodBuilt = food.build();
-        foodBuilt.setAmount(foodAmount);
-
-        ItemStack potion = new ItemStack(Material.SPLASH_POTION);
-        PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
-        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 1200, 2), false);
-        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1200, 1), false);
-        potionMeta.setItemName(ChatColor.AQUA + "" + ChatColor.BOLD + "Stealth Enhancing Potion");
-        potionMeta.setColor(Color.AQUA);
-        potion.setItemMeta(potionMeta);
-
-        ItemCreator spyglass = ItemCreator.get(Material.SPYGLASS);
-
-        ItemStack arrow = new ItemStack(Material.ARROW);
-
-        player.getInventory().addItem(sword.build(), bow.build(), trapBuilt, foodBuilt, potion, spyglass.build(), arrow);
-    }
-
-    private void giveDefenderKit(Player player) {
-        ItemCreator sword = ItemCreator.get(Material.GOLDEN_SWORD);
-        sword.setName(Component.text("Celestial Bronze Dagger", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
-        sword.setUnbreakable(true);
-
-        ItemCreator bow = ItemCreator.get(Material.BOW);
-        bow.setName(Component.text("Reinforced Bow", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
-        bow.setUnbreakable(true);
-        bow.addEnchantment(Enchantment.POWER, 2);
-        bow.addEnchantment(Enchantment.INFINITY, 1);
-
-        int trapAmount = 4;
-        ItemCreator trap = ItemCreator.get(Material.STONE_PRESSURE_PLATE);
-        trap.setName(Component.text("Weakened Land Mine Trap", NamedTextColor.GRAY).decorate(TextDecoration.BOLD));
-        ItemStack trapBuilt = trap.build();
-        trapBuilt.setAmount(trapAmount);
-
-        int foodAmount = 64;
-        ItemCreator food = ItemCreator.get(Material.GOLDEN_CARROT);
-        food.setName(Component.text("Ambrosia-Infused Carrot", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
-        ItemStack foodBuilt = food.build();
-        foodBuilt.setAmount(foodAmount);
-
-        ItemStack potion = new ItemStack(Material.SPLASH_POTION);
-        PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
-        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 1200, 2), false);
-        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1200, 1), false);
-        potionMeta.setItemName(ChatColor.AQUA + "" + ChatColor.BOLD + "Stealth Enhancing Potion");
-        potionMeta.setColor(Color.AQUA);
-        potion.setItemMeta(potionMeta);
-
-        ItemCreator spyglass = ItemCreator.get(Material.SPYGLASS);
-
-        ItemStack arrow = new ItemStack(Material.ARROW);
-
-        player.getInventory().addItem(sword.build(), bow.build(), trapBuilt, foodBuilt, potion, spyglass.build(), arrow);
     }
 
     private void giveScoutKit(Player player) {
@@ -200,8 +140,8 @@ public class CTFKitGUI extends Menu {
 
         ItemStack potion = new ItemStack(Material.SPLASH_POTION);
         PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
-        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 1200, 2), false);
-        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1200, 1), false);
+        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 240, 2), false);
+        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 240, 1), false);
         potionMeta.setItemName(ChatColor.AQUA + "" + ChatColor.BOLD + "Stealth Enhancing Potion");
         potionMeta.setColor(Color.AQUA);
         potion.setItemMeta(potionMeta);
@@ -211,5 +151,82 @@ public class CTFKitGUI extends Menu {
         ItemStack arrow = new ItemStack(Material.ARROW);
 
         player.getInventory().addItem(sword.build(), bow.build(), trapBuilt, foodBuilt, potion, spyglass.build(), arrow);
+
+        ItemStack chestplate = ItemCreator.create(Material.CHAINMAIL_CHESTPLATE);
+        ItemStack leggings = ItemCreator.create(Material.CHAINMAIL_LEGGINGS);
+        ItemStack boots = ItemCreator.create(Material.IRON_BOOTS);
+
+        player.getInventory().setChestplate(chestplate);
+        player.getInventory().setLeggings(leggings);
+        player.getInventory().setBoots(boots);
+    }
+
+    private void giveAttackerKit(Player player) {
+        ItemCreator sword = ItemCreator.get(Material.DIAMOND_SWORD);
+        sword.setName(Component.text("Diamond-Infused Spatha", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
+        sword.setUnbreakable(true);
+
+        int foodAmount = 64;
+        ItemCreator food = ItemCreator.get(Material.GOLDEN_CARROT);
+        food.setName(Component.text("Ambrosia-Infused Carrot", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
+        ItemStack foodBuilt = food.build();
+        foodBuilt.setAmount(foodAmount);
+
+        ItemStack potion = new ItemStack(Material.SPLASH_POTION);
+        PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
+        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.STRENGTH, 120, 2), false);
+        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.REGENERATION, 120, 2), false);
+        potionMeta.setItemName(ChatColor.GOLD + "" + ChatColor.BOLD + "Pure Nectar");
+        potionMeta.setColor(Color.ORANGE);
+        potion.setItemMeta(potionMeta);
+
+        player.getInventory().addItem(sword.build(), foodBuilt, potion);
+
+        ItemStack chestplate = ItemCreator.create(Material.DIAMOND_CHESTPLATE);
+        ItemStack leggings = ItemCreator.create(Material.DIAMOND_LEGGINGS);
+        ItemStack boots = ItemCreator.create(Material.DIAMOND_BOOTS);
+
+        player.getInventory().setChestplate(chestplate);
+        player.getInventory().setLeggings(leggings);
+        player.getInventory().setBoots(boots);
+    }
+
+    private void giveDefenderKit(Player player) {
+        ItemCreator sword = ItemCreator.get(Material.WOODEN_SWORD);
+        sword.setName(Component.text("Training Sword", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
+        sword.setUnbreakable(true);
+
+        int trapAmount = 8;
+        ItemCreator trap = ItemCreator.get(Material.STONE_PRESSURE_PLATE);
+        trap.setName(Component.text("Weakened Land Mine Trap", NamedTextColor.GRAY).decorate(TextDecoration.BOLD));
+        ItemStack trapBuilt = trap.build();
+        trapBuilt.setAmount(trapAmount);
+
+        int foodAmount = 64;
+        ItemCreator food = ItemCreator.get(Material.GOLDEN_CARROT);
+        food.setName(Component.text("Ambrosia-Infused Carrot", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
+        ItemStack foodBuilt = food.build();
+        foodBuilt.setAmount(foodAmount);
+
+        ItemStack potion = new ItemStack(Material.SPLASH_POTION);
+        PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
+        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.SLOWNESS, 120, 2), false);
+        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.RESISTANCE, 120, 1), false);
+        potionMeta.setItemName(ChatColor.GRAY + "" + ChatColor.BOLD + "Resistance Enhancing Potion");
+        potionMeta.setColor(Color.GRAY);
+        potion.setItemMeta(potionMeta);
+
+        player.getInventory().addItem(sword.build(), trapBuilt, foodBuilt, potion);
+
+        ItemStack chestplate = ItemCreator.create(Material.CHAINMAIL_CHESTPLATE);
+        ItemStack leggings = ItemCreator.create(Material.CHAINMAIL_LEGGINGS);
+        ItemStack boots = ItemCreator.create(Material.IRON_BOOTS);
+
+        player.getInventory().setChestplate(chestplate);
+        player.getInventory().setLeggings(leggings);
+        player.getInventory().setBoots(boots);
+
+        ItemStack totem = ItemCreator.create(Component.text("Patron's Boon"), Material.TOTEM_OF_UNDYING);
+        player.getInventory().setItemInOffHand(totem);
     }
 }

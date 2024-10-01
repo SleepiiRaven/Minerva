@@ -79,26 +79,46 @@ public class PlayerStatsAdapter implements JsonSerializer<PlayerStats>, JsonDese
         if (json.isJsonObject()) {
             JsonObject object = json.getAsJsonObject();
 
+            if (!object.has("uuid")) return null;
             PlayerStats playerDataJSON = new PlayerStats(UUID.fromString(object.get("uuid").getAsString()));
-            playerDataJSON.setHeritage(HeritageType.fromString(object.get("heritage").getAsString()));
-            playerDataJSON.setSkillRRR(Skill.fromString(object.get("skillRRR").getAsString()));
-            playerDataJSON.setSkillRLR(Skill.fromString(object.get("skillRLR").getAsString()));
-            playerDataJSON.setSkillRLL(Skill.fromString(object.get("skillRLL").getAsString()));
-            playerDataJSON.setSkillRRL(Skill.fromString(object.get("skillRRL").getAsString()));
-            playerDataJSON.setPassive(Skill.fromString(object.get("passive").getAsString()));
-            playerDataJSON.setRRRActive(object.get("rrrActive").getAsBoolean());
-            playerDataJSON.setRLRActive(object.get("rlrActive").getAsBoolean());
-            playerDataJSON.setRLLActive(object.get("rllActive").getAsBoolean());
-            playerDataJSON.setRRLActive(object.get("rrlActive").getAsBoolean());
-            playerDataJSON.setPassiveActive(object.get("passiveActive").getAsBoolean());
-            playerDataJSON.setRRRLevel(object.get("rrrLevel").getAsInt());
-            playerDataJSON.setRLRLevel(object.get("rlrLevel").getAsInt());
-            playerDataJSON.setRLLLevel(object.get("rllLevel").getAsInt());
-            playerDataJSON.setRRLLevel(object.get("rrlLevel").getAsInt());
-            playerDataJSON.setPassiveLevel(object.get("passiveLevel").getAsInt());
-            playerDataJSON.setMaxLevel(object.get("maxLevel").getAsInt());
-            playerDataJSON.setPoints(object.get("points").getAsInt());
-            playerDataJSON.setMaxPoints(object.get("maxPoints").getAsInt());
+            if (!object.has("heritage")) playerDataJSON.setHeritage(null);
+            else playerDataJSON.setHeritage(HeritageType.fromString(object.get("heritage").getAsString()));
+            if (!object.has("skillRRR")) playerDataJSON.setSkillRRR(null);
+            else playerDataJSON.setSkillRRR(Skill.fromString(object.get("skillRRR").getAsString()));
+            if (!object.has("skillRLR")) playerDataJSON.setSkillRLR(null);
+            else playerDataJSON.setSkillRLR(Skill.fromString(object.get("skillRLR").getAsString()));
+            if (!object.has("skillRLL")) playerDataJSON.setSkillRLL(null);
+            else playerDataJSON.setSkillRLL(Skill.fromString(object.get("skillRLL").getAsString()));
+            if (!object.has("skillRRL")) playerDataJSON.setSkillRRL(null);
+            else playerDataJSON.setSkillRRL(Skill.fromString(object.get("skillRRL").getAsString()));
+            if (!object.has("passive")) playerDataJSON.setPassive(null);
+            else playerDataJSON.setPassive(Skill.fromString(object.get("passive").getAsString()));
+            if (!object.has("rrrActive")) playerDataJSON.setRRRActive(false);
+            else playerDataJSON.setRRRActive(object.get("rrrActive").getAsBoolean());
+            if (!object.has("rlrActive")) playerDataJSON.setRLRActive(false);
+            else playerDataJSON.setRLRActive(object.get("rlrActive").getAsBoolean());
+            if (!object.has("rllActive")) playerDataJSON.setRLLActive(false);
+            else playerDataJSON.setRLLActive(object.get("rllActive").getAsBoolean());
+            if (!object.has("rrlActive")) playerDataJSON.setRRLActive(false);
+            else playerDataJSON.setRRLActive(object.get("rrlActive").getAsBoolean());
+            if (!object.has("passiveActive")) playerDataJSON.setPassiveActive(false);
+            else playerDataJSON.setPassiveActive(object.get("passiveActive").getAsBoolean());
+            if (!object.has("rrrLevel")) playerDataJSON.setRRRLevel(1);
+            else playerDataJSON.setRRRLevel(object.get("rrrLevel").getAsInt());
+            if (!object.has("rlrLevel")) playerDataJSON.setRLRLevel(1);
+            else playerDataJSON.setRLRLevel(object.get("rlrLevel").getAsInt());
+            if (!object.has("rllLevel")) playerDataJSON.setRLLLevel(1);
+            else playerDataJSON.setRLLLevel(object.get("rllLevel").getAsInt());
+            if (!object.has("rrlLevel")) playerDataJSON.setRRLLevel(1);
+            else playerDataJSON.setRRLLevel(object.get("rrlLevel").getAsInt());
+            if (!object.has("passiveLevel")) playerDataJSON.setPassiveLevel(1);
+            else playerDataJSON.setPassiveLevel(object.get("passiveLevel").getAsInt());
+            if (!object.has("maxLevel")) playerDataJSON.setMaxLevel(1);
+            else playerDataJSON.setMaxLevel(object.get("maxLevel").getAsInt());
+            if (!object.has("points")) playerDataJSON.setPoints(0);
+            else playerDataJSON.setPoints(object.get("points").getAsInt());
+            if (!object.has("maxPoints")) playerDataJSON.setMaxPoints(0);
+            else playerDataJSON.setMaxPoints(object.get("maxPoints").getAsInt());
 
             try {
                 if (object.has("inventory")) {

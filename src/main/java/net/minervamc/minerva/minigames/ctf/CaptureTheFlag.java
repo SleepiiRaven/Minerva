@@ -354,10 +354,19 @@ public class CaptureTheFlag extends Minigame {
                         int ticks = 0;
                         @Override
                         public void run() {
+                            Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
                             if (ticks == 4) {
                                 autoPlaceBanner("blue");
                                 autoPlaceBanner("red");
                                 preparePhase = false;
+                                Title title = Title.title(
+                                        Component.text("Go!"),
+                                        Component.text("the barriers have lifted."), times
+                                );
+                                for (Player player : inGame) {
+                                    player.showTitle(title);
+                                    player.playSound(player.getLocation(), Sound.ITEM_GOAT_HORN_SOUND_0, 1, 1);
+                                }
                                 this.cancel();
                             } else {
                                 TextColor color = switch (3 - ticks) {
@@ -367,7 +376,6 @@ public class CaptureTheFlag extends Minigame {
                                     default -> NamedTextColor.WHITE;
                                 };
 
-                                Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
                                 Title title = Title.title(
                                         Component.text((3 - ticks) + "", color),
                                         Component.text("seconds before the barrier drops."), times
@@ -375,12 +383,13 @@ public class CaptureTheFlag extends Minigame {
 
                                 for (Player player : inGame) {
                                     player.showTitle(title);
+                                    player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
                                 }
                             }
 
                             ticks++;
                         }
-                    }.runTaskTimer(Minerva.getInstance(), 140L, 20L);
+                    }.runTaskTimer(Minerva.getInstance(), 1140L, 20L);
 
                     boolean startWithBlue = new Random().nextBoolean();
                     int i = 0;
@@ -393,7 +402,7 @@ public class CaptureTheFlag extends Minigame {
                         player.setFoodLevel(20);
                         player.clearActivePotionEffects();
 
-                        player.sendMessage(Component.text("The barrier will drop soon. You have 60 seconds to prepare.", NamedTextColor.GOLD));
+                        player.sendMessage(Component.text("The barrier will drop soon. You have 60 seconds to prepare. Used items will ", NamedTextColor.GOLD).append(Component.text("NOT", NamedTextColor.RED).decorate(TextDecoration.BOLD)).append(Component.text(" replenish after death", NamedTextColor.GOLD)));
 
                         if (i % 2 == blueRemainder) {
                             blue.add(player);
@@ -747,7 +756,6 @@ public class CaptureTheFlag extends Minigame {
     }
 
     public static void tpSpawn(Player player) {
-        kits.remove(player);
         player.setHealth(player.getMaxHealth());
         player.setFoodLevel(20);
         player.clearActivePotionEffects();
@@ -757,12 +765,9 @@ public class CaptureTheFlag extends Minigame {
             public void run() {
                 if (blue.contains(player)) {
                     player.teleport(blueSpawn);
-                    player.getInventory().addItem(blueFlagBreaker());
                 } else {
                     player.teleport(redSpawn);
-                    player.getInventory().addItem(redFlagBreaker());
                 }
-                kits(player, "ctf");
             }
         }.runTaskLater(Minerva.getInstance(), 2L);
     }

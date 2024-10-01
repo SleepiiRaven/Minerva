@@ -181,7 +181,6 @@ public class CtfListener implements Listener {
                 player.sendMessage(Component.text("You lost the flag."));
             }
 
-            player.getInventory().clear();
             CaptureTheFlag.tpSpawn(player);
         }
 
@@ -237,7 +236,6 @@ public class CtfListener implements Listener {
         }
 
         event.setCancelled(true);
-        player.getInventory().clear();
         CaptureTheFlag.tpSpawn(player);
     }
 
