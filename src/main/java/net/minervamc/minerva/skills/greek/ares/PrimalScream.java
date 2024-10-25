@@ -28,7 +28,15 @@ public class PrimalScream extends Skill {
         double kb = 2;
         int effAmp = 1;
         int effTime = 40;
+        long cooldown = 10000;
 
+        if (!cooldownManager.isCooldownDone(player.getUniqueId(), "primalScream")) {
+            onCooldown(player);
+            return;
+        }
+
+        cooldownManager.setCooldownFromNow(player.getUniqueId(), "primalScream", cooldown);
+        cooldownAlarm(player, cooldown, "Primal Scream");
 
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WARDEN_SONIC_CHARGE, 1f, 1f);
 

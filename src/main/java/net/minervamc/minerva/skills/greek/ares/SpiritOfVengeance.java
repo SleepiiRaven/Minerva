@@ -32,9 +32,17 @@ import org.bukkit.util.Vector;
 public class SpiritOfVengeance extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-        long pillagerDespawnTicks = 2000 / 5; // The runnable is every 5 seconds so the first number is the ticks you want :)
-        long cooldown = pillagerDespawnTicks * 5 * 50 + 6000;
+        long pillagerDespawnTicks = 600 / 5; // The runnable is every 5 seconds so the first number is the ticks you want :)
+        long cooldown = pillagerDespawnTicks * 5 * 50 + 10000;
         int angerRadius = 10;
+
+        if (!cooldownManager.isCooldownDone(player.getUniqueId(), "spiritOfVengeance")) {
+            onCooldown(player);
+            return;
+        }
+
+        cooldownManager.setCooldownFromNow(player.getUniqueId(), "spiritOfVengeance", cooldown);
+        cooldownAlarm(player, cooldown, "Spirit of Vengeance");
 
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_SET_SPAWN, 1f, 1f);
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WARDEN_EMERGE, 1f, 1f);

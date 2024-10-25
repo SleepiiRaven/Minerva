@@ -151,7 +151,7 @@ public class PlayerStats {
         if (skillRRL == null) {
             this.skillRRL = Skills.DEFAULT;
         } else {
-            this.skillRRL = skillRLR;
+            this.skillRRL = skillRRL;
         }
     }
 

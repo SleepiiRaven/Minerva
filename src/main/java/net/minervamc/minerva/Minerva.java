@@ -45,6 +45,7 @@ public final class Minerva extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        CaptureTheFlag.stop("");
         PlayerStats.saveAll();
         RegionManager.saveRegionsToFile(); // not really necessary but safer
     }

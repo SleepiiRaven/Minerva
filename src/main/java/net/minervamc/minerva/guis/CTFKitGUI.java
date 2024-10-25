@@ -216,7 +216,11 @@ public class CTFKitGUI extends Menu {
         potionMeta.setColor(Color.GRAY);
         potion.setItemMeta(potionMeta);
 
-        player.getInventory().addItem(sword.build(), trapBuilt, foodBuilt, potion);
+        ItemCreator blocks = ItemCreator.get(Material.BAMBOO_MOSAIC);
+        ItemStack blocksBuilt = ItemCreator.getPlaceable(blocks.build()); // simply puts in none so it has can_place_on but no blocks in there
+        blocksBuilt.setAmount(8);
+
+        player.getInventory().addItem(sword.build(), trapBuilt, foodBuilt, potion, blocksBuilt);
 
         ItemStack chestplate = ItemCreator.create(Material.CHAINMAIL_CHESTPLATE);
         ItemStack leggings = ItemCreator.create(Material.CHAINMAIL_LEGGINGS);

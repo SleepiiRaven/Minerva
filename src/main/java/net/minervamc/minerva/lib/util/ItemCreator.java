@@ -4,8 +4,10 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import de.tr7zw.nbtapi.NBT;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBTList;
 import de.tr7zw.nbtapi.iface.ReadWriteNBT;
 import de.tr7zw.nbtapi.iface.ReadWriteNBTCompoundList;
+import de.tr7zw.nbtapi.iface.ReadWriteNBTList;
 import java.util.ArrayList;
 import net.kyori.adventure.text.Component;
 import net.minecraft.commands.arguments.NbtTagArgument;
@@ -131,21 +133,32 @@ public class ItemCreator {
         meta.addAttributeModifier(attribute, mod);
         return this;
     }
-    public static ItemStack getPlaceable(ItemStack item, Material material) {
-        String block = "minecraft:" + material.name().toLowerCase();
-
+    public static ItemStack getPlaceable(ItemStack item, Material... materials) {
         NBT.modifyComponents(item, nbt -> {
-            nbt.getOrCreateCompound("can_place_on").setString("blocks", block);
+            ReadWriteNBT canPlaceOnTag = nbt.getOrCreateCompound("can_place_on");
+            ReadWriteNBTList<String> blockList = canPlaceOnTag.getStringList("blocks");
+
+            for (Material mat : materials) {
+                String blockName = "minecraft:" + mat.name().toLowerCase();
+                if (!blockList.contains(blockName)) {
+                    blockList.add(blockName);
+                }
+            }
         });
         return item;
     }
-    public static ItemStack getBreakable(ItemStack item, Material material) {
-        String block = "minecraft:" + material.name().toLowerCase();
-
+    public static ItemStack getBreakable(ItemStack item, Material... materials) {
         NBT.modifyComponents(item, nbt -> {
-            nbt.getOrCreateCompound("can_break").setString("blocks", block);
-        });
+            ReadWriteNBT canPlaceOnTag = nbt.getOrCreateCompound("can_break");
+            ReadWriteNBTList<String> blockList = canPlaceOnTag.getStringList("blocks");
 
+            for (Material mat : materials) {
+                String blockName = "minecraft:" + mat.name().toLowerCase();
+                if (!blockList.contains(blockName)) {
+                    blockList.add(blockName);
+                }
+            }
+        });
         return item;
     }
     public ItemCreator setUnbreakable(boolean unbreakable) {

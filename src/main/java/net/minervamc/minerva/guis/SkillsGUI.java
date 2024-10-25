@@ -94,7 +94,7 @@ public class SkillsGUI {
             inv.setItem(passiveToggleSlot, passiveOffItem);
         }
         inv.setItem(resetSlot, resetItem);
-        //inv.setItem(backSlot, back);
+        inv.setItem(backSlot, back);
 
 
         List<ItemStack> levelItems = getAllLevelItems(stats);
@@ -173,10 +173,8 @@ public class SkillsGUI {
         switch (event.getSlot()) {
             // Switches
             case backSlot -> {
-                /**
                  AncestryGUI.openGUI(player);
                  player.playSound(player, Sound.ENTITY_ITEM_PICKUP, 1f, 1f);
-                 return;**/
             }
             case resetSlot -> {
                 stats.setRRRLevel(1);

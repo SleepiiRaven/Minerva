@@ -1,5 +1,6 @@
 package net.minervamc.minerva.listeners;
 
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,6 +27,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
@@ -52,6 +55,7 @@ public class CtfListener implements Listener {
                 player.getInventory().setHelmet(flagCr.build()); // banner on head
                 
                 player.sendMessage(Component.text("You are carrying the red flag. Take it to your team's side to win!", NamedTextColor.RED));
+                CaptureTheFlag.warnFlag(player, "red");
             }
         } else {
             if (event.getBlock().getType() == Material.BLUE_BANNER) {
@@ -63,6 +67,7 @@ public class CtfListener implements Listener {
                 player.getInventory().setHelmet(flagCr.build()); // banner on head
                 
                 player.sendMessage(Component.text("You are carrying the blue flag. Take it to your team's side to win!", NamedTextColor.BLUE));
+                CaptureTheFlag.warnFlag(player, "blue");
             }
         }
     }
@@ -73,6 +78,13 @@ public class CtfListener implements Listener {
         if (!CaptureTheFlag.isPlaying()) return;
         if (!CaptureTheFlag.isInGame(player)) return;
         event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void playerClickInventoryItem(InventoryClickEvent event) {
+        if (event.getSlotType() == InventoryType.SlotType.ARMOR && CaptureTheFlag.isPlaying() && CaptureTheFlag.isInGame((Player)event.getWhoClicked())) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler
@@ -240,7 +252,7 @@ public class CtfListener implements Listener {
     }
 
     @EventHandler
-    public void playerPlaceBanner(BlockPlaceEvent event) {
+    public void playerPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         if (!CaptureTheFlag.isPlaying()) return;
         if (!CaptureTheFlag.isInGame(player)) return;
@@ -249,6 +261,7 @@ public class CtfListener implements Listener {
         switch (block.getType()) {
             case RED_BANNER -> CaptureTheFlag.redFlagLocation = block.getLocation();
             case BLUE_BANNER -> CaptureTheFlag.blueFlagLocation = block.getLocation();
+            case BAMBOO_MOSAIC -> CaptureTheFlag.placeBlock(block.getLocation());
         }
     }
 

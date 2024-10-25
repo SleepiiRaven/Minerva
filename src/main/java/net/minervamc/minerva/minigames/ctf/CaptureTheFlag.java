@@ -21,6 +21,7 @@ import net.minervamc.minerva.utils.ParticleUtils;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Entity;
@@ -54,6 +55,8 @@ public class CaptureTheFlag extends Minigame {
     private static final List<Player> blue = new ArrayList<>();
     private static final List<Player> red = new ArrayList<>();
 
+    private static final List<Location> blocks = new ArrayList<>();
+
     private static final Map<Entity, Player> traps = new HashMap<>();
     private static final Map<Player, String> kits = new HashMap<>();
 
@@ -72,6 +75,10 @@ public class CaptureTheFlag extends Minigame {
     private static Scoreboard scoreboard;
     private static Team blueTeam;
     private static Team redTeam;
+
+    public static void placeBlock(Location location) {
+        blocks.add(location);
+    }
 
     public static void addQueue(Player player) {
         if(isInGame(player)) return;
@@ -352,6 +359,7 @@ public class CaptureTheFlag extends Minigame {
 
                     new BukkitRunnable() {
                         int ticks = 0;
+
                         @Override
                         public void run() {
                             Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
@@ -434,27 +442,45 @@ public class CaptureTheFlag extends Minigame {
                         kits(player, "ctf");
                         i++;
                     }
-                    // Add blue flag to random player in blue team's inventory
-                    LOGGER.info(blue.size() + " " + red.size());
-                    if (!blue.isEmpty()) {
-                        int randomIndex = FastUtils.randomIntInRange(0, blue.size() - 1);
-                        if (randomIndex >= 0 && randomIndex < blue.size()) {
-                            blue.get(randomIndex).getInventory().addItem(blueFlag());
-                        }
-                    }
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            Random random = new Random();
+                            // Add blue flag to random player in blue team's inventory
+                            if (!blue.isEmpty()) {
+                                int randomIndex;
+                                if (blue.size() <= 1) {
+                                    randomIndex = 0;
+                                } else {
+                                    randomIndex = random.nextInt(0, blue.size() - 1);
+                                }
+                                if (randomIndex >= 0 && randomIndex < blue.size()) {
+                                    blue.get(randomIndex).getInventory().addItem(blueFlag());
+                                    blue.get(randomIndex).sendMessage(Component.text("You have been given the flag for your team! Place it on Mycelium (the purple mushroom dirt stuff) and defend it (with your life)", NamedTextColor.YELLOW));
+                                }
+                            }
 
-                    if (!red.isEmpty()) {
-                        int randomIndex = FastUtils.randomIntInRange(0, red.size() - 1);
-                        if (randomIndex >= 0 && randomIndex < red.size()) {
-                            red.get(randomIndex).getInventory().addItem(redFlag());
+                            if (!red.isEmpty()) {
+                                int randomIndex;
+                                if (red.size() <= 1) {
+                                    randomIndex = 0;
+                                } else {
+                                    randomIndex = random.nextInt(0, red.size() - 1);
+                                }
+                                if (randomIndex >= 0 && randomIndex < red.size()) {
+                                    red.get(randomIndex).getInventory().addItem(redFlag());
+                                    red.get(randomIndex).sendMessage(Component.text("You have been given the flag for your team! Place it on Podzol (the dark brown grass) and defend it (with your life)"));
+                                }
+                            }
                         }
-                    }
+                    }.runTaskLater(Minerva.getInstance(), 1L);
+
                     playing = true;
                     starting = false;
                     this.cancel();
                 }
             }
-        }.runTaskTimer(Minerva.getInstance(), 0, 20);
+        }.runTaskTimer(Minerva.getInstance(), 0, 20L);
     }
 
     public static void autoPlaceBanner(String team) {
@@ -508,26 +534,30 @@ public class CaptureTheFlag extends Minigame {
 
     private static ItemStack blueFlagBreaker() {
         ItemCreator blueFlagBreakerCr = ItemCreator.get(Material.WOODEN_AXE);
-        blueFlagBreakerCr.setName(TextContext.format("Flag Breaker", false).color(NamedTextColor.GOLD));
+        blueFlagBreakerCr.setName(TextContext.format("Breaker", false).color(NamedTextColor.GOLD));
         blueFlagBreakerCr.setLore(List.of(
                 TextContext.formatLegacy("&7Use this to break", false),
-                TextContext.formatLegacy("&7the &cred &7team's flag", false)
+                TextContext.formatLegacy("&7the &cred &7team's flag", false),
+                TextContext.formatLegacy("&7as well as blocks placed", false),
+                TextContext.formatLegacy("&7by either team.", false)
         ));
         blueFlagBreakerCr.addAttribute(Attribute.GENERIC_ATTACK_DAMAGE, 0, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
         blueFlagBreakerCr.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        return ItemCreator.getBreakable(blueFlagBreakerCr.build(), Material.RED_BANNER);
+        return ItemCreator.getBreakable(blueFlagBreakerCr.build(), Material.RED_BANNER, Material.BAMBOO_MOSAIC);
     }
 
     private static ItemStack redFlagBreaker() {
         ItemCreator redFlagBreakerCr = ItemCreator.get(Material.WOODEN_AXE);
-        redFlagBreakerCr.setName(TextContext.format("Flag Breaker", false).color(NamedTextColor.GOLD));
+        redFlagBreakerCr.setName(TextContext.format("Breaker", false).color(NamedTextColor.GOLD));
         redFlagBreakerCr.setLore(List.of(
                 TextContext.formatLegacy("&7Use this to break", false),
-                TextContext.formatLegacy("&7the &1blue &7team's flag", false)
+                TextContext.formatLegacy("&7the &1blue &7team's flag", false),
+                TextContext.formatLegacy("&7as well as blocks placed", false),
+                TextContext.formatLegacy("&7by either team.", false)
         ));
         redFlagBreakerCr.addAttribute(Attribute.GENERIC_ATTACK_DAMAGE, 0, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
         redFlagBreakerCr.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        return ItemCreator.getBreakable(redFlagBreakerCr.build(), Material.BLUE_BANNER);
+        return ItemCreator.getBreakable(redFlagBreakerCr.build(), Material.BLUE_BANNER, Material.BAMBOO_MOSAIC);
     }
 
     public static void stop(String winningTeam) {
@@ -568,7 +598,6 @@ public class CaptureTheFlag extends Minigame {
             FastBoard board = boards.remove(player.getUniqueId());
             if (board != null) board.delete();
         });
-        //LOGGER.info("Ended");
         loadInventories(new ArrayList<>(inGame));
         queue.clear();
         inGame.clear();
@@ -579,6 +608,10 @@ public class CaptureTheFlag extends Minigame {
         playing = false;
         starting = false;
         preparePhase = false;
+
+        for (Location block : blocks) {
+            block.getBlock().setType(Material.AIR);
+        }
 
         for (Entity trap : traps.keySet()) {
             trap.getNearbyEntities(0.1, 0.1, 0.1).forEach(p -> {
@@ -737,7 +770,6 @@ public class CaptureTheFlag extends Minigame {
             public void run() {
                 if (ticks * 5 >= duration) {
                     player.removeScoreboardTag("ctfParryAbility");
-                    LOGGER.info(String.valueOf(player.getScoreboardTags().contains("ctfParryAbility")));
                     player.getWorld().playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 1f, 0.5f);
                     this.cancel();
                 } else {
@@ -770,5 +802,22 @@ public class CaptureTheFlag extends Minigame {
                 }
             }
         }.runTaskLater(Minerva.getInstance(), 2L);
+    }
+
+    public static void warnFlag(Player flagStealer, String team) {
+        List<Player> players;
+        if (team == "blue") {
+            players = blue;
+        } else {
+            players = red;
+        }
+
+        Component title = Component.text("Flag Stolen!", NamedTextColor.GOLD);
+        Component subtitle = Component.text(flagStealer.getName() + " has taken the flag!", NamedTextColor.RED);
+
+        for (Player player : players) {
+            player.playSound(player, Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE, 2f, 1f);
+            player.showTitle(Title.title(title, subtitle));
+        }
     }
 }
