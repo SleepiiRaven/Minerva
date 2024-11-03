@@ -24,7 +24,7 @@ public class PlagueVolley extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
         long cooldown = 5000;
-        double damage = 5;
+        double damage = 2.5;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "plagueVolley")) {
             onCooldown(player);

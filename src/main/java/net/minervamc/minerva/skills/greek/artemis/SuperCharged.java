@@ -26,8 +26,8 @@ public class SuperCharged extends Skill {
         long chargeTime = 40;
         double maxRadius = 7;
         double range = 30;
-        double normalDamage = 200;
-        double headshotDamage = 400;
+        double normalDamage = 10;
+        double headshotDamage = 20;
         long cooldown = 6000;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "superCharged")) {
@@ -71,7 +71,7 @@ public class SuperCharged extends Skill {
                         player.getWorld().spawnParticle(Particle.ENCHANT, particleLoc, 1, 0, 0, 0, 0);
                         for (Entity entity : particleLoc.getNearbyEntities(1, 1, 1)) {
                             if (entity instanceof LivingEntity livingEntity && livingEntity != player && !livingEntity.getScoreboardTags().contains("artemisWolf") && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                                if (particleLoc.distance(livingEntity.getEyeLocation()) <= 0.3)
+                                if (particleLoc.distance(livingEntity.getEyeLocation()) <= 1)
                                     SkillUtils.damage(livingEntity, headshotDamage, player);
                                 else SkillUtils.damage(livingEntity, normalDamage, player);
                             }

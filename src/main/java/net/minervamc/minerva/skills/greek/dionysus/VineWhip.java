@@ -26,8 +26,8 @@ import org.bukkit.util.Vector;
 public class VineWhip extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-        double damage = 70;
-        double distance = 20;
+        double damage = 4;
+        double distance = 12;
         long cooldown = 7000;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "vineWhip")) {
@@ -65,7 +65,8 @@ public class VineWhip extends Skill {
                             Vector direction = location.clone().toVector().subtract(livingEntity.getLocation().toVector()).normalize();
                             if (!hit)
                                 livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.ENTITY_BLAZE_HURT, 1f, 1f);
-                            livingEntity.setVelocity(direction.clone().multiply(2));
+                            double vel = Math.sqrt(player.getLocation().distance(livingEntity.getLocation()));
+                            livingEntity.setVelocity(direction.clone().multiply(vel));
                             SkillUtils.damage(livingEntity, damage, player);
                             hit = true;
                             hitEnemies.add(livingEntity);

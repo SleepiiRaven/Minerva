@@ -25,7 +25,7 @@ public class Cleave extends Skill {
     public void cast(Player player, CooldownManager cooldownManager, int level) {
         long cooldown = 10000;
         double damage = 5;
-        double damageSlam = 15;
+        double damageSlam = 10;
         double kb = 0.2;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "cleave")) {
@@ -89,7 +89,7 @@ public class Cleave extends Skill {
                         if (!(entity instanceof LivingEntity livingMonster) || entity.getScoreboardTags().contains(player.getUniqueId().toString()) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
                             continue;
                         SkillUtils.damage(livingMonster, damage, player);
-                        Vector viewNormalized = (ParticleUtils.getDirection(player.getLocation(), livingMonster.getLocation()).clone().normalize()).multiply(kb);
+                        Vector viewNormalized = (new Vector(0, 1, 0)).multiply(kb);
                         livingMonster.setVelocity(viewNormalized);
                     }
                 } else if (ticks2 < 20) {

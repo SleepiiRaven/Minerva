@@ -1,6 +1,7 @@
 package net.minervamc.minerva.skills.greek.apollo;
 
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
@@ -84,7 +85,7 @@ public class ApollosHymn extends Skill {
                         if (livingEntity == player) {
                             double maxHealth = player.getMaxHealth();
                             player.setHealth(Math.min(player.getHealth() + localSelfHeal, maxHealth));
-                        } else if (livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)) {
+                        } else if (livingEntity instanceof Player livingPlayer && (Party.isPlayerInPlayerParty(player, livingPlayer) || (CaptureTheFlag.inBlueTeam(player) && CaptureTheFlag.inBlueTeam(livingPlayer)) || (!CaptureTheFlag.inBlueTeam(player) && !CaptureTheFlag.inBlueTeam(livingPlayer)))) {
                             double maxHealth = livingEntity.getMaxHealth();
                             livingEntity.setHealth(Math.min(livingEntity.getHealth() + localHeal, maxHealth));
                         } else {

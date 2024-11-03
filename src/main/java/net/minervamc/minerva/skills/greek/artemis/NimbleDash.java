@@ -25,7 +25,7 @@ public class NimbleDash extends Skill {
         int dashTime = 3; // Ticks
         int invulnerabilityTicks = 10; // Ticks
         int dashVelocityMultiplier = 5;
-        long cooldown = 2000;
+        long cooldown = 4000;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "nimbleDash")) {
             onCooldown(player);

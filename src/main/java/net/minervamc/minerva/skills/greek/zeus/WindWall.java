@@ -71,7 +71,7 @@ public class WindWall extends Skill {
                 wallWidth = 8;
                 wallHeight = 5;
                 distance = 3;
-                damage = 90;
+                damage = 1;
                 maxTriggers = 15;
                 ticksBetweenTriggers = 10;
                 cooldown = 15000;

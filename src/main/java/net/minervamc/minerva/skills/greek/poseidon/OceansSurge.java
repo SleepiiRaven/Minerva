@@ -52,7 +52,7 @@ public class OceansSurge extends Skill {
             }
             default -> {
                 cooldown = 8000;
-                damage = 20;
+                damage = 3;
                 push = 0.5;
             }
         }

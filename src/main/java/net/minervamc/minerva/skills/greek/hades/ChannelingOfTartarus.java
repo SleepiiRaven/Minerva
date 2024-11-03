@@ -95,9 +95,9 @@ public class ChannelingOfTartarus extends Skill {
                 burstDistance = 30;
                 burstRadius = 3; // Radius of giant burst cyllander
                 burstHeight = 20; // Goes down half the height and up half the height
-                missileDamage = 80;
-                burstDamage = 400;
-                timeBetweenMissiles = 10;
+                missileDamage = 6;
+                burstDamage = 20;
+                timeBetweenMissiles = 20;
                 burstWindUpTime = 30;
             }
         }

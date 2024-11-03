@@ -26,7 +26,7 @@ import org.joml.Matrix4f;
 public class TomahawkThrow extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-        double damage = 18;
+        double damage = 6;
         double speed = 20;
         int rotationSpeed = 2; // ticks per rotation
         double kb = 0.3;

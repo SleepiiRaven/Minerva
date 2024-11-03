@@ -1,15 +1,27 @@
 package net.minervamc.minerva.utils;
 
+import de.tr7zw.nbtapi.NBTItem;
+import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import java.util.UUID;
+import net.Indyuce.mmoitems.ItemStats;
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.Type;
+import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
+import net.Indyuce.mmoitems.api.player.PlayerData;
+import net.Indyuce.mmoitems.comp.mmocore.MMOCoreHook;
+import net.Indyuce.mmoitems.comp.rpg.McMMOHook;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.skills.Skills;
 import net.minervamc.minerva.types.HeritageType;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.types.SkillType;
+import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 public class SkillUtils {
     public static void redirect(Player player, UUID pUUID, SkillType skillType) {
@@ -94,18 +106,34 @@ public class SkillUtils {
     }
 
     public static void damage(LivingEntity livingEntity, double damage, Player damager) {
-        double pvpNerf = 0.35;
-
         if (livingEntity instanceof Tameable) {
             if (((Tameable) livingEntity).getOwner() != null) {
                 return;
             }
         }
 
-        if (livingEntity instanceof Player) {
-            livingEntity.damage(damage * pvpNerf, damager);
-        } else {
-            livingEntity.damage(damage, damager);
+        double magicDamage = 0;
+        double magicResist = 0;
+
+        if (MMOPlayerData.isLoaded(damager.getUniqueId())) {
+            magicDamage = MMOPlayerData.get(damager.getUniqueId()).getStatMap().getStat("MAGIC_DAMAGE");
         }
+
+        if (MMOPlayerData.isLoaded(livingEntity.getUniqueId())) {
+            magicResist = MMOPlayerData.get(livingEntity.getUniqueId()).getStatMap().getStat("MAGIC_DAMAGE_REDUCTION");
+        }
+
+        damage *= (magicDamage + 100)/100;
+        damage *= (100 - magicResist)/100;
+
+        if (livingEntity.getNoDamageTicks() > 0) return;
+
+        if (livingEntity.getHealth()-damage <= 0) {
+            livingEntity.setHealth(0);
+            livingEntity.setKiller(damager);
+        } else {
+            livingEntity.setHealth(livingEntity.getHealth() - damage);
+        }
+        livingEntity.damage(0, damager);
     }
 }

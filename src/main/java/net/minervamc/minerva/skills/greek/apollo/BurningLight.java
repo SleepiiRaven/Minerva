@@ -28,8 +28,7 @@ public class BurningLight extends Skill {
         long durationMillis = 50 * maxTicks;
         long cooldown = durationMillis + 9000;
         double distanceThrown = 15;
-        int fireTicks = 40;
-        int damage = 100;
+        int damage = 4;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "burningLight")) {
             onCooldown(player);
@@ -61,12 +60,11 @@ public class BurningLight extends Skill {
                 for (Entity entity : sphereLoc.getNearbyEntities(radius, radius, radius)) {
                     if (entity instanceof LivingEntity livingEntity && entity != player && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
                         SkillUtils.damage(livingEntity, damage, player);
-                        livingEntity.setFireTicks(Math.min(livingEntity.getFireTicks() + fireTicks, livingEntity.getMaxFireTicks()));
                     }
                 }
 
                 int i = 0;
-                for (Vector point : ParticleUtils.getSpherePoints(radius, 5)) {
+                for (Vector point : ParticleUtils.getSpherePoints(radius, 3)) {
                     i++;
                     Location particleLocation = sphereLoc.clone().add(point);
                     particleLocation.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(184, 134, 11), 2));

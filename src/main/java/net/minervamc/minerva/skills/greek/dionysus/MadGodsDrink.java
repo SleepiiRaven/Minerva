@@ -31,8 +31,8 @@ public class MadGodsDrink extends Skill {
         int duration = 60;
         int poisonDuration = 100;
         int slownessDuration = 60;
-        int poisonAmplifier = 0;
-        int slownessAmplifier = 0;
+        int poisonAmplifier = 2;
+        int slownessAmplifier = 1;
         long cooldown = 7000;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "madGodsDrink")) {

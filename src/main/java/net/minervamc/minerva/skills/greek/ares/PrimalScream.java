@@ -25,7 +25,7 @@ public class PrimalScream extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
         double distance = 10;
-        double kb = 2;
+        double kb = 1.5;
         int effAmp = 1;
         int effTime = 40;
         long cooldown = 10000;

@@ -25,8 +25,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class GrapeShot extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-        double damage = 20;
-        int weakDur = 60;
+        double damage = 2;
+        int weakDur = 200;
         int weakAmp = 0;
         double maxDistance = 10;
         int maxTicks = 40;

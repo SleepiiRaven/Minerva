@@ -64,10 +64,10 @@ public class SeismicBlast extends Skill {
             }
             default -> {
                 cooldown = 9000;
-                radius = 5;
+                radius = 2.5;
                 delay = 10;
                 knock = 1;
-                damage = 100;
+                damage = 10;
             }
         }
 

@@ -61,7 +61,7 @@ public class CallOfTheWild extends Skill {
 
             Wolf wolf = (Wolf) player.getWorld().spawnEntity(wolfLocation.setDirection(wolfDirection), EntityType.WOLF);
             wolf.addScoreboardTag("artemisWolf");
-            wolf.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, (int) (wolfDespawnTicks * 5), 4));
+            wolf.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, (int) (wolfDespawnTicks * 5), 3));
             wolves.add(wolf);
         }
 

@@ -33,27 +33,27 @@ public class TidalWave extends Skill {
             case 2 -> {
                 tickDuration = 30;
                 cooldown = 9000 + (tickDuration * 50);
-                damage = 1;
+                damage = 4;
             }
             case 3 -> {
                 tickDuration = 40;
                 cooldown = 8000 + (tickDuration * 50);
-                damage = 2;
+                damage = 8;
             }
             case 4 -> {
                 tickDuration = 50;
                 cooldown = 7000 + (tickDuration * 50);
-                damage = 2.5;
+                damage = 16;
             }
             case 5 -> {
                 tickDuration = 60;
                 cooldown = 8000 + (tickDuration * 50);
-                damage = 3;
+                damage = 32;
             }
             default -> {
                 tickDuration = 20;
                 cooldown = 10000 + (tickDuration * 50);
-                damage = 30;
+                damage = 2;
             }
         }
 

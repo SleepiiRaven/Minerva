@@ -86,7 +86,7 @@ public class AquaticLimbExtensions extends Skill {
                 maxPunches = 5;
                 durationTicks = maxPunchingTicks * 4 * maxPunches;
                 cooldown = durationTicks * 50 + 9000;
-                damage = 100;
+                damage = 4;
             }
         }
 

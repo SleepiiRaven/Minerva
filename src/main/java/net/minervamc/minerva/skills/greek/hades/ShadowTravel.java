@@ -57,7 +57,7 @@ public class ShadowTravel extends Skill {
             default -> {
                 cooldown = 10000;
                 distance = 7;
-                damage = 50;
+                damage = 2;
             }
         }
 

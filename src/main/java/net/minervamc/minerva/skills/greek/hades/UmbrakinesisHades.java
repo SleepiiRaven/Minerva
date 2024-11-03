@@ -74,9 +74,9 @@ public class UmbrakinesisHades extends Skill {
             default -> {
                 cooldown = 8000;
                 distance = 10;
-                damage = 100;
-                kb = ThreadLocalRandom.current().nextDouble(0.3, 0.5);
-                intervalBetweenTriggers = 10L;
+                damage = 8;
+                kb = 0.5;
+                intervalBetweenTriggers = 15L;
                 maxTriggers = 4;
                 velocityMultiplier = 2;
             }

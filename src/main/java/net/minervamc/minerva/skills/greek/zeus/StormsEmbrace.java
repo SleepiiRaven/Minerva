@@ -36,7 +36,7 @@ public class StormsEmbrace extends Skill {
             case 2 -> {
                 maxEntitiesDamaged = 7;
                 radius = Math.sqrt(3); // Change the middle.
-                damage = 10;
+                damage = 5;
                 triggers = 30;
                 timeBetweenTriggers = 5;
                 cooldown = 9500;
@@ -68,10 +68,10 @@ public class StormsEmbrace extends Skill {
             default -> {
                 maxEntitiesDamaged = 5;
                 radius = Math.sqrt(3); // Change the middle.
-                damage = 90;
+                damage = 3;
                 triggers = 20;
                 timeBetweenTriggers = 5;
-                cooldown = 10000;
+                cooldown = 20000;
             }
         }
 
