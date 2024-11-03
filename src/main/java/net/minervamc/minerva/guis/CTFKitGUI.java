@@ -6,19 +6,16 @@ import net.Indyuce.mmoitems.api.Type;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.minecraft.world.item.SplashPotionItem;
 import net.minervamc.minerva.lib.menu.Menu;
 import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.lib.util.MenuUtil;
 import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
-import org.apache.logging.log4j.core.tools.picocli.CommandLine;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -76,7 +73,10 @@ public class CTFKitGUI extends Menu {
                         TextContext.formatLegacy("", false),
                         TextContext.formatLegacy("Ping (SNEAK + LEFT CLICK)", false).color(NamedTextColor.GOLD),
                         TextContext.formatLegacy("&7A trail of particles shows the", false),
-                        TextContext.formatLegacy("&7direction to the opposing flag.", false),
+                        TextContext.formatLegacy("&7direction to the opposing flag,", false),
+                        TextContext.formatLegacy("&7or the direction to your own", false),
+                        TextContext.formatLegacy("&7flag if the opposing flag", false),
+                        TextContext.formatLegacy("&7has been taken.", false),
                         TextContext.formatLegacy("&7Cooldown: 20 seconds.", false)
                 ))
                 .addAttribute(Attribute.GENERIC_ARMOR, 7.0, AttributeModifier.Operation.ADD_NUMBER)

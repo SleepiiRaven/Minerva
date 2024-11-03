@@ -1,9 +1,15 @@
 package net.minervamc.minerva.minigames.ctf;
 
-import java.time.Duration;
-import java.util.*;
-
 import fr.mrmicky.fastboard.FastBoard;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
+import java.util.UUID;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -11,18 +17,21 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import net.minervamc.minerva.Minerva;
-import net.minervamc.minerva.lib.region.Region2d;
 import net.minervamc.minerva.lib.storage.yaml.Config;
 import net.minervamc.minerva.lib.text.TextContext;
-import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.minigames.Minigame;
-import net.minervamc.minerva.utils.FastUtils;
+import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.utils.ParticleUtils;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Entity;
@@ -36,7 +45,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.scoreboard.*;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
 import org.slf4j.Logger;
 
@@ -88,6 +99,10 @@ public class CaptureTheFlag extends Minigame {
 
     public static int playerCount() {
         return inGame.size();
+    }
+
+    public static boolean inSameTeam(Player p1, Player p2) {
+        return (blue.contains(p1) && blue.contains(p2)) || (red.contains(p1) && red.contains(p2));
     }
 
     public static void addQueue(Player player) {
@@ -769,10 +784,44 @@ public class CaptureTheFlag extends Minigame {
         cdInstance.setCooldownFromNow(player.getUniqueId(), "ctfSkill", cd);
 
         Vector direction = null;
-        if (blue.contains(player) && redFlagLocation != null) {
-            direction = ParticleUtils.getDirection(player.getEyeLocation(), redFlagLocation);
-        } else if (red.contains(player) && blueFlagLocation != null) {
-            direction = ParticleUtils.getDirection(player.getEyeLocation(), blueFlagLocation);
+        if (blueFlagLocation == null || redFlagLocation == null) {
+            LOGGER.error("A flag location is null");
+            return;
+        }
+
+        boolean blueFlagInPlace = (blueFlagLocation.getBlock().getType() == Material.BLUE_WALL_BANNER ||
+                blueFlagLocation.getBlock().getType() == Material.BLUE_BANNER);
+        Player blueFlagHolder = null;
+        Player redFlagHolder = null;
+        if (!blueFlagInPlace) {
+            for (Player p : red) {
+                if (hasBlueFlag(p)) {
+                    blueFlagHolder = p;
+                }
+            }
+        }
+        boolean redFlagInPlace = (redFlagLocation.getBlock().getType() == Material.RED_WALL_BANNER ||
+                redFlagLocation.getBlock().getType() == Material.RED_BANNER);
+        if (!redFlagInPlace) {
+            for (Player p : blue) {
+                if (hasRedFlag(p)) {
+                    redFlagHolder = p;
+                }
+            }
+        }
+
+        if (blue.contains(player)) {
+            direction = (redFlagInPlace)
+                ? ParticleUtils.getDirection(player.getEyeLocation(), redFlagLocation)
+                : (blueFlagInPlace || blueFlagHolder == null)
+                    ? ParticleUtils.getDirection(player.getEyeLocation(), blueFlagLocation)
+                    : ParticleUtils.getDirection(player.getEyeLocation(), blueFlagHolder.getEyeLocation());
+        } else if (red.contains(player)) {
+            direction = (blueFlagInPlace)
+                    ? ParticleUtils.getDirection(player.getEyeLocation(), blueFlagLocation)
+                    : (redFlagInPlace || redFlagHolder == null)
+                    ? ParticleUtils.getDirection(player.getEyeLocation(), redFlagLocation)
+                    : ParticleUtils.getDirection(player.getEyeLocation(), redFlagHolder.getEyeLocation());
         }
 
         if (direction == null) return;

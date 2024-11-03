@@ -51,7 +51,7 @@ public class TomahawkThrow extends Skill {
         new BukkitRunnable() {
             int ticks = 0;
             float angle = 0; // Start angle for rotation
-            Location loc = display.getLocation();
+            final Location loc = display.getLocation();
 
             @Override
             public void run() {

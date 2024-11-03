@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import net.minervamc.minerva.skills.SkillTriggers;
@@ -15,7 +13,6 @@ import net.minervamc.minerva.types.HeritageType;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.JsonUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerStats {

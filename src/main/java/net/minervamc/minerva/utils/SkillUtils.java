@@ -1,27 +1,16 @@
 package net.minervamc.minerva.utils;
 
-import de.tr7zw.nbtapi.NBTItem;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import java.util.UUID;
-import net.Indyuce.mmoitems.ItemStats;
-import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
-import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
-import net.Indyuce.mmoitems.api.player.PlayerData;
-import net.Indyuce.mmoitems.comp.mmocore.MMOCoreHook;
-import net.Indyuce.mmoitems.comp.rpg.McMMOHook;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.skills.Skills;
 import net.minervamc.minerva.types.HeritageType;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.types.SkillType;
-import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 public class SkillUtils {
     public static void redirect(Player player, UUID pUUID, SkillType skillType) {
