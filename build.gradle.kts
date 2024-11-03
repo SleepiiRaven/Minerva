@@ -22,11 +22,17 @@ repositories {
         name = "CodeMC"
         url = uri("https://repo.codemc.io/repository/maven-public/")
     }
+    maven {
+        name = "phoenix"
+        url = uri("https://nexus.phoenixdevt.fr/repository/maven-public/")
+    }
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
     compileOnly("de.tr7zw:item-nbt-api-plugin:2.13.2")
+    compileOnly("io.lumine:MythicLib-dist:1.7.1-SNAPSHOT")
+    compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
     implementation ("fr.mrmicky:fastboard:2.1.3")
     paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
 }

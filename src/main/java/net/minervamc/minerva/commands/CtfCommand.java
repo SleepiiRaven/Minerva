@@ -83,12 +83,13 @@ public class CtfCommand extends Command {
                 RegionManager.deleteRegion(name);
             }
             case "setspawn" -> {
-                if (args.length < 3) {
-                    player.sendMessage(Component.text("Please provide a team name! (blue/red)", NamedTextColor.RED));
+                if (args.length != 4) {
+                    player.sendMessage(Component.text("Please provide a team name (blue/red) as well as a name for the spawn point!", NamedTextColor.RED));
                     return;
                 }
-                String name = args[2];
-                CaptureTheFlag.setSpawnPos(player.getLocation(), name);
+                String team = args[2];
+                String name = args[3];
+                CaptureTheFlag.setSpawnPos(player.getLocation(), team, name);
             }
             case "setdefaultflagpos" -> {
                 if (args.length < 3) {

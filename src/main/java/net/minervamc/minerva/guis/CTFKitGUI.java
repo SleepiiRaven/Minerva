@@ -1,6 +1,8 @@
 package net.minervamc.minerva.guis;
 
 import java.util.List;
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.Type;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -28,6 +30,14 @@ public class CTFKitGUI extends Menu {
     private final int scoutIndex = 11;
     private final int attackerIndex = 13;
     private final int defenderIndex = 15;
+    private final Type tSword = MMOItems.plugin.getTypes().get("SWORD");
+    private final Type tAxe = MMOItems.plugin.getTypes().get("GREATAXE");
+    private final Type tCons = MMOItems.plugin.getTypes().get("CONSUMABLE");
+    private final Type tBow = MMOItems.plugin.getTypes().get("BOW");
+    private final Type tHelm = MMOItems.plugin.getTypes().get("HEADWEAR");
+    private final Type tChest = MMOItems.plugin.getTypes().get("CHESTWEAR");
+    private final Type tLegs = MMOItems.plugin.getTypes().get("LEGWEAR");
+    private final Type tBoots = MMOItems.plugin.getTypes().get("FOOTWEAR");
 
     public CTFKitGUI() {
         super(27, Component.text("Kit Selection"));
@@ -116,15 +126,9 @@ public class CTFKitGUI extends Menu {
     }
 
     private void giveScoutKit(Player player) {
-        ItemCreator sword = ItemCreator.get(Material.GOLDEN_SWORD);
-        sword.setName(Component.text("Celestial Bronze Dagger", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
-        sword.setUnbreakable(true);
+        ItemStack sword = MMOItems.plugin.getItem(tSword, "CTF_SCT_SWORD");
 
-        ItemCreator bow = ItemCreator.get(Material.BOW);
-        bow.setName(Component.text("Reinforced Bow", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
-        bow.setUnbreakable(true);
-        bow.addEnchantment(Enchantment.POWER, 2);
-        bow.addEnchantment(Enchantment.INFINITY, 1);
+        ItemStack bow = MMOItems.plugin.getItem(tBow, "CTF_SCT_BOW");
 
         int trapAmount = 4;
         ItemCreator trap = ItemCreator.get(Material.STONE_PRESSURE_PLATE);
@@ -132,11 +136,8 @@ public class CTFKitGUI extends Menu {
         ItemStack trapBuilt = trap.build();
         trapBuilt.setAmount(trapAmount);
 
-        int foodAmount = 64;
-        ItemCreator food = ItemCreator.get(Material.GOLDEN_CARROT);
-        food.setName(Component.text("Ambrosia-Infused Carrot", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
-        ItemStack foodBuilt = food.build();
-        foodBuilt.setAmount(foodAmount);
+        ItemStack food = MMOItems.plugin.getItem(tCons, "SWEET_BERRIES");
+        food.setAmount(64);
 
         ItemStack potion = new ItemStack(Material.SPLASH_POTION);
         PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
@@ -150,11 +151,11 @@ public class CTFKitGUI extends Menu {
 
         ItemStack arrow = new ItemStack(Material.ARROW);
 
-        player.getInventory().addItem(sword.build(), bow.build(), trapBuilt, foodBuilt, potion, spyglass.build(), arrow);
+        player.getInventory().addItem(sword, bow, trapBuilt, food, potion, spyglass.build(), arrow);
 
-        ItemStack chestplate = ItemCreator.create(Material.CHAINMAIL_CHESTPLATE);
-        ItemStack leggings = ItemCreator.create(Material.CHAINMAIL_LEGGINGS);
-        ItemStack boots = ItemCreator.create(Material.IRON_BOOTS);
+        ItemStack chestplate = MMOItems.plugin.getItem(tChest, "CTF_SCT_CHEST");
+        ItemStack leggings = MMOItems.plugin.getItem(tLegs, "CTF_SCT_LEGS");
+        ItemStack boots = MMOItems.plugin.getItem(tBoots, "CTF_ARC_BOOTS");
 
         player.getInventory().setChestplate(chestplate);
         player.getInventory().setLeggings(leggings);
@@ -162,15 +163,10 @@ public class CTFKitGUI extends Menu {
     }
 
     private void giveAttackerKit(Player player) {
-        ItemCreator sword = ItemCreator.get(Material.DIAMOND_SWORD);
-        sword.setName(Component.text("Diamond-Infused Spatha", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
-        sword.setUnbreakable(true);
+        ItemStack sword = MMOItems.plugin.getItem(tSword, "CTF_ATT_SWORD");
 
-        int foodAmount = 64;
-        ItemCreator food = ItemCreator.get(Material.GOLDEN_CARROT);
-        food.setName(Component.text("Ambrosia-Infused Carrot", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
-        ItemStack foodBuilt = food.build();
-        foodBuilt.setAmount(foodAmount);
+        ItemStack food = MMOItems.plugin.getItem(tCons, "SWEET_BERRIES");
+        food.setAmount(64);
 
         ItemStack potion = new ItemStack(Material.SPLASH_POTION);
         PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
@@ -180,11 +176,11 @@ public class CTFKitGUI extends Menu {
         potionMeta.setColor(Color.ORANGE);
         potion.setItemMeta(potionMeta);
 
-        player.getInventory().addItem(sword.build(), foodBuilt, potion);
+        player.getInventory().addItem(sword, food, potion);
 
-        ItemStack chestplate = ItemCreator.create(Material.DIAMOND_CHESTPLATE);
-        ItemStack leggings = ItemCreator.create(Material.DIAMOND_LEGGINGS);
-        ItemStack boots = ItemCreator.create(Material.DIAMOND_BOOTS);
+        ItemStack chestplate = MMOItems.plugin.getItem(tChest, "CTF_ATT_CHEST");
+        ItemStack leggings = MMOItems.plugin.getItem(tLegs, "CTF_ATT_LEGS");
+        ItemStack boots = MMOItems.plugin.getItem(tBoots, "CTF_ATT_BOOTS");
 
         player.getInventory().setChestplate(chestplate);
         player.getInventory().setLeggings(leggings);
@@ -192,9 +188,7 @@ public class CTFKitGUI extends Menu {
     }
 
     private void giveDefenderKit(Player player) {
-        ItemCreator sword = ItemCreator.get(Material.WOODEN_SWORD);
-        sword.setName(Component.text("Training Sword", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
-        sword.setUnbreakable(true);
+        ItemStack axe = MMOItems.plugin.getItem(tAxe, "CTF_DEF_AXE");
 
         int trapAmount = 8;
         ItemCreator trap = ItemCreator.get(Material.STONE_PRESSURE_PLATE);
@@ -202,11 +196,8 @@ public class CTFKitGUI extends Menu {
         ItemStack trapBuilt = trap.build();
         trapBuilt.setAmount(trapAmount);
 
-        int foodAmount = 64;
-        ItemCreator food = ItemCreator.get(Material.GOLDEN_CARROT);
-        food.setName(Component.text("Ambrosia-Infused Carrot", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
-        ItemStack foodBuilt = food.build();
-        foodBuilt.setAmount(foodAmount);
+        ItemStack food = MMOItems.plugin.getItem(tCons, "SWEET_BERRIES");
+        food.setAmount(64);
 
         ItemStack potion = new ItemStack(Material.SPLASH_POTION);
         PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
@@ -218,13 +209,13 @@ public class CTFKitGUI extends Menu {
 
         ItemCreator blocks = ItemCreator.get(Material.BAMBOO_MOSAIC);
         ItemStack blocksBuilt = ItemCreator.getPlaceable(blocks.build()); // simply puts in none so it has can_place_on but no blocks in there
-        blocksBuilt.setAmount(8);
+        blocksBuilt.setAmount(4);
 
-        player.getInventory().addItem(sword.build(), trapBuilt, foodBuilt, potion, blocksBuilt);
+        player.getInventory().addItem(axe, trapBuilt, food, potion, blocksBuilt);
 
-        ItemStack chestplate = ItemCreator.create(Material.CHAINMAIL_CHESTPLATE);
-        ItemStack leggings = ItemCreator.create(Material.CHAINMAIL_LEGGINGS);
-        ItemStack boots = ItemCreator.create(Material.IRON_BOOTS);
+        ItemStack chestplate = MMOItems.plugin.getItem(tChest, "CTF_DEF_CHEST");
+        ItemStack leggings = MMOItems.plugin.getItem(tLegs, "CTF_DEF_LEGS");
+        ItemStack boots = MMOItems.plugin.getItem(tBoots, "CTF_DEF_BOOTS");
 
         player.getInventory().setChestplate(chestplate);
         player.getInventory().setLeggings(leggings);

@@ -60,6 +60,8 @@ public class PlayerListener implements Listener {
         Player p = e.getPlayer();
         cooldownManager.createContainer(p.getUniqueId());
         PlayerStats pData = PlayerStats.getStats(p.getUniqueId());
+
+        Bukkit.getLogger().info(String.valueOf(Arrays.stream(pData.getInventory()).allMatch(Objects::isNull)));
         if (!Arrays.stream(pData.getInventory()).allMatch(Objects::isNull)) {
             p.getInventory().setStorageContents(pData.getInventory());
         }
@@ -69,6 +71,7 @@ public class PlayerListener implements Listener {
         if (pData.getOffhand()[0] != null) {
             p.getInventory().setItemInOffHand(pData.getOffhand()[0]);
         }
+
         pData.setInventory(new ItemStack[36]);
         pData.setArmor(new ItemStack[4]);
         pData.setOffhand(new ItemStack[1]);

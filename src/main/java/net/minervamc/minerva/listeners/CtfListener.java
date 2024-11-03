@@ -1,10 +1,13 @@
 package net.minervamc.minerva.listeners;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
+import java.time.Duration;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.title.Title;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.lib.region.Region2d;
 import net.minervamc.minerva.lib.text.TextContext;
@@ -22,6 +25,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -31,6 +35,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
@@ -46,7 +53,7 @@ public class CtfListener implements Listener {
         Player player = event.getPlayer();
         if (!CaptureTheFlag.isPlaying()) return;
         if (CaptureTheFlag.inBlueTeam(player)) {
-            if (event.getBlock().getType() == Material.RED_BANNER) {
+            if (event.getBlock().getType() == Material.RED_BANNER || event.getBlock().getType() == Material.RED_WALL_BANNER) {
                 event.setDropItems(false);
 
                 ItemCreator flagCr = ItemCreator.get(Material.RED_BANNER);
@@ -54,11 +61,11 @@ public class CtfListener implements Listener {
                 //player.getInventory().addItem(flagCr.build());
                 player.getInventory().setHelmet(flagCr.build()); // banner on head
                 
-                player.sendMessage(Component.text("You are carrying the red flag. Take it to your team's side to win!", NamedTextColor.RED));
+                player.sendMessage(Component.text("You are carrying the red flag. Take it to your side and right click your team's flag to win!", NamedTextColor.RED));
                 CaptureTheFlag.warnFlag(player, "red");
             }
         } else {
-            if (event.getBlock().getType() == Material.BLUE_BANNER) {
+            if (event.getBlock().getType() == Material.BLUE_BANNER || event.getBlock().getType() == Material.BLUE_WALL_BANNER) {
                 event.setDropItems(false);
 
                 ItemCreator flagCr = ItemCreator.get(Material.BLUE_BANNER);
@@ -66,8 +73,30 @@ public class CtfListener implements Listener {
                 //player.getInventory().addItem(flagCr.build());
                 player.getInventory().setHelmet(flagCr.build()); // banner on head
                 
-                player.sendMessage(Component.text("You are carrying the blue flag. Take it to your team's side to win!", NamedTextColor.BLUE));
+                player.sendMessage(Component.text("You are carrying the blue flag. Take it to your side and right click your team's flag to win!", NamedTextColor.BLUE));
                 CaptureTheFlag.warnFlag(player, "blue");
+            }
+        }
+    }
+
+    @EventHandler
+    public void playerRightClick(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        Player player = event.getPlayer();
+        if (!CaptureTheFlag.isPlaying()) return;
+        if (!CaptureTheFlag.isInGame(player)) return;
+        if (event.getClickedBlock() == null || player.getInventory().getHelmet() == null) return;
+        if (CaptureTheFlag.inBlueTeam(player)) {
+            if (event.getClickedBlock().getType() == Material.BLUE_BANNER || event.getClickedBlock().getType() == Material.BLUE_WALL_BANNER) {
+                if (player.getInventory().getHelmet().getType() == Material.RED_BANNER) {
+                    CaptureTheFlag.stop("blue");
+                }
+            }
+        } else {
+            if (event.getClickedBlock().getType() == Material.RED_BANNER || event.getClickedBlock().getType() == Material.RED_WALL_BANNER) {
+                if (player.getInventory().getHelmet().getType() == Material.BLUE_BANNER) {
+                    CaptureTheFlag.stop("red");
+                }
             }
         }
     }
@@ -173,28 +202,20 @@ public class CtfListener implements Listener {
         Player player = event.getPlayer();
         if (!CaptureTheFlag.isPlaying()) return;
         if (!CaptureTheFlag.isInGame(player)) return;
-        // check if player is in water
-        if (player.isInWater()) {
-            CooldownManager cdInstance = Minerva.getInstance().getCdInstance();
-            if (!cdInstance.isCooldownDone(player.getUniqueId(), "waterDeathCTF")) return;
-
-            cdInstance.setCooldownFromNow(player.getUniqueId(), "waterDeathCTF", 200L);
-            if (!CaptureTheFlag.isPlaying()) return;
-            if (!CaptureTheFlag.isInGame(player)) return;
-            if(CaptureTheFlag.hasBlueFlag(player)) {
-                Location blueFlagLocation = CaptureTheFlag.blueFlagLocation;
-                if (blueFlagLocation == null) throw new IllegalStateException(player + " died with the blue flag but it has no original location, how was it captured?");
-                blueFlagLocation.getBlock().setType(Material.BLUE_BANNER);
-                player.sendMessage(Component.text("You lost the flag."));
-            } else if (CaptureTheFlag.hasRedFlag(player)) {
-                Location redFlagLocation = CaptureTheFlag.redFlagLocation;
-                if(redFlagLocation == null) throw new IllegalStateException(player + " died with the red flag but it has no original location, how was it captured?");
-                redFlagLocation.getBlock().setType(Material.RED_BANNER);
-                player.sendMessage(Component.text("You lost the flag."));
-            }
-
-            CaptureTheFlag.tpSpawn(player);
+        // check if player is on death cooldown
+        CooldownManager cdInstance = Minerva.getInstance().getCdInstance();
+        if (!cdInstance.isCooldownDone(player.getUniqueId(), "deathCD")) {
+            event.setCancelled(true);
+            return;
         }
+
+//        // check if player is in water
+//        if (player.isInWater()) {
+//            if (!cdInstance.isCooldownDone(player.getUniqueId(), "waterDeathCTF")) return;
+//
+//            cdInstance.setCooldownFromNow(player.getUniqueId(), "waterDeathCTF", 200L);
+//            deathReset(player, cdInstance);
+//        }
 
         if (!event.hasChangedBlock()) return;
         String regionOri = "";
@@ -225,11 +246,15 @@ public class CtfListener implements Listener {
         CaptureTheFlag.skillCast(player, cdInstance);
     }
 
-    @EventHandler
-    public void playerDeath(PlayerDeathEvent event) {
-        Player player = event.getPlayer();
-        if (!CaptureTheFlag.isPlaying()) return;
-        if (!CaptureTheFlag.isInGame(player)) return;
+    public void deathReset(Player player, CooldownManager cdInstance) {
+        if (player.getKiller() != null) {
+            if (player.getKiller() instanceof Player killer) {
+                killer.playSound(player, Sound.BLOCK_NOTE_BLOCK_BELL, 2f, 1.5f);
+                player.sendMessage(Component.text("You died to " + killer.getName() + "!", NamedTextColor.YELLOW));
+                killer.sendMessage(Component.text("You killed " + player.getName() + "!", NamedTextColor.YELLOW));
+            }
+        }
+
         if (CaptureTheFlag.inBlueTeam(player)) {
             CaptureTheFlag.autoPlaceBanner("blue");
         } else {
@@ -238,17 +263,61 @@ public class CtfListener implements Listener {
         if (CaptureTheFlag.hasBlueFlag(player)) {
             Location blueFlagLocation = CaptureTheFlag.blueFlagLocation;
             if (blueFlagLocation == null) throw new IllegalStateException(player + " died with the blue flag but it has no original location, how was it captured?");
-            blueFlagLocation.getBlock().setType(Material.BLUE_BANNER);
+            Material mat = Material.BLUE_BANNER;
+            if (CaptureTheFlag.blueFlagWall) {
+                mat = Material.BLUE_WALL_BANNER;
+            }
+            blueFlagLocation.getBlock().setType(mat);
+            player.getInventory().setHelmet(null);
             player.sendMessage(Component.text("You lost the flag."));
         } else if (CaptureTheFlag.hasRedFlag(player)) {
             Location redFlagLocation = CaptureTheFlag.redFlagLocation;
             if(redFlagLocation == null) throw new IllegalStateException(player + " died with the red flag but it has no original location, how was it captured?");
-            redFlagLocation.getBlock().setType(Material.RED_BANNER);
+            Material mat = Material.RED_BANNER;
+            if (CaptureTheFlag.redFlagWall) {
+                mat = Material.RED_WALL_BANNER;
+            }
+            redFlagLocation.getBlock().setType(mat);
+            player.getInventory().setHelmet(null);
             player.sendMessage(Component.text("You lost the flag."));
         }
 
-        event.setCancelled(true);
         CaptureTheFlag.tpSpawn(player);
+
+        double deathTimer = (double) 18 / CaptureTheFlag.playerCount();
+        int ticks = (int) (deathTimer * 20);
+        int remainder = ticks % 20;
+        new BukkitRunnable() {
+            int seconds = (ticks - remainder)/20;
+            @Override
+            public void run() {
+                Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
+                Title title = Title.title(
+                        Component.text("You Died!", NamedTextColor.RED),
+                        Component.text("You will respawn in " + seconds + " seconds."), times
+                );
+
+                player.showTitle(title);
+                player.playSound(player, Sound.BLOCK_LEVER_CLICK, 0.5f, 1f);
+                if (seconds == 0) {
+                    this.cancel();
+                }
+                seconds -= 1;
+            }
+        }.runTaskTimer(Minerva.getInstance(), remainder, 20);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, ticks, 10));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, ticks, 10));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, ticks, 10));
+        cdInstance.setCooldownFromNow(player.getUniqueId(), "deathCD", (long) (deathTimer * 1000));
+    }
+
+    @EventHandler
+    public void playerDeath(PlayerDeathEvent event) {
+        Player player = event.getPlayer();
+        if (!CaptureTheFlag.isPlaying()) return;
+        if (!CaptureTheFlag.isInGame(player)) return;
+        deathReset(player, Minerva.getInstance().getCdInstance());
+        event.setCancelled(true);
     }
 
     @EventHandler
@@ -260,7 +329,15 @@ public class CtfListener implements Listener {
 
         switch (block.getType()) {
             case RED_BANNER -> CaptureTheFlag.redFlagLocation = block.getLocation();
+            case RED_WALL_BANNER -> {
+                CaptureTheFlag.redFlagLocation = block.getLocation();
+                CaptureTheFlag.redFlagWall = true;
+            }
             case BLUE_BANNER -> CaptureTheFlag.blueFlagLocation = block.getLocation();
+            case BLUE_WALL_BANNER -> {
+                CaptureTheFlag.blueFlagLocation = block.getLocation();
+                CaptureTheFlag.blueFlagWall = true;
+            }
             case BAMBOO_MOSAIC -> CaptureTheFlag.placeBlock(block.getLocation());
         }
     }
@@ -278,5 +355,17 @@ public class CtfListener implements Listener {
         if (!(damager instanceof LivingEntity lE)) return;
         lE.damage(event.getDamage() / 2);
         event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void playerLeaveEvent(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        if (CaptureTheFlag.isInQueue(player)) {
+            CaptureTheFlag.removeQueue(player);
+        }
+
+        if (!CaptureTheFlag.isPlaying()) return;
+        if (!CaptureTheFlag.isInGame(player)) return;
+        CaptureTheFlag.removeFromGame(player);
     }
 }

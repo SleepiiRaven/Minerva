@@ -11,6 +11,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.lib.region.Region2d;
 import net.minervamc.minerva.lib.storage.yaml.Config;
 import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
@@ -62,14 +63,19 @@ public class CaptureTheFlag extends Minigame {
 
     public static Location blueFlagLocation;
     public static Location redFlagLocation;
+    public static boolean blueFlagWall = false;
+    public static boolean redFlagWall = false;
     public static Location defaultBlueFlagPos;
     public static Location defaultRedFlagPos;
-    private static Location blueSpawn;
-    private static Location redSpawn;
+    private static final List<Location> blueSpawn = new ArrayList<>();
+    private static final List<Location> redSpawn = new ArrayList<>();
 
     private static final HashMap<UUID, FastBoard> boards = new HashMap<>();
     private static BukkitTask scoreboardUpdater = null;
     private static int globalCountdown = 6;
+
+    static BukkitTask startTimer;
+    private static int startingTimerTicks = 0;
 
     // Team stuff
     private static Scoreboard scoreboard;
@@ -80,13 +86,17 @@ public class CaptureTheFlag extends Minigame {
         blocks.add(location);
     }
 
+    public static int playerCount() {
+        return inGame.size();
+    }
+
     public static void addQueue(Player player) {
-        if(isInGame(player)) return;
+        if (isInGame(player)) return;
         if (playing) {
             player.sendMessage(Component.text("Game has already started!"));
             return;
         }
-        if(isInQueue(player)) {
+        if (isInQueue(player)) {
             player.sendMessage(Component.text("Already in queue"));
             return;
         }
@@ -100,18 +110,25 @@ public class CaptureTheFlag extends Minigame {
         });
         if(queue.size() > 4) start();
 
-        if(scoreboardUpdater == null) {
+        if (scoreboardUpdater == null) {
             scoreboardUpdater = new BukkitRunnable() {
+                boolean removedLn4 = false;
                 @Override
                 public void run() {
                     if (playing) {
                         for (Player player : inGame) {
                             FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
                             board.updateTitle(ChatColor.GOLD + "Capture the Flag");
-                            board.updateLine(0, ChatColor.GRAY +"+=+=+=+=+=+=+=+=+=+");
+                            board.updateLine(0, ChatColor.GRAY +    "+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+");
                             board.updateLine(1, ChatColor.BLUE + "Blue Team: " + blue.size());
                             board.updateLine(2, ChatColor.RED + "Red Team: " + red.size());
                             board.updateLine(3, ChatColor.AQUA + "Players in Game: " + inGame.size());
+                            if (preparePhase) {
+                                board.updateLine(4, ChatColor.RED + "Seconds Before Barrier Drops: " + (60 - startingTimerTicks));
+                            } else if (!removedLn4 && startingTimerTicks >= 60) {
+                                board.removeLine(4);
+                                removedLn4 = true;
+                            }
                         }
                         return;
                     }
@@ -138,7 +155,7 @@ public class CaptureTheFlag extends Minigame {
                             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
                         } else {
                             board.updateTitle(ChatColor.GOLD + "Capture the Flag");
-                            board.updateLine(0, ChatColor.GRAY +"+=+=+=+=+=+=+=+=+=+");
+                            board.updateLine(0, ChatColor.GRAY +"+=+=+=+=+=+=+=+=+=+=+");
                             board.updateLine(1, ChatColor.AQUA + "In Queue: " + ChatColor.YELLOW + queue.size());
                             board.updateLine(3, ChatColor.RED + "Waiting for more players...");
                         }
@@ -175,6 +192,16 @@ public class CaptureTheFlag extends Minigame {
 
     public static boolean isInGame(Player player) {
         return inGame.contains(player);
+    }
+
+    public static void removeFromGame(Player player) {
+        if (inBlueTeam(player)) {
+            blue.remove(player);
+        } else {
+            red.remove(player);
+        }
+
+        inGame.remove(player);
     }
 
     public static boolean hasFlag(Player player) {
@@ -224,18 +251,18 @@ public class CaptureTheFlag extends Minigame {
         }
     }
 
-    public static void setSpawnPos(Location loc, String team) {
+    public static void setSpawnPos(Location loc, String team, String name) {
         if (team == null) return;
         if (team.equals("blue")) {
-            blueSpawn = loc;
+            blueSpawn.add(loc);
             try {
-                spawnConfig.set("spawn.blue.world", loc.getWorld().getName());
-                spawnConfig.set("spawn.blue.x", loc.getX());
-                spawnConfig.set("spawn.blue.y", loc.getY());
-                spawnConfig.set("spawn.blue.z", loc.getZ());
-                spawnConfig.set("spawn.blue.dir.x", loc.getDirection().getX());
-                spawnConfig.set("spawn.blue.dir.y", loc.getDirection().getY());
-                spawnConfig.set("spawn.blue.dir.z", loc.getDirection().getZ());
+                spawnConfig.set("spawn.blue." + name + ".world", loc.getWorld().getName());
+                spawnConfig.set("spawn.blue." + name + ".x", loc.getX());
+                spawnConfig.set("spawn.blue." + name + ".y", loc.getY());
+                spawnConfig.set("spawn.blue." + name + ".z", loc.getZ());
+                spawnConfig.set("spawn.blue." + name + ".dir.x", loc.getDirection().getX());
+                spawnConfig.set("spawn.blue." + name + ".dir.y", loc.getDirection().getY());
+                spawnConfig.set("spawn.blue." + name + ".dir.z", loc.getDirection().getZ());
                 spawnConfig.save();
             } catch (Exception e){
                 LOGGER.error("Error saving region '{}': {}", "blue", e.getMessage());
@@ -243,15 +270,15 @@ public class CaptureTheFlag extends Minigame {
                 LOGGER.info("Blue spawn saved!");
             }
         } else if (team.equals("red")) {
-            redSpawn = loc;
+            redSpawn.add(loc);
             try {
-                spawnConfig.set("spawn.red.world", loc.getWorld().getName());
-                spawnConfig.set("spawn.red.x", loc.getX());
-                spawnConfig.set("spawn.red.y", loc.getY());
-                spawnConfig.set("spawn.red.z", loc.getZ());
-                spawnConfig.set("spawn.red.dir.x", loc.getDirection().getX());
-                spawnConfig.set("spawn.red.dir.y", loc.getDirection().getY());
-                spawnConfig.set("spawn.red.dir.z", loc.getDirection().getZ());
+                spawnConfig.set("spawn.red." + name + ".world", loc.getWorld().getName());
+                spawnConfig.set("spawn.red." + name + ".x", loc.getX());
+                spawnConfig.set("spawn.red." + name + ".y", loc.getY());
+                spawnConfig.set("spawn.red." + name + ".z", loc.getZ());
+                spawnConfig.set("spawn.red." + name + ".dir.x", loc.getDirection().getX());
+                spawnConfig.set("spawn.red." + name + ".dir.y", loc.getDirection().getY());
+                spawnConfig.set("spawn.red." + name + ".dir.z", loc.getDirection().getZ());
                 spawnConfig.save();
             } catch (Exception e){
                 LOGGER.error("Error saving region '{}': {}", "red", e.getMessage());
@@ -269,34 +296,46 @@ public class CaptureTheFlag extends Minigame {
         ConfigurationSection blue = spawnSection.getConfigurationSection("blue");
         ConfigurationSection red = spawnSection.getConfigurationSection("red");
         if (blue != null) {
-            try {
-                blueSpawn = new Location(Bukkit.getWorld(Objects.requireNonNull(blue.getString("world"))),
-                    blue.getInt("x"),
-                    blue.getInt("y"),
-                    blue.getInt("z"))
-                    .setDirection(new Vector(
-                            (float) Objects.requireNonNull(blue.getConfigurationSection("dir")).getDouble("x"),
-                            (float) Objects.requireNonNull(blue.getConfigurationSection("dir")).getDouble("y"),
-                            (float) Objects.requireNonNull(blue.getConfigurationSection("dir")).getDouble("z")
-                    ));
-            } catch (IllegalArgumentException e) {
-                LOGGER.error("Error loading region '{}': {}", "blue", e.getMessage());
+            for (String regionName : blue.getKeys(false)) {
+                ConfigurationSection section = blue.getConfigurationSection(regionName);
+
+                if (section != null) {
+                    try {
+                        blueSpawn.add(new Location(Bukkit.getWorld(Objects.requireNonNull(section.getString("world"))),
+                                section.getInt("x"),
+                                section.getInt("y"),
+                                section.getInt("z"))
+                                .setDirection(new Vector(
+                                        (float) Objects.requireNonNull(section.getConfigurationSection("dir")).getDouble("x"),
+                                        (float) Objects.requireNonNull(section.getConfigurationSection("dir")).getDouble("y"),
+                                        (float) Objects.requireNonNull(section.getConfigurationSection("dir")).getDouble("z")
+                                )));
+                    } catch (NullPointerException e) {
+                        LOGGER.error("Error loading region '{}': {}", "blue", e.getMessage());
+                    }
+                }
             }
         }
 
         if (red != null) {
-            try {
-                redSpawn = new Location(Bukkit.getWorld(Objects.requireNonNull(red.getString("world"))),
-                        red.getInt("x"),
-                        red.getInt("y"),
-                        red.getInt("z"))
-                        .setDirection(new Vector(
-                                (float) Objects.requireNonNull(red.getConfigurationSection("dir")).getDouble("x"),
-                                (float) Objects.requireNonNull(red.getConfigurationSection("dir")).getDouble("y"),
-                                (float) Objects.requireNonNull(red.getConfigurationSection("dir")).getDouble("z")
-                        ));
-            } catch (IllegalArgumentException e) {
-                LOGGER.error("Error loading region '{}': {}", "red", e.getMessage());
+            for (String regionName : red.getKeys(false)) {
+                ConfigurationSection section = red.getConfigurationSection(regionName);
+
+                if (section != null) {
+                    try {
+                        redSpawn.add(new Location(Bukkit.getWorld(Objects.requireNonNull(section.getString("world"))),
+                                section.getInt("x"),
+                                section.getInt("y"),
+                                section.getInt("z"))
+                                .setDirection(new Vector(
+                                        (float) Objects.requireNonNull(section.getConfigurationSection("dir")).getDouble("x"),
+                                        (float) Objects.requireNonNull(section.getConfigurationSection("dir")).getDouble("y"),
+                                        (float) Objects.requireNonNull(section.getConfigurationSection("dir")).getDouble("z")
+                                )));
+                    } catch (NullPointerException e) {
+                        LOGGER.error("Error loading region '{}': {}", "red", e.getMessage());
+                    }
+                }
             }
         }
 
@@ -326,7 +365,11 @@ public class CaptureTheFlag extends Minigame {
     public static void start() {
         if (playing || starting) return;
 
-        if (blueSpawn == null || redSpawn == null || defaultBlueFlagPos == null || defaultRedFlagPos == null) {
+        if (blueSpawn.isEmpty() || redSpawn.isEmpty() || defaultBlueFlagPos == null || defaultRedFlagPos == null) {
+            LOGGER.info(blueSpawn.toString());
+            LOGGER.info(redSpawn.toString());
+            LOGGER.info(defaultBlueFlagPos.toString());
+            LOGGER.info(defaultRedFlagPos.toString());
             LOGGER.error("Fatal error! Set blue and red spawns as well as blue and red default flag locations before attempting to begin a game");
             return;
         }
@@ -357,13 +400,16 @@ public class CaptureTheFlag extends Minigame {
 
                     saveAndClearInventories(inGame);
 
-                    new BukkitRunnable() {
-                        int ticks = 0;
-
+                    startTimer = new BukkitRunnable() {
                         @Override
                         public void run() {
+                            if (startingTimerTicks <= 54) {
+                                startingTimerTicks++;
+                                return;
+                            }
+
                             Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
-                            if (ticks == 4) {
+                            if (startingTimerTicks == 60) {
                                 autoPlaceBanner("blue");
                                 autoPlaceBanner("red");
                                 preparePhase = false;
@@ -377,7 +423,7 @@ public class CaptureTheFlag extends Minigame {
                                 }
                                 this.cancel();
                             } else {
-                                TextColor color = switch (3 - ticks) {
+                                TextColor color = switch (60 - startingTimerTicks) {
                                     case 1 -> TextColor.color(0xFF0024);
                                     case 2 -> TextColor.color(0xFFA500);
                                     case 3 -> NamedTextColor.GREEN;
@@ -385,7 +431,7 @@ public class CaptureTheFlag extends Minigame {
                                 };
 
                                 Title title = Title.title(
-                                        Component.text((3 - ticks) + "", color),
+                                        Component.text((60 - startingTimerTicks) + "", color),
                                         Component.text("seconds before the barrier drops."), times
                                 );
 
@@ -395,9 +441,9 @@ public class CaptureTheFlag extends Minigame {
                                 }
                             }
 
-                            ticks++;
+                            startingTimerTicks++;
                         }
-                    }.runTaskTimer(Minerva.getInstance(), 1140L, 20L);
+                    }.runTaskTimer(Minerva.getInstance(), 0L, 20L);
 
                     boolean startWithBlue = new Random().nextBoolean();
                     int i = 0;
@@ -412,6 +458,8 @@ public class CaptureTheFlag extends Minigame {
 
                         player.sendMessage(Component.text("The barrier will drop soon. You have 60 seconds to prepare. Used items will ", NamedTextColor.GOLD).append(Component.text("NOT", NamedTextColor.RED).decorate(TextDecoration.BOLD)).append(Component.text(" replenish after death", NamedTextColor.GOLD)));
 
+                        Random random = new Random();
+                        random.setSeed(System.currentTimeMillis() + random.nextInt(1000));
                         if (i % 2 == blueRemainder) {
                             blue.add(player);
                             blueTeam.addEntry(player.getName());
@@ -422,7 +470,10 @@ public class CaptureTheFlag extends Minigame {
                                             .append(Component.text(" team!"))
                             );
                             player.getInventory().addItem(blueFlagBreaker());
-                            player.teleport(blueSpawn);
+                            int size = blueSpawn.size();
+                            int randInt = (size <= 1) ? 0 : random.nextInt(size);
+                            LOGGER.info(blueSpawn.size() - 1 + " weh " + blueSpawn);
+                            player.teleport(blueSpawn.get(randInt));
                         } else {
                             red.add(player);
                             redTeam.addEntry(player.getName());
@@ -433,7 +484,10 @@ public class CaptureTheFlag extends Minigame {
                                             .append(Component.text(" team!"))
                             );
                             player.getInventory().addItem(redFlagBreaker());
-                            player.teleport(redSpawn);
+                            int size = redSpawn.size();
+                            int randInt = (size <= 1) ? 0 : random.nextInt(size);
+                            LOGGER.info(randInt + "");
+                            player.teleport(redSpawn.get(randInt));
                         }
 
                         player.showTitle(Title.title(Component.text("Game Started!", NamedTextColor.GREEN), Component.empty()));
@@ -446,13 +500,14 @@ public class CaptureTheFlag extends Minigame {
                         @Override
                         public void run() {
                             Random random = new Random();
+                            random.setSeed(System.currentTimeMillis() + random.nextInt(1000));
                             // Add blue flag to random player in blue team's inventory
                             if (!blue.isEmpty()) {
                                 int randomIndex;
                                 if (blue.size() <= 1) {
                                     randomIndex = 0;
                                 } else {
-                                    randomIndex = random.nextInt(0, blue.size() - 1);
+                                    randomIndex = random.nextInt(blue.size());
                                 }
                                 if (randomIndex >= 0 && randomIndex < blue.size()) {
                                     blue.get(randomIndex).getInventory().addItem(blueFlag());
@@ -465,7 +520,7 @@ public class CaptureTheFlag extends Minigame {
                                 if (red.size() <= 1) {
                                     randomIndex = 0;
                                 } else {
-                                    randomIndex = random.nextInt(0, red.size() - 1);
+                                    randomIndex = random.nextInt(red.size());
                                 }
                                 if (randomIndex >= 0 && randomIndex < red.size()) {
                                     red.get(randomIndex).getInventory().addItem(redFlag());
@@ -543,7 +598,7 @@ public class CaptureTheFlag extends Minigame {
         ));
         blueFlagBreakerCr.addAttribute(Attribute.GENERIC_ATTACK_DAMAGE, 0, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
         blueFlagBreakerCr.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        return ItemCreator.getBreakable(blueFlagBreakerCr.build(), Material.RED_BANNER, Material.BAMBOO_MOSAIC);
+        return ItemCreator.getBreakable(blueFlagBreakerCr.build(), Material.RED_BANNER, Material.RED_WALL_BANNER, Material.BAMBOO_MOSAIC);
     }
 
     private static ItemStack redFlagBreaker() {
@@ -557,11 +612,13 @@ public class CaptureTheFlag extends Minigame {
         ));
         redFlagBreakerCr.addAttribute(Attribute.GENERIC_ATTACK_DAMAGE, 0, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
         redFlagBreakerCr.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        return ItemCreator.getBreakable(redFlagBreakerCr.build(), Material.BLUE_BANNER, Material.BAMBOO_MOSAIC);
+        return ItemCreator.getBreakable(redFlagBreakerCr.build(), Material.BLUE_BANNER, Material.BLUE_WALL_BANNER, Material.BAMBOO_MOSAIC);
     }
 
     public static void stop(String winningTeam) {
         if(!playing) return;
+        startTimer.cancel();
+        startingTimerTicks = 0;
         inGame.forEach(player -> {
             boolean isRed = red.contains(player);
             Component title;
@@ -608,6 +665,8 @@ public class CaptureTheFlag extends Minigame {
         playing = false;
         starting = false;
         preparePhase = false;
+        blueFlagWall = false;
+        redFlagWall = false;
 
         for (Location block : blocks) {
             block.getBlock().setType(Material.AIR);
@@ -682,15 +741,8 @@ public class CaptureTheFlag extends Minigame {
     }
 
     public static void changedRegion(String region1, String region2, PlayerMoveEvent event) {
-        Player player = event.getPlayer();
         if (region2.contains("barrier") && preparePhase) {
             event.setCancelled(true);
-        } else if (region2.contains("blue") && blue.contains(player)) {  // if a red team crosses over into blue territory
-            if (!hasRedFlag(player)) return;
-            stop("blue");
-        } else if (region2.contains("red") && red.contains(player)) {
-            if (!hasBlueFlag(player)) return;
-            stop("red");
         }
     }
 
@@ -795,10 +847,18 @@ public class CaptureTheFlag extends Minigame {
         new BukkitRunnable() {
             @Override
             public void run() {
+                Random random = new Random();
+                random.setSeed(System.currentTimeMillis() + random.nextInt(1000));
                 if (blue.contains(player)) {
-                    player.teleport(blueSpawn);
+                    int size = blueSpawn.size();
+                    int randInt = (size == 1) ? 0 : random.nextInt(size);
+                    LOGGER.info(randInt + "");
+                    player.teleport(blueSpawn.get(randInt));
                 } else {
-                    player.teleport(redSpawn);
+                    int size = redSpawn.size();
+                    int randInt = (size == 1) ? 0 : random.nextInt(size);
+                    LOGGER.info(randInt + "");
+                    player.teleport(redSpawn.get(randInt));
                 }
             }
         }.runTaskLater(Minerva.getInstance(), 2L);
