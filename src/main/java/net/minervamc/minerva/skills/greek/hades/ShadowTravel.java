@@ -10,6 +10,7 @@ import net.minervamc.minerva.utils.ParticleUtils;
 import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -126,7 +127,7 @@ public class ShadowTravel extends Skill {
                     SkillUtils.damage(livingMonster, damage, player);
                     Vector viewNormalized = ParticleUtils.getDirection(location, livingMonster.getLocation()).normalize().multiply(kb);
                     livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 0));
-                    livingMonster.setVelocity(viewNormalized);
+                    if (!(livingMonster instanceof Player pHit && (pHit.getGameMode() == GameMode.SPECTATOR || pHit.getGameMode() == GameMode.SURVIVAL))) livingMonster.setVelocity(viewNormalized);
                 }
             }
         }

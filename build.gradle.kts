@@ -26,6 +26,10 @@ repositories {
         name = "phoenix"
         url = uri("https://nexus.phoenixdevt.fr/repository/maven-public/")
     }
+    maven {
+        name = "onarandombox"
+        url = uri("https://repo.onarandombox.com/content/groups/public/")
+    }
 }
 
 dependencies {
@@ -33,6 +37,7 @@ dependencies {
     compileOnly("de.tr7zw:item-nbt-api-plugin:2.13.2")
     compileOnly("io.lumine:MythicLib-dist:1.7.1-SNAPSHOT")
     compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
+    compileOnly("com.onarandombox.multiversecore:Multiverse-Core:4.3.1")
     implementation ("fr.mrmicky:fastboard:2.1.3")
     paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
 }

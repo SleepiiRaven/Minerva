@@ -5,9 +5,11 @@ import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
+import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -27,7 +29,7 @@ public class PrimalScream extends Skill {
         double distance = 10;
         double kb = 1.5;
         int effAmp = 1;
-        int effTime = 40;
+        int effTime = 200;
         long cooldown = 10000;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "primalScream")) {
@@ -67,14 +69,18 @@ public class PrimalScream extends Skill {
                     Location currLoc = lLoc.clone().add(lDir.clone().multiply(time));
 
                     for (Entity entity : player.getWorld().getNearbyEntities(currLoc, 1, 1, 1)) {
-                        if (!(entity instanceof LivingEntity livingMonster) || entity.getScoreboardTags().contains(player.getUniqueId().toString()) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
-                            continue;
-                        livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, effTime, effAmp));
-                        livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, effTime, effAmp));
-                        Vector viewNormalized = (ParticleUtils.getDirection(loc, livingMonster.getLocation()).clone().normalize()).multiply(kb);
-                        livingMonster.setVelocity(viewNormalized);
+                        if (!(entity instanceof LivingEntity livingMonster) || entity == player) continue;
+                        if (entity.getScoreboardTags().contains(player.getUniqueId().toString()) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
+                            livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, effTime, 1));
+                            livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, effTime, 0));
+                        } else {
+                            livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, effTime, effAmp));
+                            livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, effTime, effAmp));
+                            Vector viewNormalized = (ParticleUtils.getDirection(loc, livingMonster.getLocation()).clone().normalize()).multiply(kb);
+                            if (!(livingMonster instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE)))
+                                livingMonster.setVelocity(viewNormalized);
+                        }
                     }
-
                     for (Vector vector : circle) {
                         Vector inverse = vector.clone().normalize().multiply(0.2 + time / (distance / 2.5));
                         player.getWorld().spawnParticle(Particle.DUST, currLoc.clone().add(inverse), 0, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(75, 63, 61), 2f));
@@ -103,6 +109,6 @@ public class PrimalScream extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return new ItemStack(Material.VINE);
+        return ItemUtils.getItem(new ItemStack(Material.PHANTOM_MEMBRANE), ChatColor.BOLD + "" + ChatColor.GRAY + "Primal Scream", ChatColor.GRAY + "Channel Ares' primal", ChatColor.GRAY + "power into an", ChatColor.GRAY + "ear-piercing roar,", ChatColor.GRAY + "pushing enemies back", ChatColor.GRAY + "and granting targeted", ChatColor.GRAY + "allies Speed II", ChatColor.GRAY + "and Strength I.");
     }
 }

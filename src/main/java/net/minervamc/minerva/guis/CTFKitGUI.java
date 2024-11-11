@@ -11,6 +11,7 @@ import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.lib.util.MenuUtil;
 import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
+import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -127,8 +128,12 @@ public class CTFKitGUI extends Menu {
 
     private void giveScoutKit(Player player) {
         ItemStack sword = MMOItems.plugin.getItem(tSword, "CTF_SCT_SWORD");
+        assert sword != null;
+        SkillUtils.setFocus(sword);
 
         ItemStack bow = MMOItems.plugin.getItem(tBow, "CTF_SCT_BOW");
+        assert bow != null;
+        SkillUtils.setFocus(bow);
 
         int trapAmount = 4;
         ItemCreator trap = ItemCreator.get(Material.STONE_PRESSURE_PLATE);
@@ -164,6 +169,8 @@ public class CTFKitGUI extends Menu {
 
     private void giveAttackerKit(Player player) {
         ItemStack sword = MMOItems.plugin.getItem(tSword, "CTF_ATT_SWORD");
+        assert sword != null;
+        SkillUtils.setFocus(sword);
 
         ItemStack food = MMOItems.plugin.getItem(tCons, "SWEET_BERRIES");
         food.setAmount(64);
@@ -189,6 +196,8 @@ public class CTFKitGUI extends Menu {
 
     private void giveDefenderKit(Player player) {
         ItemStack axe = MMOItems.plugin.getItem(tAxe, "CTF_DEF_AXE");
+        assert axe != null;
+        SkillUtils.setFocus(axe);
 
         int trapAmount = 8;
         ItemCreator trap = ItemCreator.get(Material.STONE_PRESSURE_PLATE);

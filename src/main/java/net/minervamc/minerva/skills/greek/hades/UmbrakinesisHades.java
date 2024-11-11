@@ -11,6 +11,7 @@ import net.minervamc.minerva.utils.ParticleUtils;
 import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -150,7 +151,7 @@ public class UmbrakinesisHades extends Skill {
                             continue;
                         SkillUtils.damage(livingMonster, damage, player);
                         Vector viewNormalized = (viewDir.normalize()).multiply(kb);
-                        livingMonster.setVelocity(viewNormalized);
+                        if (!(livingMonster instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE))) livingMonster.setVelocity(viewNormalized);
                     }
                     viewPos.subtract(x, y, z);
                 }

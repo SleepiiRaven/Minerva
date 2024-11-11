@@ -9,6 +9,7 @@ import net.minervamc.minerva.utils.ParticleUtils;
 import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -108,7 +109,8 @@ public class TidalWave extends Skill {
                 for (Entity entity : mount.getLocation().getNearbyEntities(2, 2, 2)) {
                     if (entity instanceof LivingEntity livingEntity && livingEntity != mount && livingEntity != player && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
                         SkillUtils.damage(livingEntity, damage, player);
-                        livingEntity.setVelocity(direction.clone());
+                        if (!(livingEntity instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE)))
+                            livingEntity.setVelocity(direction.clone());
                     }
                 }
 

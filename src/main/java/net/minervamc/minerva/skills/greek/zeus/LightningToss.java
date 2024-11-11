@@ -10,6 +10,7 @@ import net.minervamc.minerva.utils.ParticleUtils;
 import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -95,7 +96,8 @@ public class LightningToss extends Skill {
             for (Entity entity : location.clone().add(direction.clone().multiply(i)).getNearbyEntities(1, 1, 1)) {
                 if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
                     SkillUtils.damage(livingEntity, damage, player);
-                    livingEntity.setVelocity(direction.multiply(0.3));
+                    if (!(livingEntity instanceof Player p && (p.getGameMode() == GameMode.SPECTATOR || p.getGameMode() == GameMode.CREATIVE)))
+                        livingEntity.setVelocity(direction.multiply(0.3));
                     return;
                 }
             }

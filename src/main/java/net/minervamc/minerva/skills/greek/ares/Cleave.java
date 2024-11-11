@@ -7,9 +7,12 @@ import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
+import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
 import net.minervamc.minerva.utils.SkillUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -35,6 +38,20 @@ public class Cleave extends Skill {
 
         cooldownManager.setCooldownFromNow(player.getUniqueId(), "cleave", cooldown);
         cooldownAlarm(player, cooldown, "Cleave");
+
+        Color[] gradient = {
+                Color.fromRGB(0, 0, 0),
+                Color.fromRGB(16, 2, 1),
+                Color.fromRGB(26, 5, 3),
+                Color.fromRGB(33, 7, 4),
+                Color.fromRGB(40, 9, 6),
+                Color.fromRGB(47, 10, 8),
+                Color.fromRGB(54, 8, 9),
+                Color.fromRGB(61, 6, 11),
+                Color.fromRGB(69, 4, 13),
+                Color.fromRGB(77, 0, 14),
+                Color.fromRGB(77, 0, 14)
+        };
 
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 0.3f, 1.5f);
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_CONDUIT_ACTIVATE, 1.0f, 0.7f);
@@ -81,8 +98,12 @@ public class Cleave extends Skill {
                     if (ticks % 5 == 0) {
                         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_DROWNED_SHOOT, 0.2f, 0.6f);
                         player.getWorld().playSound(player.getLocation(), Sound.ITEM_AXE_SCRAPE, 0.2f, 0.6f);
+                        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.2f, 0.6f);
                         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.7f, 1.2f);
                     }
+
+                    player.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, player.getLocation().add((Vector) vectors[ticks]), 1, 0.1, 0.1, 0.1, 0.05);
+
                     player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getLocation().add((Vector) vectors[ticks]), 1, 0, 0, 0, 0);
                     player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getLocation().add((Vector) vectors[ticks + 1]), 1, 0, 0, 0, 0);
                     for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation().add((Vector) vectors[ticks + 1]), 1, 1, 1)) {
@@ -90,7 +111,10 @@ public class Cleave extends Skill {
                             continue;
                         SkillUtils.damage(livingMonster, damage, player);
                         Vector viewNormalized = (new Vector(0, 1, 0)).multiply(kb);
-                        livingMonster.setVelocity(viewNormalized);
+                        if (!(livingMonster instanceof Player p && (p.getGameMode() == GameMode.SPECTATOR || p.getGameMode() == GameMode.CREATIVE)))
+                            livingMonster.setVelocity(viewNormalized);
+                        player.getWorld().playSound(player.getLocation(), Sound.ITEM_SHIELD_BLOCK, 0.3f, 0.6f);
+                        player.getWorld().spawnParticle(Particle.SMOKE, livingMonster.getLocation(), 5, 0.2, 0.2, 0.2, 0.01);
                     }
                 } else if (ticks2 < 20) {
                     if (ticks2 == 0) {
@@ -102,21 +126,38 @@ public class Cleave extends Skill {
                         if (!(entity instanceof LivingEntity livingMonster) || (entity.getScoreboardTags().contains("aresSummoned") || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))))
                             continue;
                         SkillUtils.damage(livingMonster, damageSlam, player);
+                        player.getWorld().playSound(player.getLocation(), Sound.ITEM_SHIELD_BLOCK, 0.3f, 0.6f);
+                        stun(entity, 10);
                     }
                     ticks2++;
                 } else {
                     player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 0.3f, 0.6f);
                     player.getWorld().playSound(player.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_DEPLETE, 0.7f, 0.5f);
+                    player.getWorld().playSound(player.getLocation(), Sound.BLOCK_BELL_RESONATE, 0.7f, 0.5f);
+                    player.getWorld().playSound(player.getLocation(), Sound.BLOCK_GRAVEL_FALL, 0.7f, 0.5f);
+                    player.getWorld().spawnParticle(Particle.EXPLOSION, player.getLocation().add(iSlamC), 1, 0, 0, 0, 0.05);
+                    player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation().add(iSlamC), 10, 0.3, 0.3, 0.3, 0.01);
                     cancel();
                 }
                 if (ticks < vecsOffsetNormalized.size()) {
+                    int i = 0;
                     for (Vector vec : ParticleUtils.getLinePoints(vecsOffsetNormalized.get(ticks), 2, 0.2)) {
-                        player.getWorld().spawnParticle(Particle.DUST, player.getLocation().add(vec.clone().add((Vector) vecsOffset.get(ticks))), 0, 0, 0, 0, 0, new Particle.DustOptions(Color.RED, 1f));
+                        player.sendMessage(i+"");
+                        if (i >= gradient.length) {
+                            i--;
+                        }
+                        player.getWorld().spawnParticle(Particle.DUST, player.getLocation().add(vec.clone().add((Vector) vecsOffset.get(ticks))), 0, 0, 0, 0, 0, new Particle.DustOptions(gradient[i], 1f));
+                        i++;
                     }
                 }
                 if (ticks + 1 < vecsOffsetNormalized.size()) {
+                    int i = 0;
                     for (Vector vec : ParticleUtils.getLinePoints(vecsOffsetNormalized.get(ticks + 1), 2, 0.2)) {
-                        player.getWorld().spawnParticle(Particle.DUST, player.getLocation().add(vec.clone().add((Vector) vecsOffset.get(ticks + 1))), 0, 0, 0, 0, 0, new Particle.DustOptions(Color.RED, 1f));
+                        if (i >= gradient.length) {
+                            i--;
+                        }
+                        player.getWorld().spawnParticle(Particle.DUST, player.getLocation().add(vec.clone().add((Vector) vecsOffset.get(ticks + 1))), 0, 0, 0, 0, 0, new Particle.DustOptions(gradient[i], 1f));
+                        i++;
                     }
                 }
                 ticks += 2;
@@ -139,6 +180,6 @@ public class Cleave extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return new ItemStack(Material.IRON_SWORD);
+        return ItemUtils.getItem(new ItemStack(Material.NETHERITE_SWORD), ChatColor.BOLD + "" + ChatColor.WHITE + "Cleave", ChatColor.GRAY + "Swing your weapon", ChatColor.GRAY + "around yourself in", ChatColor.GRAY + "quick succession,", ChatColor.GRAY + "dealing massive damage", ChatColor.GRAY + "and a devastating", ChatColor.GRAY + "stun to unfortunate", ChatColor.GRAY + "souls hit by the", ChatColor.GRAY + "final slam.");
     }
 }

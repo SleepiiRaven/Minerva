@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -82,7 +83,7 @@ public abstract class Skill {
 
             @Override
             public void run() {
-                if (ticks >= stunTicks) {
+                if (ticks >= stunTicks || (entity instanceof LivingEntity lE && lE.getHealth() <= 0.1)) {
                     this.cancel();
                     return;
                 }

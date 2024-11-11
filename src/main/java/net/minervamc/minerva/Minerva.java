@@ -2,9 +2,9 @@ package net.minervamc.minerva;
 
 import java.io.File;
 import java.util.Objects;
-
 import lombok.Getter;
 import net.minervamc.minerva.commands.CtfCommand;
+import net.minervamc.minerva.commands.FocusCommand;
 import net.minervamc.minerva.commands.PartyCommand;
 import net.minervamc.minerva.commands.SkillModeToggle;
 import net.minervamc.minerva.commands.SkillsCommand;
@@ -16,7 +16,9 @@ import net.minervamc.minerva.listeners.SkillListener;
 import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import net.minervamc.minerva.minigames.ctf.RegionManager;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Minerva extends JavaPlugin {
@@ -24,6 +26,22 @@ public final class Minerva extends JavaPlugin {
     public static NamespacedKey itemMessageKey;
     @Getter private static Minerva instance;
     @Getter private CooldownManager cdInstance;
+
+    public static void runChannelCommand(Player player, String channel) {
+        Bukkit.dispatchCommand(player, channelCommand + channel);
+    }
+
+    public static void runPermCommand(Player player, String perm) {
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), permCommand1 + player.getName() + permCommand2 + perm + " true");
+    }
+
+    public static void runPermRemoveCommand(Player player, String perm) {
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), permCommand1 + player.getName() + permCommand2 + perm + " false");
+    }
+
+    public static String channelCommand = "ch "; // This is the command that is run from VentureChat that joins a channel for a player.
+    public static String permCommand1 = "lp user "; // This is the command that is run from LuckPerms that gives a user a permission.
+    public static String permCommand2 = " permission set ";
 
     @Override
     public void onEnable() {
@@ -61,6 +79,7 @@ public final class Minerva extends JavaPlugin {
         Objects.requireNonNull(getCommand("skillmode")).setExecutor(new SkillModeToggle());
         Objects.requireNonNull(getCommand("party")).setExecutor(new PartyCommand());
         CtfCommand.register(this);
+        FocusCommand.register(this);
     }
 
 }
