@@ -82,4 +82,12 @@ public final class Minerva extends JavaPlugin {
         FocusCommand.register(this);
     }
 
+
+    /** EXPLANATION OF INNER WORKINGS
+     * PlayerListener listens for left click or right click.
+     * If it's a right click and all conditions are fulfilled, enters a "SkillMode" controlled in SkillTriggers
+     * Then after "SkillMode" is entered, any two left/right clicks continue the chain and then are transported to their respective skill
+     * PlayerStats saves all the stats/saveable stuff for players into a json file and uses PlayerStatsAdapter to convert.
+     * CooldownManager has a big list of cooldowns
+     * **/
 }
