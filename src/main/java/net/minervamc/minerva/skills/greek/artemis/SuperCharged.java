@@ -6,7 +6,6 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -72,8 +71,8 @@ public class SuperCharged extends Skill {
                         for (Entity entity : particleLoc.getNearbyEntities(1, 1, 1)) {
                             if (entity instanceof LivingEntity livingEntity && livingEntity != player && !livingEntity.getScoreboardTags().contains("artemisWolf") && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
                                 if (particleLoc.distance(livingEntity.getEyeLocation()) <= 1)
-                                    SkillUtils.damage(livingEntity, headshotDamage, player);
-                                else SkillUtils.damage(livingEntity, normalDamage, player);
+                                    damage(livingEntity, headshotDamage, player);
+                                else damage(livingEntity, normalDamage, player);
                             }
                         }
                     }

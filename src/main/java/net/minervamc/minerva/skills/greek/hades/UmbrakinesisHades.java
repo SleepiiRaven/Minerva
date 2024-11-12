@@ -8,10 +8,8 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -149,9 +147,9 @@ public class UmbrakinesisHades extends Skill {
                     for (Entity closebyMonster : closebyMonsters) {
                         if (!(closebyMonster instanceof LivingEntity livingMonster) || (closebyMonster == player) || (closebyMonster instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
                             continue;
-                        SkillUtils.damage(livingMonster, damage, player);
+                        damage(livingMonster, damage, player);
                         Vector viewNormalized = (viewDir.normalize()).multiply(kb);
-                        if (!(livingMonster instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE))) livingMonster.setVelocity(viewNormalized);
+                        knockback(livingMonster, viewNormalized);
                     }
                     viewPos.subtract(x, y, z);
                 }

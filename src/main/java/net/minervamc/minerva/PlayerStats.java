@@ -7,12 +7,15 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 import net.minervamc.minerva.skills.SkillTriggers;
 import net.minervamc.minerva.skills.Skills;
 import net.minervamc.minerva.types.HeritageType;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.JsonUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerStats {
@@ -43,6 +46,7 @@ public class PlayerStats {
     private int maxLevel = 1;
     private int maxPoints = 0;
     private int points = 0;
+    @Setter @Getter private Location logoutLoc;
     private ItemStack[] inventory = new ItemStack[36];
     private ItemStack[] armor = new ItemStack[4];
     private ItemStack[] offhand = new ItemStack[1];
@@ -52,6 +56,7 @@ public class PlayerStats {
         this.uuid = uuid;
         this.storage = STORAGE_FOLDER.resolve(uuid + ".json");
         this.skillTriggers = new SkillTriggers(Bukkit.getPlayer(uuid));
+        this.logoutLoc = Bukkit.getPlayer(uuid).getLocation();
     }
 
     //region JSON Stuff

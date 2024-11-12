@@ -10,7 +10,6 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -202,8 +201,8 @@ public class AquaticLimbExtensions extends Skill {
 
                 for (Entity entity : effectLocation.getNearbyEntities(1, 2, 1)) {
                     if (damage != 0 && entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Horse) && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                        SkillUtils.damage(livingEntity, damage, player);
-                        livingEntity.setVelocity(direction.clone().multiply(0.5));
+                        damage(livingEntity, damage, player);
+                        knockback(livingEntity, direction.clone().multiply(0.5));
                     }
                 }
             }

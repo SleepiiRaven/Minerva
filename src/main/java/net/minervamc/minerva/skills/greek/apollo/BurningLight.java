@@ -6,7 +6,6 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -59,7 +58,7 @@ public class BurningLight extends Skill {
 
                 for (Entity entity : sphereLoc.getNearbyEntities(radius, radius, radius)) {
                     if (entity instanceof LivingEntity livingEntity && entity != player && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                        SkillUtils.damage(livingEntity, damage, player);
+                        damage(livingEntity, damage, player);
                     }
                 }
 

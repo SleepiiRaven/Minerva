@@ -6,9 +6,7 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -112,9 +110,8 @@ public class WindWall extends Skill {
                         player.getWorld().spawnParticle(Particle.CLOUD, pointLocation, 1, 0, 0, 0, 0);
                         for (Entity entity : (pointLocation).getNearbyEntities(1, 1, 1)) {
                             if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                                SkillUtils.damage(livingEntity, damage, player);
-                                if (!(livingEntity instanceof Player p && (p.getGameMode() == GameMode.SPECTATOR || p.getGameMode() == GameMode.CREATIVE)))
-                                    livingEntity.setVelocity(livingEntity.getLocation().getDirection().setY(0).multiply(-1));
+                                damage(livingEntity, damage, player);
+                                knockback(livingEntity, livingEntity.getLocation().getDirection().setY(0).multiply(-1));
                             }
                         }
                     }

@@ -8,10 +8,8 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -85,9 +83,8 @@ public class OceansSurge extends Skill {
                     player.getWorld().spawnParticle(Particle.ENCHANTED_HIT, loc, 1, 0, 0, 0, 0);
                     for (Entity entity : loc.getNearbyEntities(0.5, 2, 0.5)) {
                         if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Horse) && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                            SkillUtils.damage(livingEntity, damage, player);
-                            if (!(livingEntity instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE)))
-                                livingEntity.setVelocity(ParticleUtils.getDirection(player.getLocation(), livingEntity.getLocation()).multiply(push));
+                            damage(livingEntity, damage, player);
+                            knockback(livingEntity, ParticleUtils.getDirection(player.getLocation(), livingEntity.getLocation()).multiply(push));
                         }
                     }
                     loc.subtract(x, y, z);
@@ -116,9 +113,8 @@ public class OceansSurge extends Skill {
                     player.getWorld().spawnParticle(Particle.ENCHANTED_HIT, loc, 1, 0, 0, 0, 0);
                     for (Entity entity : loc.getNearbyEntities(0.5, 2, 0.5)) {
                         if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Horse) && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                            SkillUtils.damage(livingEntity, damage, player);
-                            if (!(livingEntity instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE)))
-                                livingEntity.setVelocity(ParticleUtils.getDirection(player.getLocation(), livingEntity.getLocation()).multiply(push));
+                            damage(livingEntity, damage, player);
+                            knockback(livingEntity, ParticleUtils.getDirection(player.getLocation(), livingEntity.getLocation()).multiply(push));
                         }
                     }
                     loc.subtract(x, y, z);

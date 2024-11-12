@@ -9,10 +9,8 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -109,10 +107,9 @@ public class Cleave extends Skill {
                     for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation().add((Vector) vectors[ticks + 1]), 1, 1, 1)) {
                         if (!(entity instanceof LivingEntity livingMonster) || entity.getScoreboardTags().contains(player.getUniqueId().toString()) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
                             continue;
-                        SkillUtils.damage(livingMonster, damage, player);
+                        damage(livingMonster, damage, player);
                         Vector viewNormalized = (new Vector(0, 1, 0)).multiply(kb);
-                        if (!(livingMonster instanceof Player p && (p.getGameMode() == GameMode.SPECTATOR || p.getGameMode() == GameMode.CREATIVE)))
-                            livingMonster.setVelocity(viewNormalized);
+                        knockback(livingMonster, viewNormalized);
                         player.getWorld().playSound(player.getLocation(), Sound.ITEM_SHIELD_BLOCK, 0.3f, 0.6f);
                         player.getWorld().spawnParticle(Particle.SMOKE, livingMonster.getLocation(), 5, 0.2, 0.2, 0.2, 0.01);
                     }
@@ -125,9 +122,9 @@ public class Cleave extends Skill {
                     for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation().add((Vector) vecs[ticks2]), 1, 1, 1)) {
                         if (!(entity instanceof LivingEntity livingMonster) || (entity.getScoreboardTags().contains("aresSummoned") || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))))
                             continue;
-                        SkillUtils.damage(livingMonster, damageSlam, player);
+                        damage(livingMonster, damageSlam, player);
                         player.getWorld().playSound(player.getLocation(), Sound.ITEM_SHIELD_BLOCK, 0.3f, 0.6f);
-                        stun(entity, 10);
+                        stun(player, entity, 10);
                     }
                     ticks2++;
                 } else {

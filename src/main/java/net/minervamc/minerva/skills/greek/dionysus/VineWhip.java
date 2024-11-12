@@ -8,7 +8,6 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
@@ -66,8 +65,8 @@ public class VineWhip extends Skill {
                             if (!hit)
                                 livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.ENTITY_BLAZE_HURT, 1f, 1f);
                             double vel = Math.sqrt(player.getLocation().distance(livingEntity.getLocation()));
-                            livingEntity.setVelocity(direction.clone().multiply(vel));
-                            SkillUtils.damage(livingEntity, damage, player);
+                            knockback(livingEntity, direction.clone().multiply(vel));
+                            damage(livingEntity, damage, player);
                             hit = true;
                             hitEnemies.add(livingEntity);
                         }

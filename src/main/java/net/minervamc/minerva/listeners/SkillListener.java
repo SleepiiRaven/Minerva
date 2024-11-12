@@ -7,7 +7,7 @@ import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.Skills;
 import net.minervamc.minerva.skills.greek.poseidon.AquaticLimbExtensions;
-import net.minervamc.minerva.utils.SkillUtils;
+import net.minervamc.minerva.types.Skill;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -189,7 +189,7 @@ public class SkillListener implements Listener {
                             player.getWorld().playSound(player.getLocation(), Sound.BLOCK_AMETHYST_CLUSTER_BREAK, 2f, 2f);
                             for (Entity nearbyEntity : loc.getNearbyEntities(4, 4, 4)) {
                                 if (nearbyEntity instanceof LivingEntity target && target != player && !(target instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                                    SkillUtils.damage(target, arrow.getDamage() * 0.8, player);
+                                    Skill.damage(target, arrow.getDamage() * 0.8, player);
                                 }
                             }
                             this.cancel();

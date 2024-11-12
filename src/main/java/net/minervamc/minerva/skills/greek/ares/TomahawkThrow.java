@@ -7,9 +7,7 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -82,8 +80,8 @@ public class TomahawkThrow extends Skill {
                 for (Entity entity : display.getWorld().getNearbyEntities(display.getLocation(), 1, 1, 1)) {
                     if (!(entity instanceof LivingEntity livingMonster) || (entity == display) || entity.getScoreboardTags().contains(player.getUniqueId().toString()) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
                         continue;
-                    SkillUtils.damage(livingMonster, damage, player);
-                    if (!(livingMonster instanceof Player p && (p.getGameMode() == GameMode.SPECTATOR || p.getGameMode() == GameMode.SURVIVAL))) livingMonster.setVelocity(livingMonster.getVelocity().add(direction.clone().multiply(kb)));
+                    damage(livingMonster, damage, player);
+                    knockback(livingMonster, livingMonster.getVelocity().add(direction.clone().multiply(kb)));
                     display.getWorld().playSound(display.getLocation(), Sound.ENTITY_ITEM_BREAK, 1f, 0.5f);
                     display.remove();
                     this.cancel();

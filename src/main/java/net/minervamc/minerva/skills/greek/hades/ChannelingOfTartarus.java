@@ -7,7 +7,6 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -200,7 +199,7 @@ public class ChannelingOfTartarus extends Skill {
                 BoundingBox monsterBoundingBox = livingMonster.getBoundingBox();
                 BoundingBox collisionBox = BoundingBox.of(particleLoc, range, range, range);
                 if (!(monsterBoundingBox.overlaps(collisionBox))) continue;
-                SkillUtils.damage(livingMonster, damage, player);
+                damage(livingMonster, damage, player);
                 livingMonster.getLocation().getWorld().playSound(livingMonster.getLocation(), Sound.PARTICLE_SOUL_ESCAPE, 1f, 0.5f);
                 livingMonster.getWorld().spawnParticle(Particle.SOUL, livingMonster.getLocation(), 2, 0, 0, 0);
                 foundEnemy = true;
@@ -256,7 +255,7 @@ public class ChannelingOfTartarus extends Skill {
                 }
                 for (Entity entity : closebyEntities) {
                     if (entity instanceof LivingEntity enemy && entity != player && !(enemy instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                        SkillUtils.damage(enemy, damage, player);
+                        damage(enemy, damage, player);
                     }
                 }
 

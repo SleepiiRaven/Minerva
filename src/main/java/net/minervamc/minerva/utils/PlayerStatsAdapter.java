@@ -1,6 +1,5 @@
 package net.minervamc.minerva.utils;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -14,10 +13,11 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.UUID;
 import net.minervamc.minerva.PlayerStats;
-import net.minervamc.minerva.lib.storage.json.JsonConfig;
 import net.minervamc.minerva.types.HeritageType;
 import net.minervamc.minerva.types.Skill;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
@@ -47,6 +47,7 @@ public class PlayerStatsAdapter implements JsonSerializer<PlayerStats>, JsonDese
         object.addProperty("maxLevel", data.getMaxLevel());
         object.addProperty("points", data.getPoints());
         object.addProperty("maxPoints", data.getMaxPoints());
+        object.addProperty("logoutLoc", locationToString(data.getLogoutLoc()));
         object.addProperty("inventory", itemStackArrayToBase64(data.getInventory()));
         object.addProperty("armor", itemStackArrayToBase64(data.getArmor()));
         object.addProperty("offhand", itemStackArrayToBase64(data.getOffhand()));
@@ -119,6 +120,8 @@ public class PlayerStatsAdapter implements JsonSerializer<PlayerStats>, JsonDese
             else playerDataJSON.setPoints(object.get("points").getAsInt());
             if (!object.has("maxPoints")) playerDataJSON.setMaxPoints(0);
             else playerDataJSON.setMaxPoints(object.get("maxPoints").getAsInt());
+            if (!object.has("logoutLoc")) playerDataJSON.setLogoutLoc(null);
+            else playerDataJSON.setLogoutLoc(stringToLocation(object.get("logoutLoc").getAsString()));
 
             try {
                 if (object.has("inventory")) {
@@ -163,4 +166,35 @@ public class PlayerStatsAdapter implements JsonSerializer<PlayerStats>, JsonDese
             throw new IOException("Unable to decode class type.", e);
         }
     }
+
+    public static String locationToString(Location location) {
+        if (location == null || location.getWorld() == null) {
+            return null;
+        }
+        return location.getWorld().getName() + "," +
+                location.getX() + "," +
+                location.getY() + "," +
+                location.getZ() + "," +
+                location.getYaw() + "," +
+                location.getPitch();
+    }
+
+
+    public static Location stringToLocation(String locationString) {
+        if (locationString == null || locationString.isEmpty()) {
+            return null;
+        }
+        String[] parts = locationString.split(",");
+        if (parts.length != 6) {
+            throw new IllegalArgumentException("Invalid location format.");
+        }
+        World world = Bukkit.getWorld(parts[0]);
+        double x = Double.parseDouble(parts[1]);
+        double y = Double.parseDouble(parts[2]);
+        double z = Double.parseDouble(parts[3]);
+        float yaw = Float.parseFloat(parts[4]);
+        float pitch = Float.parseFloat(parts[5]);
+        return new Location(world, x, y, z, yaw, pitch);
+    }
+
 }

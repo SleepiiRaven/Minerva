@@ -1,8 +1,5 @@
 package net.minervamc.minerva.minigames.ctf;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import fr.mrmicky.fastboard.FastBoard;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -20,11 +17,13 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.lib.storage.yaml.Config;
 import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.minigames.Minigame;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
+import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ParticleUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -85,6 +84,7 @@ public class CaptureTheFlag extends Minigame {
     private static final List<Location> redSpawn = new ArrayList<>();
 
     private static final HashMap<UUID, FastBoard> boards = new HashMap<>();
+    @Getter private static final HashMap<UUID, Location> startLoc = new HashMap<>();
     private static BukkitTask scoreboardUpdater = null;
     private static int globalCountdown = 6;
 
@@ -219,6 +219,9 @@ public class CaptureTheFlag extends Minigame {
             red.remove(player);
         }
 
+        PlayerStats.getStats(player.getUniqueId()).save();
+
+        startLoc.remove(player.getUniqueId());
         inGame.remove(player);
     }
 
@@ -383,14 +386,6 @@ public class CaptureTheFlag extends Minigame {
     public static void start() {
         if (playing || starting) return;
 
-        MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
-
-        assert core != null;
-        MVWorldManager worldManager = core.getMVWorldManager();
-
-        worldManager.loadWorld("ctf");
-        MultiverseWorld world = worldManager.getMVWorld("ctf");
-
         if (blueSpawn.isEmpty() || redSpawn.isEmpty() || defaultBlueFlagPos == null || defaultRedFlagPos == null) {
             LOGGER.info(blueSpawn.toString());
             LOGGER.info(redSpawn.toString());
@@ -478,6 +473,7 @@ public class CaptureTheFlag extends Minigame {
                         blueRemainder = 1;
                     }
                     for (Player player : inGame) {
+                        startLoc.put(player.getUniqueId(), player.getLocation());
                         player.setHealth(player.getMaxHealth());
                         player.setFoodLevel(20);
                         player.clearActivePotionEffects();
@@ -498,7 +494,7 @@ public class CaptureTheFlag extends Minigame {
                             player.getInventory().addItem(blueFlagBreaker());
                             int size = blueSpawn.size();
                             int randInt = (size <= 1) ? 0 : random.nextInt(size);
-                            core.getSafeTTeleporter().safelyTeleport(Bukkit.getConsoleSender(), player, blueSpawn.get(randInt), true);
+                            player.teleport(blueSpawn.get(randInt));
                             Minerva.runPermCommand(player, "venturechat.blueteamchat");
                             new BukkitRunnable() {
                                 @Override
@@ -659,11 +655,6 @@ public class CaptureTheFlag extends Minigame {
         startTimer.cancel();
         startingTimerTicks = 0;
 
-        MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
-
-        assert core != null;
-        MultiverseWorld world = core.getMVWorldManager().getMVWorld("chb");
-
         inGame.forEach(player -> {
             boolean isRed = red.contains(player);
             Component title;
@@ -692,11 +683,11 @@ public class CaptureTheFlag extends Minigame {
                 subtitle = Component.text("The game was ended early", NamedTextColor.GOLD);
                 title = Component.text("Game Over!", NamedTextColor.RED);
             }
-            core.getSafeTTeleporter().safelyTeleport(Bukkit.getConsoleSender(), player, world.getSpawnLocation(), true);
-
             player.showTitle(Title.title(title, subtitle));
             GameMode gameMode = player.getPreviousGameMode() == null ? GameMode.SURVIVAL : player.getPreviousGameMode();
             player.setGameMode(gameMode);
+
+            player.teleport(startLoc.get(player.getUniqueId()));
 
             Minerva.runPermRemoveCommand(player, "venturechat.blueteamchat");
             Minerva.runPermRemoveCommand(player, "venturechat.redteamchat");
@@ -705,6 +696,7 @@ public class CaptureTheFlag extends Minigame {
             FastBoard board = boards.remove(player.getUniqueId());
             if (board != null) board.delete();
         });
+        startLoc.clear();
         loadInventories(new ArrayList<>(inGame));
         queue.clear();
         inGame.clear();
@@ -781,7 +773,7 @@ public class CaptureTheFlag extends Minigame {
             if (!(e instanceof LivingEntity lE)) continue;
             lE.damage(5);
             Vector kb = ParticleUtils.getDirection(trap.getLocation(), lE.getLocation()).normalize().multiply(1);
-            if (!(lE instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE))) lE.setVelocity(kb);
+            Skill.knockback(lE, kb);
     }
         traps.remove(trap);
         trap.getNearbyEntities(0.1, 0.1, 0.1).forEach(p -> {

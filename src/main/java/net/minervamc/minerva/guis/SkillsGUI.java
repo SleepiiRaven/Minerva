@@ -16,7 +16,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class SkillsGUI {
-    public static final String invName = "View and upgrade your skills.";
+    public static final String invName = "Toggle + View Skills";
     private static final int drachmaeCost = 50;
     private static final ItemStack rrrOnItem = ItemUtils.getItem(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.GREEN + "" + ChatColor.BOLD + "[R-R-R]", ChatColor.GREEN + "Click to toggle this skill.");
     private static final ItemStack rlrOnItem = ItemUtils.getItem(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.GREEN + "" + ChatColor.BOLD + "[R-L-R]", ChatColor.GREEN + "Click to toggle this skill.");
@@ -59,7 +59,7 @@ public class SkillsGUI {
         ItemStack rrlItem = stats.getSkillRRL().getItem();
         ItemStack passiveItem = stats.getPassive().getItem();
 
-        Inventory inv = Bukkit.createInventory(player, 9 * 6, invName + " you currently have " + stats.getPoints() + " points and your level cap is at " + stats.getMaxLevel());
+        Inventory inv = Bukkit.createInventory(player, 9 * 6, invName);
         for (int i = 0; i < 54; i++) {
             inv.setItem(i, ItemUtils.getItem(new ItemStack(Material.BLACK_STAINED_GLASS_PANE), " "));
         }
@@ -93,14 +93,14 @@ public class SkillsGUI {
         } else {
             inv.setItem(passiveToggleSlot, passiveOffItem);
         }
-        inv.setItem(resetSlot, resetItem);
+        //inv.setItem(resetSlot, resetItem);
         inv.setItem(backSlot, back);
 
 
-        List<ItemStack> levelItems = getAllLevelItems(stats);
-        for (int i = 0; i < levelItemLocations.length; i++) {
-            inv.setItem(levelItemLocations[i], levelItems.get(i));
-        }
+        // List<ItemStack> levelItems = getAllLevelItems(stats);
+        // for (int i = 0; i < levelItemLocations.length; i++) {
+            // inv.setItem(levelItemLocations[i], levelItems.get(i));
+        // }
 
         player.openInventory(inv);
     }
@@ -129,6 +129,7 @@ public class SkillsGUI {
                     currentSkill = stats.getPassive();
                 }
             }
+
             for (int j = 0; j < 5; j++) {
                 Material type = null;
                 String name = null;

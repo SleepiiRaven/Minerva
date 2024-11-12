@@ -8,10 +8,8 @@ import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.FastUtils;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -120,10 +118,9 @@ public class StormsEmbrace extends Skill {
                             if (entitiesHarmed > maxEntitiesDamaged) return;
 
                             if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                                SkillUtils.damage(livingEntity, damage, player);
-                                if (!(livingEntity instanceof Player p && (p.getGameMode() == GameMode.SPECTATOR || p.getGameMode() == GameMode.CREATIVE)))
-                                    livingEntity.setVelocity(ParticleUtils.getDirection(player.getLocation(), livingEntity.getLocation()).multiply(0.1));
-                                stun(livingEntity, 4);
+                                damage(livingEntity, damage, player);
+                                knockback(livingEntity, ParticleUtils.getDirection(player.getLocation(), livingEntity.getLocation()).multiply(0.1));
+                                stun(player, livingEntity, 4);
                                 entitiesHarmed++;
                             }
                         }

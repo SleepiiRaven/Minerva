@@ -1,26 +1,16 @@
 package net.minervamc.minerva.utils;
 
-import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import net.kyori.adventure.text.Component;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.skills.Skills;
 import net.minervamc.minerva.types.HeritageType;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.types.SkillType;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.damage.DamageSource;
-import org.bukkit.damage.DamageType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Tameable;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -141,43 +131,5 @@ public class SkillUtils {
             case RRL -> stats.getSkillRRL();
             case PASSIVE -> stats.getPassive();
         };
-    }
-
-    public static void damage(LivingEntity livingEntity, double damage, Player damager) {
-        if (!(livingEntity instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE))) {
-            return;
-        }
-
-        if (livingEntity instanceof Tameable) {
-            if (((Tameable) livingEntity).getOwner() != null) {
-                return;
-            }
-        }
-
-        double magicDamage = 0;
-        double magicResist = 0;
-        if (MMOPlayerData.isLoaded(damager.getUniqueId())) {
-            magicDamage = MMOPlayerData.get(damager.getUniqueId()).getStatMap().getStat("MAGIC_DAMAGE");
-        }
-
-        if (MMOPlayerData.isLoaded(livingEntity.getUniqueId())) {
-            magicResist = MMOPlayerData.get(livingEntity.getUniqueId()).getStatMap().getStat("MAGIC_DAMAGE_REDUCTION");
-        }
-
-        damage *= (magicDamage + 100)/100;
-        damage *= (100 - magicResist)/100;
-
-        if (livingEntity.getNoDamageTicks() > 0) return;
-
-        if (livingEntity.getHealth()-damage <= 0) {
-            livingEntity.setHealth(0);
-            livingEntity.setKiller(damager);
-            if (livingEntity instanceof Player p) {
-                Bukkit.getPluginManager().callEvent(new PlayerDeathEvent(p, DamageSource.builder(DamageType.MAGIC).build(), Arrays.asList(p.getInventory().getStorageContents()), 0, Component.text(p.getName() + " was killed by " + damager.getName() + "'s heritage skill.")));
-            }
-        } else {
-            livingEntity.setHealth(livingEntity.getHealth() - damage);
-        }
-        livingEntity.damage(0, damager);
     }
 }

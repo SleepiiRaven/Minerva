@@ -8,10 +8,8 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -81,8 +79,7 @@ public class SeismicBlast extends Skill {
         cooldownManager.setCooldownFromNow(player.getUniqueId(), "seismicBlast", cooldown);
         cooldownAlarm(player, cooldown, "Seismic Blast");
 
-        if (!(player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE))
-            player.setVelocity(new Vector(0, 0.25, 0));
+        knockback(player, new Vector(0, 0.25, 0));
         Vector knockUp = new Vector(0, knock, 0);
         Vector knockDown = new Vector(0, -knock, 0);
 
@@ -102,9 +99,8 @@ public class SeismicBlast extends Skill {
             if (!(entity instanceof LivingEntity livingEntity)) continue;
             if (livingEntity == player) continue;
             if (!(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                SkillUtils.damage(livingEntity, damage, player);
-                if (!(player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE))
-                    livingEntity.setVelocity(knockUp);
+                damage(livingEntity, damage, player);
+                knockback(livingEntity, knockUp);
                 caughtLivingEntities.add(livingEntity);
             }
         }
@@ -121,8 +117,7 @@ public class SeismicBlast extends Skill {
                             player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WITHER_SHOOT, 1f, 0.7f);
                             playedSound = true;
                         }
-                        if (!(livingEntity instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE)))
-                            livingEntity.setVelocity(knockDown);
+                        knockback(livingEntity, knockDown);
                     }
                 }
             }

@@ -85,7 +85,7 @@ public class GrapeShot extends Skill {
                 particleLoc.getWorld().spawnParticle(Particle.DUST, particleLoc, 0, 0, 0, 0, 0, new Particle.DustOptions(Color.PURPLE, 1f));
                 for (Entity entity : particleLoc.getNearbyEntities(1, 1, 1)) {
                     if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                        SkillUtils.damage(livingEntity, damage, player);
+                        damage(livingEntity, damage, player);
                         livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, weakDur, weakAmp));
                     }
                 }

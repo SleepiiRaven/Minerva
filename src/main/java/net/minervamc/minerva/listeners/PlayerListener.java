@@ -10,6 +10,7 @@ import net.minervamc.minerva.guis.MythicalCreaturesGUI;
 import net.minervamc.minerva.guis.RomanGodsGUI;
 import net.minervamc.minerva.guis.SkillsGUI;
 import net.minervamc.minerva.guis.TitansGUI;
+import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.utils.SkillUtils;
@@ -38,6 +39,11 @@ public class PlayerListener implements Listener {
         Player p = e.getPlayer();
         cooldownManager.createContainer(p.getUniqueId());
         PlayerStats pData = PlayerStats.getStats(p.getUniqueId());
+        if (pData.getLogoutLoc() == null) {
+            pData.setLogoutLoc(p.getLocation());
+        } else {
+            p.teleport(pData.getLogoutLoc());
+        }
 
         Bukkit.getLogger().info(String.valueOf(Arrays.stream(pData.getInventory()).allMatch(Objects::isNull)));
         if (!Arrays.stream(pData.getInventory()).allMatch(Objects::isNull)) {
@@ -62,6 +68,11 @@ public class PlayerListener implements Listener {
         Minerva.runPermRemoveCommand(p, "venturechat.blueteamchat");
         Minerva.runPermRemoveCommand(p, "venturechat.redteamchat");
         PlayerStats pData = PlayerStats.getStats(p.getUniqueId());
+        if (CaptureTheFlag.isPlaying() && CaptureTheFlag.isInGame(p)) {
+            pData.setLogoutLoc(CaptureTheFlag.getStartLoc().get(p.getUniqueId()));
+        } else {
+            pData.setLogoutLoc(p.getLocation());
+        }
         pData.save();
     }
 

@@ -9,7 +9,6 @@ import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -54,7 +53,6 @@ public class PrimalScream extends Skill {
                 Vector direction = player.getEyeLocation().getDirection();
                 Location loc = player.getEyeLocation().add(direction);
 
-
                 if (ticks == 20) {
                     player.getWorld().playSound(loc, Sound.ENTITY_WARDEN_SONIC_BOOM, 1f, 1f);
                     player.getWorld().playSound(loc, Sound.ENTITY_RAVAGER_ROAR, 1f, 1f);
@@ -77,8 +75,7 @@ public class PrimalScream extends Skill {
                             livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, effTime, effAmp));
                             livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, effTime, effAmp));
                             Vector viewNormalized = (ParticleUtils.getDirection(loc, livingMonster.getLocation()).clone().normalize()).multiply(kb);
-                            if (!(livingMonster instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE)))
-                                livingMonster.setVelocity(viewNormalized);
+                            knockback(livingMonster, viewNormalized);
                         }
                     }
                     for (Vector vector : circle) {
