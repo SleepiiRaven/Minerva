@@ -6,7 +6,6 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -26,8 +25,8 @@ public class SuperCharged extends Skill {
         long chargeTime = 40;
         double maxRadius = 7;
         double range = 30;
-        double normalDamage = 200;
-        double headshotDamage = 400;
+        double normalDamage = 10;
+        double headshotDamage = 20;
         long cooldown = 6000;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "superCharged")) {
@@ -71,9 +70,9 @@ public class SuperCharged extends Skill {
                         player.getWorld().spawnParticle(Particle.ENCHANT, particleLoc, 1, 0, 0, 0, 0);
                         for (Entity entity : particleLoc.getNearbyEntities(1, 1, 1)) {
                             if (entity instanceof LivingEntity livingEntity && livingEntity != player && !livingEntity.getScoreboardTags().contains("artemisWolf") && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                                if (particleLoc.distance(livingEntity.getEyeLocation()) <= 0.3)
-                                    SkillUtils.damage(livingEntity, headshotDamage, player);
-                                else SkillUtils.damage(livingEntity, normalDamage, player);
+                                if (particleLoc.distance(livingEntity.getEyeLocation()) <= 1)
+                                    damage(livingEntity, headshotDamage, player);
+                                else damage(livingEntity, normalDamage, player);
                             }
                         }
                     }
@@ -104,6 +103,6 @@ public class SuperCharged extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.TRIDENT), ChatColor.BOLD + "" + ChatColor.YELLOW + "[Super Charged]", ChatColor.GRAY + "With the careful precision and patience of a Huntress,", ChatColor.GRAY + "spend a moment to line up your bow shot with a silver bolt from", ChatColor.GRAY + "your quiver to deliver a devastating shot that deals extra damage on a headshot.");
+        return ItemUtils.getItem(new ItemStack(Material.TRIDENT), ChatColor.YELLOW + "" + ChatColor.BOLD + "[Super Charged]", ChatColor.GRAY + "With the careful precision and patience of a Huntress,", ChatColor.GRAY + "spend a moment to line up your bow shot with a silver bolt from", ChatColor.GRAY + "your quiver to deliver a devastating shot", ChatColor.GRAY + "that deals extra damage on a headshot.");
     }
 }

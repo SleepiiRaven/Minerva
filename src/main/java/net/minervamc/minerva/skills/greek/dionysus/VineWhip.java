@@ -8,7 +8,6 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
@@ -26,8 +25,8 @@ import org.bukkit.util.Vector;
 public class VineWhip extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-        double damage = 70;
-        double distance = 20;
+        double damage = 4;
+        double distance = 12;
         long cooldown = 7000;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "vineWhip")) {
@@ -65,8 +64,9 @@ public class VineWhip extends Skill {
                             Vector direction = location.clone().toVector().subtract(livingEntity.getLocation().toVector()).normalize();
                             if (!hit)
                                 livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.ENTITY_BLAZE_HURT, 1f, 1f);
-                            livingEntity.setVelocity(direction.clone().multiply(2));
-                            SkillUtils.damage(livingEntity, damage, player);
+                            double vel = Math.sqrt(player.getLocation().distance(livingEntity.getLocation()));
+                            knockback(livingEntity, direction.clone().multiply(vel));
+                            damage(livingEntity, damage, player);
                             hit = true;
                             hitEnemies.add(livingEntity);
                         }
@@ -89,6 +89,6 @@ public class VineWhip extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.VINE), ChatColor.BOLD + "" + ChatColor.GREEN + "[Vine Whip]", ChatColor.GRAY + "Throw a grape vine towards an enemy, damaging them and pulling them towards you.");
+        return ItemUtils.getItem(new ItemStack(Material.VINE), ChatColor.GREEN + "" + ChatColor.BOLD + "[Vine Whip]", ChatColor.GRAY + "Throw a grape vine towards an enemy,", ChatColor.GRAY + "damaging them and pulling them towards you.");
     }
 }

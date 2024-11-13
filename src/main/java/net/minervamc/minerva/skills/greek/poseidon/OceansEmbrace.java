@@ -33,6 +33,6 @@ public class OceansEmbrace extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.HEART_OF_THE_SEA), ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "[Ocean's Embrace]", ChatColor.GRAY + "While in water, gain many boons such as Regeneration and Dolphin's Grace.");
+        return ItemUtils.getItem(new ItemStack(Material.HEART_OF_THE_SEA), ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "[Ocean's Embrace]", ChatColor.GRAY + "While in water, gain many boons such", ChatColor.GRAY + "as Regeneration and Dolphin's Grace.");
     }
 }

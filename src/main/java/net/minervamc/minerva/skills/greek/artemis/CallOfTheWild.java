@@ -61,7 +61,7 @@ public class CallOfTheWild extends Skill {
 
             Wolf wolf = (Wolf) player.getWorld().spawnEntity(wolfLocation.setDirection(wolfDirection), EntityType.WOLF);
             wolf.addScoreboardTag("artemisWolf");
-            wolf.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, (int) (wolfDespawnTicks * 5), 4));
+            wolf.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, (int) (wolfDespawnTicks * 5), 3));
             wolves.add(wolf);
         }
 
@@ -102,6 +102,6 @@ public class CallOfTheWild extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.BONE), ChatColor.BOLD + "" + ChatColor.DARK_GREEN + "[Call of the Wild]", ChatColor.GRAY + "Blow on a whistle to call the wolves of the Hunt to fight by your side.");
+        return ItemUtils.getItem(new ItemStack(Material.BONE), ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "[Call of the Wild]", ChatColor.GRAY + "Blow on a whistle to call the wolves", ChatColor.GRAY + "of the Hunt to fight by your side.");
     }
 }

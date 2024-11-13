@@ -7,7 +7,6 @@ import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -25,8 +24,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class GrapeShot extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-        double damage = 20;
-        int weakDur = 60;
+        double damage = 2;
+        int weakDur = 200;
         int weakAmp = 0;
         double maxDistance = 10;
         int maxTicks = 40;
@@ -85,7 +84,7 @@ public class GrapeShot extends Skill {
                 particleLoc.getWorld().spawnParticle(Particle.DUST, particleLoc, 0, 0, 0, 0, 0, new Particle.DustOptions(Color.PURPLE, 1f));
                 for (Entity entity : particleLoc.getNearbyEntities(1, 1, 1)) {
                     if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                        SkillUtils.damage(livingEntity, damage, player);
+                        damage(livingEntity, damage, player);
                         livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, weakDur, weakAmp));
                     }
                 }
@@ -107,6 +106,6 @@ public class GrapeShot extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.PURPLE_DYE), ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + "[Grape Shot]", ChatColor.GRAY + "Throw fermented grapes at your enemies, dealing a small amount", ChatColor.GRAY + "of damage and causing them to become weakened.");
+        return ItemUtils.getItem(new ItemStack(Material.PURPLE_DYE), ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Grape Shot]", ChatColor.GRAY + "Throw fermented grapes at your enemies, dealing a small amount", ChatColor.GRAY + "of damage and causing them to become weakened.");
     }
 }

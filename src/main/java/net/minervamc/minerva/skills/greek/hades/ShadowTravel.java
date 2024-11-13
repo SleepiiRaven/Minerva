@@ -7,7 +7,6 @@ import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.FastUtils;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -57,7 +56,7 @@ public class ShadowTravel extends Skill {
             default -> {
                 cooldown = 10000;
                 distance = 7;
-                damage = 50;
+                damage = 2;
             }
         }
 
@@ -123,10 +122,10 @@ public class ShadowTravel extends Skill {
                     BoundingBox monsterBoundingBox = livingMonster.getBoundingBox();
                     BoundingBox collisionBox = BoundingBox.of(location, range, range, range);
                     if (!(monsterBoundingBox.overlaps(collisionBox))) continue;
-                    SkillUtils.damage(livingMonster, damage, player);
+                    damage(livingMonster, damage, player);
                     Vector viewNormalized = ParticleUtils.getDirection(location, livingMonster.getLocation()).normalize().multiply(kb);
                     livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 0));
-                    livingMonster.setVelocity(viewNormalized);
+                    knockback(livingMonster, viewNormalized);
                 }
             }
         }
@@ -139,6 +138,6 @@ public class ShadowTravel extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.ENDER_PEARL), ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "[Shadow Travel]", ChatColor.GRAY + "Cloak yourself in shadows, teleporting far ahead, granting those you hit with blindness,", ChatColor.GRAY + "and granting yourself with invisibility.");
+        return ItemUtils.getItem(new ItemStack(Material.ENDER_PEARL), ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "[Shadow Travel]", ChatColor.GRAY + "Cloak yourself in shadows, teleporting far ahead,", ChatColor.GRAY + "granting those you hit with blindness,", ChatColor.GRAY + "and granting yourself with invisibility.");
     }
 }

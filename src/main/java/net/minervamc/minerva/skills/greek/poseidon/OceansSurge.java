@@ -8,7 +8,6 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -52,7 +51,7 @@ public class OceansSurge extends Skill {
             }
             default -> {
                 cooldown = 8000;
-                damage = 20;
+                damage = 3;
                 push = 0.5;
             }
         }
@@ -84,8 +83,8 @@ public class OceansSurge extends Skill {
                     player.getWorld().spawnParticle(Particle.ENCHANTED_HIT, loc, 1, 0, 0, 0, 0);
                     for (Entity entity : loc.getNearbyEntities(0.5, 2, 0.5)) {
                         if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Horse) && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                            SkillUtils.damage(livingEntity, damage, player);
-                            livingEntity.setVelocity(ParticleUtils.getDirection(player.getLocation(), livingEntity.getLocation()).multiply(push));
+                            damage(livingEntity, damage, player);
+                            knockback(livingEntity, ParticleUtils.getDirection(player.getLocation(), livingEntity.getLocation()).multiply(push));
                         }
                     }
                     loc.subtract(x, y, z);
@@ -114,8 +113,8 @@ public class OceansSurge extends Skill {
                     player.getWorld().spawnParticle(Particle.ENCHANTED_HIT, loc, 1, 0, 0, 0, 0);
                     for (Entity entity : loc.getNearbyEntities(0.5, 2, 0.5)) {
                         if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Horse) && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                            SkillUtils.damage(livingEntity, damage, player);
-                            livingEntity.setVelocity(ParticleUtils.getDirection(player.getLocation(), livingEntity.getLocation()).multiply(push));
+                            damage(livingEntity, damage, player);
+                            knockback(livingEntity, ParticleUtils.getDirection(player.getLocation(), livingEntity.getLocation()).multiply(push));
                         }
                     }
                     loc.subtract(x, y, z);
@@ -156,6 +155,6 @@ public class OceansSurge extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.BLUE_DYE), ChatColor.DARK_BLUE + "" + ChatColor.BOLD + "[Ocean's Surge]", ChatColor.GRAY + "Push all enemies away from you in a gigantic radius dealing almost no damage but major knockback.");
+        return ItemUtils.getItem(new ItemStack(Material.BLUE_DYE), ChatColor.DARK_BLUE + "" + ChatColor.BOLD + "[Ocean's Surge]", ChatColor.GRAY + "Push all enemies away from you", ChatColor.GRAY + "in a gigantic radius dealing almost", ChatColor.GRAY + "no damage but major knockback.");
     }
 }

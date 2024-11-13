@@ -1,6 +1,7 @@
 package net.minervamc.minerva.skills.greek.apollo;
 
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
@@ -84,7 +85,7 @@ public class ApollosHymn extends Skill {
                         if (livingEntity == player) {
                             double maxHealth = player.getMaxHealth();
                             player.setHealth(Math.min(player.getHealth() + localSelfHeal, maxHealth));
-                        } else if (livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)) {
+                        } else if (livingEntity instanceof Player livingPlayer && (Party.isPlayerInPlayerParty(player, livingPlayer) || (CaptureTheFlag.inBlueTeam(player) && CaptureTheFlag.inBlueTeam(livingPlayer)) || (!CaptureTheFlag.inBlueTeam(player) && !CaptureTheFlag.inBlueTeam(livingPlayer)))) {
                             double maxHealth = livingEntity.getMaxHealth();
                             livingEntity.setHealth(Math.min(livingEntity.getHealth() + localHeal, maxHealth));
                         } else {
@@ -110,6 +111,6 @@ public class ApollosHymn extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.ALLIUM), ChatColor.BOLD + "" + ChatColor.LIGHT_PURPLE + "Apollo's Hymn", ChatColor.GRAY + "You sing one of Apollo's hymns, blessing the ground and", ChatColor.GRAY + "healing ANY entities that stand on the sacred earth.", ChatColor.GRAY + "During the last moments of the blessing on the ground, those who stand", ChatColor.GRAY + "there heal significantly more using the blessing's last breath.");
+        return ItemUtils.getItem(new ItemStack(Material.ALLIUM), ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "[Apollo's Hymn]", ChatColor.GRAY + "You sing one of Apollo's hymns,", ChatColor.GRAY + "blessing the ground and", ChatColor.GRAY + "healing ANY entities (yes, even", ChatColor.GRAY + "enemies) that stand on the sacred", ChatColor.GRAY + "earth. During the last moments", ChatColor.GRAY + "of the blessing on the", ChatColor.GRAY + "ground, those who stand", ChatColor.GRAY + "there heal significantly more", ChatColor.GRAY + "using the blessing's last breath.");
     }
 }

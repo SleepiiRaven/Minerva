@@ -10,7 +10,6 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -86,7 +85,7 @@ public class AquaticLimbExtensions extends Skill {
                 maxPunches = 5;
                 durationTicks = maxPunchingTicks * 4 * maxPunches;
                 cooldown = durationTicks * 50 + 9000;
-                damage = 100;
+                damage = 4;
             }
         }
 
@@ -202,8 +201,8 @@ public class AquaticLimbExtensions extends Skill {
 
                 for (Entity entity : effectLocation.getNearbyEntities(1, 2, 1)) {
                     if (damage != 0 && entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Horse) && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                        SkillUtils.damage(livingEntity, damage, player);
-                        livingEntity.setVelocity(direction.clone().multiply(0.5));
+                        damage(livingEntity, damage, player);
+                        knockback(livingEntity, direction.clone().multiply(0.5));
                     }
                 }
             }
@@ -226,6 +225,6 @@ public class AquaticLimbExtensions extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.TRIDENT), ChatColor.BLUE + "" + ChatColor.BOLD + "[Aquatic Limb Extensions]", ChatColor.GRAY + "Extend your limbs with water for a short period of time.", ChatColor.GRAY + "While your limbs are extended, when you left click, the Aquatic Limb Extensions punch with you.");
+        return ItemUtils.getItem(new ItemStack(Material.TRIDENT), ChatColor.BLUE + "" + ChatColor.BOLD + "[Aquatic Limb Extensions]", ChatColor.GRAY + "Extend your limbs with water for a short period of time.", ChatColor.GRAY + "While your limbs are extended, when you left click,", ChatColor.GRAY + "the Aquatic Limb Extensions punch with you.");
     }
 }

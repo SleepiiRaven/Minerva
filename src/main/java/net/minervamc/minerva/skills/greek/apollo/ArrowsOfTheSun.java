@@ -33,6 +33,6 @@ public class ArrowsOfTheSun extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.GOLD + "" + ChatColor.BOLD + "[Arrows of the Sun]", ChatColor.GRAY + "When you shoot an arrow, it has a chance of being an Arrow of the Sun,", ChatColor.GRAY + "dealing extra damage in a small radius of where the arrow hits.");
+        return ItemUtils.getItem(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.GOLD + "" + ChatColor.BOLD + "[Arrows of the Sun]", ChatColor.GRAY + "When you shoot an arrow, it has a", ChatColor.GRAY + "chance of being an Arrow of the Sun,", ChatColor.GRAY + "dealing extra damage in a small", ChatColor.GRAY + "radius of where the arrow hits.");
     }
 }

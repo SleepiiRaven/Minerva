@@ -16,9 +16,9 @@ import org.bukkit.inventory.ItemStack;
 public class RomanGodsGUI {
     public static final String invName = "Choose a Roman God...";
     private static final ItemStack comingSoon = ItemUtils.getItem(new ItemStack(Material.ENDER_EYE), ChatColor.BLACK + "" + ChatColor.MAGIC + ChatColor.BOLD + "[Clear Sight Mortal]", ChatColor.GRAY + "Coming soon...");
-    private static final ItemStack jupiter = ItemUtils.getItem(new ItemStack(Material.GOLDEN_HELMET), ChatColor.RED + "" + ChatColor.BOLD + "Jupiter", ChatColor.GRAY + "Become a child of Jupiter, god of the sky. (Requires Donator Rank)");
-    private static final ItemStack neptune = ItemUtils.getItem(new ItemStack(Material.TRIDENT), ChatColor.RED + "" + ChatColor.BOLD + "Neptune", ChatColor.GRAY + "Become a child of Neptune, god of the sea. (Requires Donator Rank)");
-    private static final ItemStack pluto = ItemUtils.getItem(new ItemStack(Material.DIAMOND), ChatColor.RED + "" + ChatColor.BOLD + "Pluto", ChatColor.GRAY + "Become a child of Pluto, god of the dead. (Requires Donator Rank)");
+    private static final ItemStack jupiter = ItemUtils.getItem(new ItemStack(Material.GOLDEN_HELMET), ChatColor.RED + "" + ChatColor.BOLD + "Jupiter", ChatColor.GRAY + "Become a child of Jupiter, god of the " + ChatColor.YELLOW + "sky." + ChatColor.GRAY + " (Requires Donator Rank)");
+    private static final ItemStack neptune = ItemUtils.getItem(new ItemStack(Material.TRIDENT), ChatColor.RED + "" + ChatColor.BOLD + "Neptune", ChatColor.GRAY + "Become a child of Neptune, god of the " + ChatColor.BLUE + "sea." + ChatColor.GRAY + " (Requires Donator Rank)");
+    private static final ItemStack pluto = ItemUtils.getItem(new ItemStack(Material.DIAMOND), ChatColor.RED + "" + ChatColor.BOLD + "Pluto", ChatColor.GRAY + "Become a child of Pluto, god of the " + ChatColor.DARK_GRAY + "dead." + ChatColor.GRAY + " (Requires Donator Rank)");
     private static final ItemStack somnus = ItemUtils.getItem(new ItemStack(Material.PURPLE_BED), ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Somnus", ChatColor.GRAY + "Become a child of Somnus, the god of sleep.");
     private static final ItemStack arcus = ItemUtils.getItem(new ItemStack(Material.GOLD_NUGGET), ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Arcus", ChatColor.GRAY + "Become a child of Arcus, the goddess of the rainbow.");
     private static final ItemStack psyche = ItemUtils.getItem(new ItemStack(Material.DRAGON_BREATH), ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Psyche", ChatColor.GRAY + "Become a child of Psyche, the goddess of the soul.");
@@ -78,7 +78,7 @@ public class RomanGodsGUI {
         inv.setItem(arceSlot, comingSoon);
         inv.setItem(janusSlot, comingSoon);
         inv.setItem(apolloSlot, apollo);
-        inv.setItem(marsSlot, comingSoon);
+        inv.setItem(marsSlot, mars);
         inv.setItem(venusSlot, comingSoon);
         inv.setItem(bacchusSlot, bacchus);
         inv.setItem(backSlot, back);
@@ -151,7 +151,7 @@ public class RomanGodsGUI {
                 chooseHeritage(HeritageType.APOLLO_ROMAN, "child of Apollo", (Player) event.getWhoClicked());
                 break;
             case marsSlot:
-                //chooseHeritage(HeritageType.MARS, "child of Mars", (Player) event.getWhoClicked());
+                chooseHeritage(HeritageType.MARS, "child of Mars", (Player) event.getWhoClicked());
                 break;
             case venusSlot:
                 //chooseHeritage(HeritageType.VENUS, "child of Venus", (Player) event.getWhoClicked());

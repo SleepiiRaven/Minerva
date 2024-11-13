@@ -66,6 +66,9 @@ public class Soar extends Skill {
                 }
 
                 player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation(), 0, 0, 0, 0, 0);
+                player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation(), 0);
+                player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, player.getLocation(), 0);
+                player.getWorld().spawnParticle(Particle.CRIT, player.getLocation(), 0);
 
                 ticks++;
             }
@@ -92,6 +95,6 @@ public class Soar extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.FEATHER), ChatColor.WHITE + "" + ChatColor.BOLD + "[Soar]", ChatColor.GRAY + "Use the winds to lift your weight, allowing you to fly for a short period of time.");
+        return ItemUtils.getItem(new ItemStack(Material.FEATHER), ChatColor.WHITE + "" + ChatColor.BOLD + "[Soar]", ChatColor.GRAY + "Use the winds to lift your weight,", ChatColor.GRAY + "allowing you to fly for a short period of time.");
     }
 }

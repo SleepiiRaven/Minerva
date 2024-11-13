@@ -8,6 +8,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
+import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -21,6 +22,8 @@ public class Party {
     }
 
     public static boolean isPlayerInPlayerParty(Player player, Player checkIsInParty) {
+        if (CaptureTheFlag.inSameTeam(player, checkIsInParty)) return true;
+
         if (partyList(player) == null) return false;
 
         return partyList(player).contains(checkIsInParty);

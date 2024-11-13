@@ -25,7 +25,7 @@ public class NimbleDash extends Skill {
         int dashTime = 3; // Ticks
         int invulnerabilityTicks = 10; // Ticks
         int dashVelocityMultiplier = 5;
-        long cooldown = 2000;
+        long cooldown = 4000;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "nimbleDash")) {
             onCooldown(player);
@@ -70,11 +70,13 @@ public class NimbleDash extends Skill {
 
         ItemMeta meta = item.getItemMeta();
 
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ChatColor.BOLD + "" + ChatColor.WHITE + "[Nimble Dash]"));
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ChatColor.WHITE + "" + ChatColor.BOLD + "[Nimble Dash]"));
 
         List<String> lores = new ArrayList<>();
-        lores.add(ChatColor.translateAlternateColorCodes('&', ChatColor.GRAY + "Using the athleticism of a Huntress, dash quickly in a chosen direction."));
-        lores.add(ChatColor.translateAlternateColorCodes('&', ChatColor.GRAY + "After casting, you dodge all attacks for a small time period."));
+        lores.add(ChatColor.translateAlternateColorCodes('&', ChatColor.GRAY + "Using the athleticism of a Huntress,"));
+        lores.add(ChatColor.translateAlternateColorCodes('&', ChatColor.GRAY + "dash quickly in a chosen direction."));
+        lores.add(ChatColor.translateAlternateColorCodes('&', ChatColor.GRAY + "After casting, you dodge all attacks"));
+        lores.add(ChatColor.translateAlternateColorCodes('&', ChatColor.GRAY + "for a small time period."));
 
         meta.setLore(lores);
 
