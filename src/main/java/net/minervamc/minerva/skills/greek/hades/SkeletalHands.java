@@ -214,6 +214,6 @@ public class SkeletalHands extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.BONE), ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "[Skeletal Hands]", ChatColor.GRAY + "Skeletal hands rise from the ground, grabbing at any enemies that enter their range. If an", ChatColor.GRAY + "enemy is trapped, they are stuck for the duration of the ability or until they crouch to escape.");
+        return ItemUtils.getItem(new ItemStack(Material.BONE), ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "[Skeletal Hands]", ChatColor.GRAY + "Skeletal hands rise from the ground, grabbing", ChatColor.GRAY + "at any enemies that enter their range. If an", ChatColor.GRAY + "enemy is trapped, they are stuck for the", ChatColor.GRAY + "duration of the ability or until they crouch to escape.");
     }
 }

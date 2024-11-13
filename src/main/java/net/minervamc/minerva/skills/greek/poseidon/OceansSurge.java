@@ -155,6 +155,6 @@ public class OceansSurge extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.BLUE_DYE), ChatColor.DARK_BLUE + "" + ChatColor.BOLD + "[Ocean's Surge]", ChatColor.GRAY + "Push all enemies away from you in a gigantic radius dealing almost no damage but major knockback.");
+        return ItemUtils.getItem(new ItemStack(Material.BLUE_DYE), ChatColor.DARK_BLUE + "" + ChatColor.BOLD + "[Ocean's Surge]", ChatColor.GRAY + "Push all enemies away from you", ChatColor.GRAY + "in a gigantic radius dealing almost", ChatColor.GRAY + "no damage but major knockback.");
     }
 }

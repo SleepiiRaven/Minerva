@@ -80,7 +80,7 @@ public class TomahawkThrow extends Skill {
                 for (Entity entity : display.getWorld().getNearbyEntities(display.getLocation(), 1, 1, 1)) {
                     if (!(entity instanceof LivingEntity livingMonster) || (entity == display) || entity.getScoreboardTags().contains(player.getUniqueId().toString()) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
                         continue;
-                    damage(livingMonster, damage, player);
+                    damage(livingMonster, damage, player, false, true);
                     knockback(livingMonster, livingMonster.getVelocity().add(direction.clone().multiply(kb)));
                     display.getWorld().playSound(display.getLocation(), Sound.ENTITY_ITEM_BREAK, 1f, 0.5f);
                     display.remove();
@@ -108,6 +108,6 @@ public class TomahawkThrow extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.IRON_AXE), ChatColor.BOLD + "" + ChatColor.DARK_GRAY + "Tomahawk Throw", ChatColor.GRAY + "You throw a tomahawk with all your might,", ChatColor.GRAY + "striking enemies in its path.");
+        return ItemUtils.getItem(new ItemStack(Material.IRON_AXE), ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "[Tomahawk Throw]", ChatColor.GRAY + "You throw a tomahawk with all your might,", ChatColor.GRAY + "striking enemies in its path.");
     }
 }

@@ -86,6 +86,6 @@ public class BurningLight extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.RAW_GOLD), ChatColor.BOLD + "" + ChatColor.GOLD + "Burning Light", ChatColor.GRAY + "Summon a ball of light in front of you that follows your movements", ChatColor.GRAY + "and works like a makeshift shield, dealing massive", ChatColor.GRAY + "damage to those who step in it.");
+        return ItemUtils.getItem(new ItemStack(Material.RAW_GOLD), ChatColor.GOLD + "" + ChatColor.BOLD + "[Burning Light]", ChatColor.GRAY + "Summon a ball of light in front", ChatColor.GRAY + "of you that follows your movements", ChatColor.GRAY + "and works like a makeshift", ChatColor.GRAY + "shield, dealing massive", ChatColor.GRAY + "damage to those who step in it.");
     }
 }

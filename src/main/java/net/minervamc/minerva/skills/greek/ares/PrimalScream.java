@@ -106,6 +106,6 @@ public class PrimalScream extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.PHANTOM_MEMBRANE), ChatColor.BOLD + "" + ChatColor.GRAY + "Primal Scream", ChatColor.GRAY + "Channel Ares' primal", ChatColor.GRAY + "power into an", ChatColor.GRAY + "ear-piercing roar,", ChatColor.GRAY + "pushing enemies back", ChatColor.GRAY + "and granting targeted", ChatColor.GRAY + "allies Speed II", ChatColor.GRAY + "and Strength I.");
+        return ItemUtils.getItem(new ItemStack(Material.PHANTOM_MEMBRANE), ChatColor.GRAY + "" + ChatColor.BOLD + "[Primal Scream]", ChatColor.GRAY + "Channel Ares' primal", ChatColor.GRAY + "power into an", ChatColor.GRAY + "ear-piercing roar,", ChatColor.GRAY + "pushing enemies back", ChatColor.GRAY + "and granting targeted", ChatColor.GRAY + "allies Speed II", ChatColor.GRAY + "and Strength I.");
     }
 }

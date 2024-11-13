@@ -225,6 +225,6 @@ public class AquaticLimbExtensions extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.TRIDENT), ChatColor.BLUE + "" + ChatColor.BOLD + "[Aquatic Limb Extensions]", ChatColor.GRAY + "Extend your limbs with water for a short period of time.", ChatColor.GRAY + "While your limbs are extended, when you left click, the Aquatic Limb Extensions punch with you.");
+        return ItemUtils.getItem(new ItemStack(Material.TRIDENT), ChatColor.BLUE + "" + ChatColor.BOLD + "[Aquatic Limb Extensions]", ChatColor.GRAY + "Extend your limbs with water for a short period of time.", ChatColor.GRAY + "While your limbs are extended, when you left click,", ChatColor.GRAY + "the Aquatic Limb Extensions punch with you.");
     }
 }

@@ -26,6 +26,6 @@ public class AresBlessing extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.ROTTEN_FLESH), ChatColor.BOLD + "" + ChatColor.DARK_RED + "Ares' Blessing", ChatColor.GRAY + "Scale your power in", ChatColor.GRAY + "any fight by gaining", ChatColor.GRAY + "a stackable burst of", ChatColor.GRAY + "Strength each time", ChatColor.GRAY + "you kill a living entity", ChatColor.GRAY + "(including your summons).");
+        return ItemUtils.getItem(new ItemStack(Material.ROTTEN_FLESH), ChatColor.DARK_RED  + "" + ChatColor.BOLD + "[Ares' Blessing]", ChatColor.GRAY + "Scale your power in", ChatColor.GRAY + "any fight by gaining", ChatColor.GRAY + "a stackable burst of", ChatColor.GRAY + "Strength each time", ChatColor.GRAY + "you kill a living entity", ChatColor.GRAY + "(including your summons).");
     }
 }

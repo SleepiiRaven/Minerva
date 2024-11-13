@@ -2,6 +2,7 @@ package net.minervamc.minerva.skills.greek.poseidon;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
@@ -10,6 +11,7 @@ import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -63,10 +65,10 @@ public class SeismicBlast extends Skill {
             }
             default -> {
                 cooldown = 9000;
-                radius = 2.5;
+                radius = 4;
                 delay = 10;
                 knock = 1;
-                damage = 10;
+                damage = 6;
             }
         }
 
@@ -79,9 +81,20 @@ public class SeismicBlast extends Skill {
         cooldownManager.setCooldownFromNow(player.getUniqueId(), "seismicBlast", cooldown);
         cooldownAlarm(player, cooldown, "Seismic Blast");
 
+        Color[] colors = {
+                Color.fromRGB(103, 68, 34),
+                Color.fromRGB(131, 100, 62),
+                Color.fromRGB(194, 155, 108),
+                Color.fromRGB(148, 115, 82),
+                Color.fromRGB(112, 79, 56),
+                Color.fromRGB(82, 57, 47)
+        };
+
         knockback(player, new Vector(0, 0.25, 0));
         Vector knockUp = new Vector(0, knock, 0);
         Vector knockDown = new Vector(0, -knock, 0);
+
+        Random random = new Random();
 
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WITHER_BREAK_BLOCK, 1f, 0.5f);
 
@@ -92,6 +105,7 @@ public class SeismicBlast extends Skill {
             if (!block.getType().isSolid()) blockData = Bukkit.createBlockData(Material.DIRT);
             else blockData = block.getBlockData();
             player.getWorld().spawnParticle(Particle.BLOCK, particleLocation, 3, blockData);
+            player.getWorld().spawnParticle(Particle.DUST, particleLocation, 0, 0, 0, 0, 0, new Particle.DustOptions(colors[random.nextInt(0, 5)], 2));
         }
 
         List<LivingEntity> caughtLivingEntities = new ArrayList<>();
@@ -143,6 +157,6 @@ public class SeismicBlast extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.DIRT), ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "[Earthquake]", ChatColor.GRAY + "Shake the earth below you, throwing enemies in a small radius up, then back down,", ChatColor.GRAY + "causing massive fall damage to enemies that can take fall damage.");
+        return ItemUtils.getItem(new ItemStack(Material.DIRT), ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "[Earthquake]", ChatColor.GRAY + "Shake the earth below you, throwing", ChatColor.GRAY + "enemies in a small radius up, then back down,", ChatColor.GRAY + "causing massive fall damage to enemies", ChatColor.GRAY + "that can take fall damage.");
     }
 }

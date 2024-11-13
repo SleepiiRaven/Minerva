@@ -7,7 +7,6 @@ import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -107,6 +106,6 @@ public class GrapeShot extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.PURPLE_DYE), ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + "[Grape Shot]", ChatColor.GRAY + "Throw fermented grapes at your enemies, dealing a small amount", ChatColor.GRAY + "of damage and causing them to become weakened.");
+        return ItemUtils.getItem(new ItemStack(Material.PURPLE_DYE), ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Grape Shot]", ChatColor.GRAY + "Throw fermented grapes at your enemies, dealing a small amount", ChatColor.GRAY + "of damage and causing them to become weakened.");
     }
 }

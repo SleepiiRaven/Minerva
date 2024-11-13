@@ -138,6 +138,6 @@ public class ShadowTravel extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.ENDER_PEARL), ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "[Shadow Travel]", ChatColor.GRAY + "Cloak yourself in shadows, teleporting far ahead, granting those you hit with blindness,", ChatColor.GRAY + "and granting yourself with invisibility.");
+        return ItemUtils.getItem(new ItemStack(Material.ENDER_PEARL), ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "[Shadow Travel]", ChatColor.GRAY + "Cloak yourself in shadows, teleporting far ahead,", ChatColor.GRAY + "granting those you hit with blindness,", ChatColor.GRAY + "and granting yourself with invisibility.");
     }
 }

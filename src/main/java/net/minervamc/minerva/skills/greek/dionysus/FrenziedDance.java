@@ -125,6 +125,6 @@ public class FrenziedDance extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING), ChatColor.BOLD + "" + ChatColor.LIGHT_PURPLE + "[Frenzied Dance]", ChatColor.GRAY + "Call upon Dionysus, playing a song in his honor. In return", ChatColor.GRAY + "Dionysus blesses you, granting you a temporary boost to your movement speed and resistance.");
+        return ItemUtils.getItem(new ItemStack(Material.TOTEM_OF_UNDYING), ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "[Frenzied Dance]", ChatColor.GRAY + "Call upon Dionysus, playing a song in his honor. In return", ChatColor.GRAY + "Dionysus blesses you, granting you a", ChatColor.GRAY + "temporary boost to your movement speed and resistance.");
     }
 }

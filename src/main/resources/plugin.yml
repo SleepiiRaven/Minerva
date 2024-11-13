@@ -13,6 +13,12 @@ commands:
   party:
     description: Manage parties.
     usage: "\u00A76Correct usage: /party <player>, /party remove <player>, /party list, /party disband"
+  focus:
+    description: Focus on the item in your hand, imbuing it with the ability to use skills.
+    usage: "\u00A76Correct usage: /focus"
+  unfocus:
+    description: Stop focusing on the item in your hand, removing the ability to use skills from it.
+    usage: "\u00A76Correct usage: /unfocus"
   permissions:
     minerva.skills.set:
       description: Allows you to set your own stats

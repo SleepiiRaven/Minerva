@@ -1,31 +1,21 @@
 package net.minervamc.minerva.commands;
 
-import java.util.List;
-import net.minervamc.minerva.lib.command.Command;
-import net.minervamc.minerva.lib.command.CommandContext;
-import net.minervamc.minerva.lib.command.CommandUser;
-import net.minervamc.minerva.lib.command.ICommand;
 import net.minervamc.minerva.utils.SkillUtils;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class FocusCommand extends Command {
-    public FocusCommand() {
-        super("focus", "", "", List.of());
-    }
-
-    @ICommand(user = CommandUser.PLAYER)
-    public void set(CommandContext context) {
-        assert context.getPlayer() != null;
-        SkillUtils.setFocus(context.getPlayer().getInventory().getItemInMainHand());
-    }
-
-    @ICommand(user = CommandUser.PLAYER)
-    public void remove(CommandContext context) {
-        assert context.getPlayer() != null;
-        SkillUtils.removeFocus(context.getPlayer().getInventory().getItemInMainHand());
-    }
-
-    public static void register(JavaPlugin plugin) {
-        Command.register(plugin, new FocusCommand());
+public class FocusCommand implements CommandExecutor {
+    @Override
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull org.bukkit.command.Command command, @NotNull String s, @NotNull String[] strings) {
+        if (commandSender instanceof Player player) {
+            SkillUtils.setFocus(player.getInventory().getItemInMainHand());
+            return true;
+        } else {
+            commandSender.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You can't execute that command if you're not a player!");
+            return false;
+        }
     }
 }

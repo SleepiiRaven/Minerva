@@ -8,6 +8,7 @@ import net.minervamc.minerva.commands.FocusCommand;
 import net.minervamc.minerva.commands.PartyCommand;
 import net.minervamc.minerva.commands.SkillModeToggle;
 import net.minervamc.minerva.commands.SkillsCommand;
+import net.minervamc.minerva.commands.UnfocusCommand;
 import net.minervamc.minerva.lib.Lib;
 import net.minervamc.minerva.listeners.CtfListener;
 import net.minervamc.minerva.listeners.PlayerListener;
@@ -79,7 +80,8 @@ public final class Minerva extends JavaPlugin {
         Objects.requireNonNull(getCommand("skillmode")).setExecutor(new SkillModeToggle());
         Objects.requireNonNull(getCommand("party")).setExecutor(new PartyCommand());
         CtfCommand.register(this);
-        FocusCommand.register(this);
+        Objects.requireNonNull(getCommand("focus")).setExecutor(new FocusCommand());
+        Objects.requireNonNull(getCommand("unfocus")).setExecutor(new UnfocusCommand());
     }
 
 

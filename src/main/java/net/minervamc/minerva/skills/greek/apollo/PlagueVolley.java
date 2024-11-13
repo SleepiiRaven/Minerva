@@ -141,6 +141,6 @@ public class PlagueVolley extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.WITHER_ROSE), ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "[Plague Volley]", ChatColor.GRAY + "Shoot a volley of arrows imbued with the plague.");
+        return ItemUtils.getItem(new ItemStack(Material.WITHER_ROSE), ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "[Plague Volley]", ChatColor.GRAY + "Shoot a volley of arrows", ChatColor.GRAY + "imbued with the plague.");
     }
 }

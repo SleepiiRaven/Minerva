@@ -2,6 +2,7 @@ package net.minervamc.minerva.guis;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.types.SkillType;
@@ -14,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class SkillsGUI {
     public static final String invName = "Toggle + View Skills";
@@ -174,7 +176,13 @@ public class SkillsGUI {
         switch (event.getSlot()) {
             // Switches
             case backSlot -> {
-                 AncestryGUI.openGUI(player);
+                player.closeInventory();
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        AncestryGUI.openGUI(player);
+                    }
+                }.runTaskLater(Minerva.getInstance(), 2L);
                  player.playSound(player, Sound.ENTITY_ITEM_PICKUP, 1f, 1f);
             }
             case resetSlot -> {

@@ -87,6 +87,7 @@ public class PlayerStats {
 
     public static void saveAll() {
         for (PlayerStats stats : playerStats.values()) {
+            stats.setLogoutLoc(Bukkit.getPlayer(stats.getUuid()).getLocation());
             stats.save();
         }
     }

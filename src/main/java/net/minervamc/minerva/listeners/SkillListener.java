@@ -47,7 +47,7 @@ public class SkillListener implements Listener {
             return;
         }
 
-        if (event.getDrops() != null)
+        if (event.getDrops() != null && event.getEntity().getScoreboardTags().contains("aresSummoned"))
             event.getDrops().clear();
     }
 

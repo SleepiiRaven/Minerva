@@ -1,5 +1,6 @@
 package net.minervamc.minerva.skills.greek.zeus;
 
+import java.util.List;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
@@ -28,6 +29,8 @@ public class WindWall extends Skill {
         double maxTriggers;
         long ticksBetweenTriggers;
         long cooldown;
+        int particlesCurve = 40;
+        double lineLengthBetweenParticles = 0.2;
 
         switch (level) {
             case 2 -> {
@@ -92,9 +95,17 @@ public class WindWall extends Skill {
         new BukkitRunnable() {
             final Location playerLocation = player.getLocation();
             final Vector playerDirection = player.getEyeLocation().getDirection();
-            final Vector directionLeft = ParticleUtils.rotateYAxis(playerDirection, -90);
-            final Vector wallStart = (directionLeft.clone().multiply(wallWidth / 2)).add(playerDirection.clone().multiply(distance));
-            final Vector directionRight = ParticleUtils.rotateYAxis(playerDirection, 90);
+            final Vector horizontalDir = playerDirection.clone().setY(0).normalize();
+
+            final Vector A = horizontalDir.clone().multiply(wallWidth/2).rotateAroundY(-90).add(playerDirection.clone().multiply(distance));
+            final Vector B = playerDirection.clone().add(new Vector(0, 1, 0)).multiply(distance);
+            final Vector C = horizontalDir.clone().multiply(wallWidth/2).rotateAroundY(90).add(playerDirection.clone().multiply(distance));
+
+            final Vector heightOffset = new Vector(0, wallHeight/2, 0);
+
+            final List<Vector> topCurve = ParticleUtils.getQuadraticBezierPoints(A.clone().add(heightOffset), B.clone().add(heightOffset), C.clone().add(heightOffset), particlesCurve);
+            final List<Vector> bottomCurve = ParticleUtils.getQuadraticBezierPoints(A.clone().subtract(heightOffset), B.clone().subtract(heightOffset), C.clone().subtract(heightOffset), particlesCurve);
+
             int triggers = 0;
 
             @Override
@@ -103,9 +114,9 @@ public class WindWall extends Skill {
                     this.cancel();
                 }
 
-                for (double i = 0; i < wallWidth; i += 0.2) {
-                    for (double j = 0; j < wallHeight; j += 0.2) {
-                        Vector point = (wallStart.clone().add(directionRight.clone().multiply(i))).add(new Vector(0, j, 0));
+                for (int i = 0; i < particlesCurve; i++) {
+                    List<Vector> line = ParticleUtils.getLinePoints(topCurve.get(i), bottomCurve.get(i), lineLengthBetweenParticles);
+                    for (Vector point : line) {
                         Location pointLocation = playerLocation.clone().add(point);
                         player.getWorld().spawnParticle(Particle.CLOUD, pointLocation, 1, 0, 0, 0, 0);
                         for (Entity entity : (pointLocation).getNearbyEntities(1, 1, 1)) {
@@ -143,6 +154,6 @@ public class WindWall extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.PAPER), ChatColor.WHITE + "" + ChatColor.BOLD + "[Wind Wall]", ChatColor.GRAY + "Raise a wall of wind that pushes back and damages any enemies that enter into the wall.");
+        return ItemUtils.getItem(new ItemStack(Material.PAPER), ChatColor.WHITE + "" + ChatColor.BOLD + "[Wind Wall]", ChatColor.GRAY + "Raise a wall of wind that pushes", ChatColor.GRAY + "back and damages any enemies", ChatColor.GRAY + "that enter into the wall.");
     }
 }

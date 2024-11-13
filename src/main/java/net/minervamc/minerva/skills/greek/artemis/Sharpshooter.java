@@ -86,6 +86,6 @@ public class Sharpshooter extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.BOW), ChatColor.BOLD + "" + ChatColor.AQUA + "[Sharpshooter]", ChatColor.GRAY + "For a short time, your arrows fire in an arc that, with your incredible skills", ChatColor.GRAY + "in archery and sharpshooting, almost never miss their targets.");
+        return ItemUtils.getItem(new ItemStack(Material.BOW), ChatColor.AQUA + "" + ChatColor.BOLD + "[Sharpshooter]", ChatColor.GRAY + "For a short time, your arrows fire in an", ChatColor.GRAY + "arc that, with your incredible skills", ChatColor.GRAY + "in archery and sharpshooting,", ChatColor.GRAY + "almost never miss their targets.");
     }
 }

@@ -89,6 +89,6 @@ public class VineWhip extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.VINE), ChatColor.BOLD + "" + ChatColor.GREEN + "[Vine Whip]", ChatColor.GRAY + "Throw a grape vine towards an enemy, damaging them and pulling them towards you.");
+        return ItemUtils.getItem(new ItemStack(Material.VINE), ChatColor.GREEN + "" + ChatColor.BOLD + "[Vine Whip]", ChatColor.GRAY + "Throw a grape vine towards an enemy,", ChatColor.GRAY + "damaging them and pulling them towards you.");
     }
 }

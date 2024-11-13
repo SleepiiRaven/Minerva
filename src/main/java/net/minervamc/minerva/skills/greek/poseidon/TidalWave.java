@@ -12,9 +12,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -68,19 +68,18 @@ public class TidalWave extends Skill {
         player.getWorld().playSound(player.getLocation(), Sound.ITEM_CROSSBOW_SHOOT, 1f, 1f);
 
         final Vector relativePlayerVector = new Vector(0, 1.5, 0);
-        Horse mount = (Horse) player.getWorld().spawnEntity(player.getLocation(), EntityType.HORSE);
+        ArmorStand mount = (ArmorStand) player.getWorld().spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
         mount.setInvisible(true);
         mount.setInvulnerable(true);
         mount.setSilent(true);
-        //mount.setAI(false);
         mount.addPassenger(player);
-        //mount.setOwner(player);
         new BukkitRunnable() {
             int ticks = 0;
 
             @Override
             public void run() {
                 if (player.isDead() || !player.isOnline() || player.isSneaking() || ticks >= (tickDuration / 5)) {
+                    player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_SPLASH_HIGH_SPEED, 1f, 1f);
                     player.teleport(mount.getLocation());
                     mount.remove();
                     this.cancel();
@@ -97,11 +96,28 @@ public class TidalWave extends Skill {
                 Vector lineDirection = direction.clone().rotateAroundY(90);
 
                 waveParticleEffect(direction, lineDirection, relativePlayerVector, location, player);
-
-                if (!mount.getLocation().clone().subtract(0, 1, 0).getBlock().isSolid() && !mount.getLocation().clone().subtract(0, 1, 0).getBlock().isLiquid()) {
-                    mount.setVelocity(direction.clone().multiply(2).subtract(new Vector(0, 0.5, 0)));
-                } else {
-                    mount.setVelocity(direction.clone().multiply(2));
+                Location loc = mount.getLocation().clone().add(direction.clone().setY(0).normalize().multiply(0.5));
+                if (loc.getBlock().isSolid() || loc.getBlock().isLiquid()) {
+                    if (loc.clone().add(new Vector(0, 1, 0)).getBlock().isSolid() || loc.clone().add(new Vector(0, 1, 0)).getBlock().isLiquid()) {
+                        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_SPLASH_HIGH_SPEED, 1f, 1f);
+                        player.teleport(mount.getLocation());
+                        mount.remove();
+                        this.cancel();
+                        location = player.getLocation();
+                        direction = player.getLocation().getDirection().clone().setY(0);
+                        lineDirection = direction.clone().rotateAroundY(90);
+                        waveParticleEffect(direction, lineDirection, relativePlayerVector, location, player);
+                        return;
+                    } else {
+                        mount.setVelocity(new Vector(0, 1, 0).add(direction.clone()));
+                    }
+                }
+                else {
+                    if (mount.isOnGround()) {
+                        mount.setVelocity(direction.clone().multiply(5));
+                    } else {
+                        mount.setVelocity(direction.clone());
+                    }
                 }
 
                 for (Entity entity : mount.getLocation().getNearbyEntities(2, 2, 2)) {
@@ -158,6 +174,6 @@ public class TidalWave extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.PRISMARINE_SHARD), ChatColor.AQUA + "" + ChatColor.BOLD + "[Tidal Wave]", ChatColor.GRAY + "Ride forward on a speedy wave of water that does a medium", ChatColor.GRAY + "amount of damage to enemies in its way.");
+        return ItemUtils.getItem(new ItemStack(Material.PRISMARINE_SHARD), ChatColor.AQUA + "" + ChatColor.BOLD + "[Tidal Wave]", ChatColor.GRAY + "Ride forward on a speedy wave", ChatColor.GRAY + "of water that does a medium", ChatColor.GRAY + "amount of damage to enemies in its way.");
     }
 }

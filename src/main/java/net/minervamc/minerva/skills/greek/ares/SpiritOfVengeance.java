@@ -191,6 +191,6 @@ public class SpiritOfVengeance extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.ROTTEN_FLESH), ChatColor.BOLD + "" + ChatColor.RED + "Spirit of Vengeance", ChatColor.GRAY + "Draw a circle of blood", ChatColor.GRAY + "and summon fallen", ChatColor.GRAY + "soldiers from wars past.", ChatColor.GRAY + "These soldiers use their", ChatColor.GRAY + "crossbows to annoy", ChatColor.GRAY + "and distract enemies,", ChatColor.GRAY + "and their axes to", ChatColor.GRAY + "deal immense damage.");
+        return ItemUtils.getItem(new ItemStack(Material.ROTTEN_FLESH), ChatColor.RED + "" + ChatColor.BOLD + "[Spirit of Vengeance]", ChatColor.GRAY + "Draw a circle of blood", ChatColor.GRAY + "and summon fallen", ChatColor.GRAY + "soldiers from wars past.", ChatColor.GRAY + "These soldiers use their", ChatColor.GRAY + "crossbows to annoy", ChatColor.GRAY + "and distract enemies,", ChatColor.GRAY + "and their axes to", ChatColor.GRAY + "deal immense damage.");
     }
 }

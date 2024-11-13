@@ -103,6 +103,6 @@ public class SuperCharged extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.TRIDENT), ChatColor.BOLD + "" + ChatColor.YELLOW + "[Super Charged]", ChatColor.GRAY + "With the careful precision and patience of a Huntress,", ChatColor.GRAY + "spend a moment to line up your bow shot with a silver bolt from", ChatColor.GRAY + "your quiver to deliver a devastating shot that deals extra damage on a headshot.");
+        return ItemUtils.getItem(new ItemStack(Material.TRIDENT), ChatColor.YELLOW + "" + ChatColor.BOLD + "[Super Charged]", ChatColor.GRAY + "With the careful precision and patience of a Huntress,", ChatColor.GRAY + "spend a moment to line up your bow shot with a silver bolt from", ChatColor.GRAY + "your quiver to deliver a devastating shot", ChatColor.GRAY + "that deals extra damage on a headshot.");
     }
 }

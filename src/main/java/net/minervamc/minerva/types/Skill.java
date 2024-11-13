@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -118,7 +119,11 @@ public abstract class Skill {
     public abstract ItemStack getItem();
 
     public static void damage(LivingEntity livingEntity, double damage, Player damager) {
-        if (!(livingEntity instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE))) {
+        if (livingEntity instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE)) {
+            return;
+        }
+
+        if (livingEntity instanceof Player && !livingEntity.getWorld().getPVP()) {
             return;
         }
 
@@ -144,6 +149,58 @@ public abstract class Skill {
         if (livingEntity.getNoDamageTicks() > 0) return;
 
         if (livingEntity.getHealth()-damage <= 0) {
+            if (livingEntity.isDead()) {
+                return;
+            }
+            livingEntity.setHealth(0);
+            livingEntity.setKiller(damager);
+            if (livingEntity instanceof Player p) {
+                Bukkit.getPluginManager().callEvent(new PlayerDeathEvent(p, DamageSource.builder(DamageType.MAGIC).build(), Arrays.asList(p.getInventory().getStorageContents()), 0, Component.text(p.getName() + " was killed by " + damager.getName() + "'s heritage skill.")));
+            }
+        } else {
+            livingEntity.setHealth(livingEntity.getHealth() - damage);
+        }
+        livingEntity.damage(0, damager);
+    }
+
+    public static void damage(LivingEntity livingEntity, double damage, Player damager, boolean ignoreInvulnTicks, boolean addStr) {
+        if (livingEntity instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE)) {
+            return;
+        }
+
+        if (livingEntity instanceof Player && !livingEntity.getWorld().getPVP()) {
+            return;
+        }
+
+        if (livingEntity instanceof Tameable) {
+            if (((Tameable) livingEntity).getOwner() != null) {
+                return;
+            }
+        }
+
+        double magicDamage = 0;
+        double magicResist = 0;
+        if (MMOPlayerData.isLoaded(damager.getUniqueId())) {
+            magicDamage = MMOPlayerData.get(damager.getUniqueId()).getStatMap().getStat("MAGIC_DAMAGE");
+        }
+
+        if (MMOPlayerData.isLoaded(livingEntity.getUniqueId())) {
+            magicResist = MMOPlayerData.get(livingEntity.getUniqueId()).getStatMap().getStat("MAGIC_DAMAGE_REDUCTION");
+        }
+
+        if (damager.hasPotionEffect(PotionEffectType.STRENGTH)) {
+            damage += 3 * (damager.getPotionEffect(PotionEffectType.STRENGTH).getAmplifier() + 1);
+        }
+
+        damage *= (magicDamage + 100)/100;
+        damage *= (100 - magicResist)/100;
+
+        if (livingEntity.getNoDamageTicks() > 0 && !ignoreInvulnTicks) return;
+
+        if (livingEntity.getHealth()-damage <= 0) {
+            if (livingEntity.isDead()) {
+                return;
+            }
             livingEntity.setHealth(0);
             livingEntity.setKiller(damager);
             if (livingEntity instanceof Player p) {
