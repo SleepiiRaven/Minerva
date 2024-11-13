@@ -7,7 +7,6 @@ import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.FastUtils;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -31,31 +30,31 @@ public class LightningToss extends Skill {
             case 2 -> {
                 maxDistance = 12;
                 maxBranches = 5;
-                damage = 14;
+                damage = 8;
                 cooldown = 2750;
             }
             case 3 -> {
                 maxDistance = 15;
                 maxBranches = 6;
-                damage = 15;
+                damage = 12;
                 cooldown = 2000;
             }
             case 4 -> {
                 maxDistance = 17;
                 maxBranches = 10;
-                damage = 20;
+                damage = 16;
                 cooldown = 2000;
             }
             case 5 -> {
                 maxDistance = 20;
                 maxBranches = 12;
-                damage = 25;
+                damage = 23;
                 cooldown = 1500;
             }
             default -> {
                 maxDistance = 10;
-                maxBranches = 5;
-                damage = 160;
+                maxBranches = 6;
+                damage = 6;
                 cooldown = 4000;
             }
         }
@@ -70,7 +69,10 @@ public class LightningToss extends Skill {
 
         player.playSound(player.getLocation(), Sound.ITEM_TRIDENT_RIPTIDE_1, 1f, 1f);
         player.playSound(player.getLocation(), Sound.ITEM_CROSSBOW_SHOOT, 1f, 1f);
-        branch(player, player.getEyeLocation(), player.getLocation().getDirection(), maxDistance, maxBranches, damage);
+
+        Color startColor = Color.fromRGB(254, 211, 3);
+        Color endColor = Color.fromRGB(66, 146, 185);
+        branch(player, player.getEyeLocation(), player.getLocation().getDirection(), maxDistance, maxBranches, damage, startColor, endColor);
     }
 
     @Override
@@ -85,18 +87,29 @@ public class LightningToss extends Skill {
         };
     }
 
-    private void branch(Player player, Location location, Vector direction, int maxDistance, int maxBranches, double damage) {
-        int rotationMax = 20;
+    private void branch(Player player, Location location, Vector direction, int maxDistance, int maxBranches, double damage, Color startColor, Color endColor) {
+        int rotationMax = 50;
         Random random = new Random();
 
         for (double i = 0; i <= maxDistance; i += 0.2) {
-            player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, location.clone().add(direction.clone().multiply(i)), 0);
-            player.getWorld().spawnParticle(Particle.DUST, location.clone().add(direction.clone().multiply(i)), 0, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(254, 191, 16), 2));
-            for (Entity entity : location.clone().add(direction.clone().multiply(i)).getNearbyEntities(1, 1, 1)) {
+            double progress = i / maxDistance;
+            int red = (int) (startColor.getRed() + progress * (endColor.getRed() - startColor.getRed()));
+            int green = (int) (startColor.getGreen() + progress * (endColor.getGreen() - startColor.getGreen()));
+            int blue = (int) (startColor.getBlue() + progress * (endColor.getBlue() - startColor.getBlue()));
+            Color currentColor = Color.fromRGB(red, green, blue);
+            if (currentColor.equals(Color.fromRGB(0, 0, 0))) {
+                currentColor = endColor;
+            }
+
+            Location particleLoc = location.clone().add(direction.clone().multiply(i));
+
+            player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, particleLoc, 0);
+            player.getWorld().spawnParticle(Particle.DUST, particleLoc, 0, 0, 0, 0, 0, new Particle.DustOptions(currentColor, 2));
+
+            for (Entity entity : particleLoc.getNearbyEntities(1, 1, 1)) {
                 if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                    SkillUtils.damage(livingEntity, damage, player);
-                    livingEntity.setVelocity(direction.multiply(0.3));
-                    return;
+                    damage(livingEntity, damage, player);
+                    knockback(livingEntity, direction.clone().multiply(0.3));
                 }
             }
 
@@ -104,12 +117,19 @@ public class LightningToss extends Skill {
                 double xRotation = FastUtils.randomDoubleInRange(-rotationMax, rotationMax);
                 double yRotation = FastUtils.randomDoubleInRange(-rotationMax, rotationMax);
                 double zRotation = FastUtils.randomDoubleInRange(-rotationMax, rotationMax);
-                branch(player, location.clone().add(direction.clone().multiply(i)), ParticleUtils.rotateYAxis(ParticleUtils.rotateZAxis(ParticleUtils.rotateXAxis(direction, xRotation), zRotation), yRotation), (int) (maxDistance - i), maxBranches - 1, damage);
+
+                branch(player, particleLoc,
+                        ParticleUtils.rotateYAxis(ParticleUtils.rotateZAxis(ParticleUtils.rotateXAxis(direction, xRotation), zRotation), yRotation),
+                        (int) (maxDistance - i), maxBranches - 1, damage, currentColor, endColor);
+
                 xRotation = FastUtils.randomDoubleInRange(-rotationMax, rotationMax);
                 yRotation = FastUtils.randomDoubleInRange(-rotationMax, rotationMax);
                 zRotation = FastUtils.randomDoubleInRange(-rotationMax, rotationMax);
-                branch(player, location.clone().add(direction.clone().multiply(i)), ParticleUtils.rotateYAxis(ParticleUtils.rotateZAxis(ParticleUtils.rotateXAxis(direction, xRotation), zRotation), yRotation), (int) (maxDistance - i), maxBranches - 1, damage);
-                return;
+                branch(player, particleLoc,
+                        ParticleUtils.rotateYAxis(ParticleUtils.rotateZAxis(ParticleUtils.rotateXAxis(direction, xRotation), zRotation), yRotation),
+                        (int) (maxDistance - i), maxBranches - 1, damage, currentColor, endColor);
+
+                //return;
             }
         }
     }
@@ -121,6 +141,6 @@ public class LightningToss extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.BLAZE_ROD), ChatColor.YELLOW + "" + ChatColor.BOLD + "[Lightning Toss]", ChatColor.GRAY + "Quickly shoot a massive branching beam of lightning in the direction you are looking.");
+        return ItemUtils.getItem(new ItemStack(Material.BLAZE_ROD), ChatColor.YELLOW + "" + ChatColor.BOLD + "[Lightning Toss]", ChatColor.GRAY + "Quickly shoot a massive branching beam of", ChatColor.GRAY + "lightning in the direction you are looking.");
     }
 }

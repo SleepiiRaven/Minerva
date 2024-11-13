@@ -31,8 +31,8 @@ public class MadGodsDrink extends Skill {
         int duration = 60;
         int poisonDuration = 100;
         int slownessDuration = 60;
-        int poisonAmplifier = 0;
-        int slownessAmplifier = 0;
+        int poisonAmplifier = 2;
+        int slownessAmplifier = 1;
         long cooldown = 7000;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "madGodsDrink")) {
@@ -131,11 +131,13 @@ public class MadGodsDrink extends Skill {
         meta.setColor(Color.PURPLE);
         meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
 
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + "[Mad God's Drink]"));
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Mad God's Drink]"));
 
         List<String> lores = new ArrayList<>();
-        lores.add(ChatColor.translateAlternateColorCodes('&', ChatColor.GRAY + "Throw a bottle of cursed wine, creating a cloud of noxious gas"));
-        lores.add(ChatColor.translateAlternateColorCodes('&', ChatColor.GRAY + "that slows, damages, and poisons any entities that enter, including yourself."));
+        lores.add(ChatColor.translateAlternateColorCodes('&', ChatColor.GRAY + "Throw a bottle of cursed wine"));
+        lores.add(ChatColor.translateAlternateColorCodes('&', ChatColor.GRAY + "creating a cloud of noxious gas"));
+        lores.add(ChatColor.translateAlternateColorCodes('&', ChatColor.GRAY + "that slows, damages, and poisons any"));
+        lores.add(ChatColor.translateAlternateColorCodes('&', ChatColor.GRAY + "entities that enter, including yourself."));
 
         meta.setLore(lores);
         item.setItemMeta(meta);

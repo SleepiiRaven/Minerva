@@ -2,27 +2,28 @@ package net.minervamc.minerva.skills.greek.ares;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.FastUtils;
+import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.block.data.type.Bed;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Pillager;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
+import org.bukkit.entity.Vindicator;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -32,9 +33,17 @@ import org.bukkit.util.Vector;
 public class SpiritOfVengeance extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-        long pillagerDespawnTicks = 2000 / 5; // The runnable is every 5 seconds so the first number is the ticks you want :)
-        long cooldown = pillagerDespawnTicks * 5 * 50 + 6000;
+        long pillagerDespawnTicks = 600 / 5; // The runnable is every 5 seconds so the first number is the ticks you want :)
+        long cooldown = pillagerDespawnTicks * 5 * 50 + 10000;
         int angerRadius = 10;
+
+        if (!cooldownManager.isCooldownDone(player.getUniqueId(), "spiritOfVengeance")) {
+            onCooldown(player);
+            return;
+        }
+
+        cooldownManager.setCooldownFromNow(player.getUniqueId(), "spiritOfVengeance", cooldown);
+        cooldownAlarm(player, cooldown, "Spirit of Vengeance");
 
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_SET_SPAWN, 1f, 1f);
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WARDEN_EMERGE, 1f, 1f);
@@ -99,7 +108,7 @@ public class SpiritOfVengeance extends Skill {
             }
         }.runTaskTimer(Minerva.getInstance(), 5L, 5L);
 
-        List<Pillager> pillagers = new ArrayList<>();
+        List<LivingEntity> pillagers = new ArrayList<>();
         new BukkitRunnable() {
             int ticks = 0;
             @Override
@@ -109,13 +118,13 @@ public class SpiritOfVengeance extends Skill {
                         display.remove();
                     }
                     pillagers.add(summonPillager(loc, player, d, pillagerDirection, pillagerDespawnTicks));
-                    pillagers.add(summonPillager(loc, player, e, pillagerDirection, pillagerDespawnTicks));
+                    pillagers.add(summonVindicator(loc, player, e, pillagerDirection, pillagerDespawnTicks));
                     pillagers.add(summonPillager(loc, player, f, pillagerDirection, pillagerDespawnTicks));
                 } else {
 
                     if (player.isDead() || !player.isOnline() || ticks >= pillagerDespawnTicks) {
                         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WOLF_WHINE, 1f, 1f);
-                        for (Pillager pillager : pillagers) {
+                        for (LivingEntity pillager : pillagers) {
                             pillager.remove();
                             Location particleLoc = pillager.getLocation();
                             pillager.getWorld().spawnParticle(Particle.ENCHANT, particleLoc, 10);
@@ -123,15 +132,16 @@ public class SpiritOfVengeance extends Skill {
                         this.cancel();
                     }
 
-                    for (Pillager pillager : pillagers) {
+                    for (LivingEntity pillager : pillagers) {
+                        Monster monster = (Monster) pillager;
                         for (Entity entity : pillager.getWorld().getNearbyEntities(pillager.getLocation(), angerRadius, angerRadius, angerRadius)) {
-                            if (!(entity instanceof LivingEntity potentialTarget) || (potentialTarget instanceof Tameable && ((Tameable) potentialTarget).getOwner() != null) || potentialTarget.getScoreboardTags().contains("aresSummoned") || potentialTarget == player || (potentialTarget instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                                if (pillager.getTarget() == player) {
-                                    pillager.setTarget(null);
+                            if (!(entity instanceof LivingEntity potentialTarget) || (potentialTarget instanceof Tameable && ((Tameable) potentialTarget).getOwner() != null) || potentialTarget.getScoreboardTags().contains(player.getUniqueId().toString()) || potentialTarget == player || (potentialTarget instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
+                                if (monster.getTarget() == player) {
+                                    monster.setTarget(null);
                                 }
                                 continue;
                             }
-                            pillager.setTarget(potentialTarget);
+                            monster.setTarget(potentialTarget);
                         }
                     }
                 }
@@ -153,7 +163,19 @@ public class SpiritOfVengeance extends Skill {
         Pillager pillager = (Pillager) loc.getWorld().spawnEntity(pillagerLocation.setDirection(pillagerDirection), EntityType.PILLAGER);
         pillager.addScoreboardTag("aresSummoned");
         pillager.addScoreboardTag(player.getUniqueId().toString());
-        pillager.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, (int) (pillagerDespawnTicks * 5), 3));
+        pillager.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, (int) (pillagerDespawnTicks * 5), 0));
+        return pillager;
+    }
+
+    private Vindicator summonVindicator(Location loc, Player player, Vector offset, Vector pillagerDirection, long pillagerDespawnTicks) {
+
+        Location pillagerLocation = loc.clone().add(offset);
+        loc.getWorld().playSound(loc.clone(), Sound.ENTITY_IRON_GOLEM_DAMAGE, 1f, 0.4f);
+
+        Vindicator pillager = (Vindicator) loc.getWorld().spawnEntity(pillagerLocation.setDirection(pillagerDirection), EntityType.VINDICATOR);
+        pillager.addScoreboardTag("aresSummoned");
+        pillager.addScoreboardTag(player.getUniqueId().toString());
+        pillager.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, (int) (pillagerDespawnTicks * 5), 0));
         return pillager;
     }
 
@@ -169,6 +191,6 @@ public class SpiritOfVengeance extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return new ItemStack(Material.VINE);
+        return ItemUtils.getItem(new ItemStack(Material.ROTTEN_FLESH), ChatColor.RED + "" + ChatColor.BOLD + "[Spirit of Vengeance]", ChatColor.GRAY + "Draw a circle of blood", ChatColor.GRAY + "and summon fallen", ChatColor.GRAY + "soldiers from wars past.", ChatColor.GRAY + "These soldiers use their", ChatColor.GRAY + "crossbows to annoy", ChatColor.GRAY + "and distract enemies,", ChatColor.GRAY + "and their axes to", ChatColor.GRAY + "deal immense damage.");
     }
 }

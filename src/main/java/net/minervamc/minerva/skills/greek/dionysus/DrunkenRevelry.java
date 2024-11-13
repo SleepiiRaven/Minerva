@@ -34,7 +34,7 @@ public class DrunkenRevelry extends Skill {
         meta.setColor(Color.GREEN);
         meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
 
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ChatColor.BOLD + "" + ChatColor.DARK_GREEN + "[Drunken Revelry]"));
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "[Drunken Revelry]"));
 
         List<String> lores = new ArrayList<>();
         lores.add(ChatColor.translateAlternateColorCodes('&', ChatColor.GRAY + "Whenever you are poisoned, gain strength and regeneration."));

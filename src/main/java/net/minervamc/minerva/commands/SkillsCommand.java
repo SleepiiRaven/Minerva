@@ -3,6 +3,7 @@ package net.minervamc.minerva.commands;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.guis.AncestryGUI;
 import net.minervamc.minerva.guis.SkillsGUI;
+import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import net.minervamc.minerva.types.HeritageType;
 import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.Bukkit;
@@ -16,6 +17,11 @@ import org.jetbrains.annotations.NotNull;
 public class SkillsCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        if (commandSender instanceof Player player && !CaptureTheFlag.preparePhase && CaptureTheFlag.isInGame(player)) {
+            player.sendMessage(ChatColor.RED + "You can't change your skills if you're in a Capture the Flag game after the prepare phase is over!");
+            return true;
+        }
+
         if (args.length == 0) { // If the argument length is zero... /mskills
             if (commandSender instanceof Player player) { // If the sender is a player
                 AncestryGUI.openGUI(player);

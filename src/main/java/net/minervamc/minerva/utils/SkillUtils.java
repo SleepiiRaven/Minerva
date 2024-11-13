@@ -1,5 +1,7 @@
 package net.minervamc.minerva.utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
@@ -7,9 +9,10 @@ import net.minervamc.minerva.skills.Skills;
 import net.minervamc.minerva.types.HeritageType;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.types.SkillType;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Tameable;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class SkillUtils {
     public static void redirect(Player player, UUID pUUID, SkillType skillType) {
@@ -40,6 +43,43 @@ public class SkillUtils {
         }
         if (spell == null) return;
         spell.cast(player, Minerva.getInstance().getCdInstance(), level);
+    }
+
+    public static boolean isFocus(ItemStack itemStack) {
+        if (itemStack.getItemMeta() == null || itemStack.getItemMeta().lore() == null) return false;
+
+        if (itemStack.getItemMeta().getLore().contains(ChatColor.LIGHT_PURPLE + "Focused - Start Casting Skills by Right Clicking")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static void setFocus(ItemStack itemStack) {
+        List<String> lores = new ArrayList<>();
+
+        if (itemStack.hasItemMeta()) {
+            ItemMeta meta = itemStack.getItemMeta();
+            if (meta.hasLore()) {
+                assert itemStack.getItemMeta().getLore() != null;
+                lores.addAll(itemStack.getItemMeta().getLore());
+            }
+        }
+
+        lores.add(ChatColor.LIGHT_PURPLE + "Focused - Start Casting Skills by Right Clicking");
+
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setLore(lores);
+        itemStack.setItemMeta(itemMeta);
+    }
+
+    public static void removeFocus(ItemStack itemStack) {
+        if (!isFocus(itemStack)) return;
+        ItemMeta meta = itemStack.getItemMeta();
+        List<String> lore = meta.getLore();
+        lore.remove(ChatColor.LIGHT_PURPLE + "Focused - Start Casting Skills by Right Clicking");
+        meta.setLore(lore);
+        itemStack.setItemMeta(meta);
     }
 
     public static void setDefaultSkills(HeritageType heritageType, Player player) {
@@ -91,21 +131,5 @@ public class SkillUtils {
             case RRL -> stats.getSkillRRL();
             case PASSIVE -> stats.getPassive();
         };
-    }
-
-    public static void damage(LivingEntity livingEntity, double damage, Player damager) {
-        double pvpNerf = 0.35;
-
-        if (livingEntity instanceof Tameable) {
-            if (((Tameable) livingEntity).getOwner() != null) {
-                return;
-            }
-        }
-
-        if (livingEntity instanceof Player) {
-            livingEntity.damage(damage * pvpNerf, damager);
-        } else {
-            livingEntity.damage(damage, damager);
-        }
     }
 }

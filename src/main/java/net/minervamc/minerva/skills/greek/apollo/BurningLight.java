@@ -6,7 +6,6 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -28,8 +27,7 @@ public class BurningLight extends Skill {
         long durationMillis = 50 * maxTicks;
         long cooldown = durationMillis + 9000;
         double distanceThrown = 15;
-        int fireTicks = 40;
-        int damage = 100;
+        int damage = 4;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "burningLight")) {
             onCooldown(player);
@@ -60,13 +58,12 @@ public class BurningLight extends Skill {
 
                 for (Entity entity : sphereLoc.getNearbyEntities(radius, radius, radius)) {
                     if (entity instanceof LivingEntity livingEntity && entity != player && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                        SkillUtils.damage(livingEntity, damage, player);
-                        livingEntity.setFireTicks(Math.min(livingEntity.getFireTicks() + fireTicks, livingEntity.getMaxFireTicks()));
+                        damage(livingEntity, damage, player);
                     }
                 }
 
                 int i = 0;
-                for (Vector point : ParticleUtils.getSpherePoints(radius, 5)) {
+                for (Vector point : ParticleUtils.getSpherePoints(radius, 3)) {
                     i++;
                     Location particleLocation = sphereLoc.clone().add(point);
                     particleLocation.getWorld().spawnParticle(Particle.DUST, particleLocation, 1, 0, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(184, 134, 11), 2));
@@ -89,6 +86,6 @@ public class BurningLight extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.RAW_GOLD), ChatColor.BOLD + "" + ChatColor.GOLD + "Burning Light", ChatColor.GRAY + "Summon a ball of light in front of you that follows your movements", ChatColor.GRAY + "and works like a makeshift shield, dealing massive", ChatColor.GRAY + "damage to those who step in it.");
+        return ItemUtils.getItem(new ItemStack(Material.RAW_GOLD), ChatColor.GOLD + "" + ChatColor.BOLD + "[Burning Light]", ChatColor.GRAY + "Summon a ball of light in front", ChatColor.GRAY + "of you that follows your movements", ChatColor.GRAY + "and works like a makeshift", ChatColor.GRAY + "shield, dealing massive", ChatColor.GRAY + "damage to those who step in it.");
     }
 }

@@ -8,7 +8,6 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -74,9 +73,9 @@ public class UmbrakinesisHades extends Skill {
             default -> {
                 cooldown = 8000;
                 distance = 10;
-                damage = 100;
-                kb = ThreadLocalRandom.current().nextDouble(0.3, 0.5);
-                intervalBetweenTriggers = 10L;
+                damage = 8;
+                kb = 0.5;
+                intervalBetweenTriggers = 15L;
                 maxTriggers = 4;
                 velocityMultiplier = 2;
             }
@@ -140,17 +139,17 @@ public class UmbrakinesisHades extends Skill {
                     player.getWorld().spawnParticle(Particle.FIREWORK, viewPos, 1, 0, 0, 0);
                     player.getWorld().spawnParticle(Particle.DUST, viewPos, 1, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(32, 32, 32), 2));
                     player.getWorld().spawnParticle(Particle.DUST, viewPos, 1, 0, 0, 0, new Particle.DustOptions(Color.fromRGB(40, 40, 40), 2));
+                    player.getWorld().spawnParticle(Particle.SMOKE, viewPos, 1, 0, 0, 0);
+                    player.getWorld().spawnParticle(Particle.LARGE_SMOKE, viewPos, 1, 0, 0, 0);
+                    player.getWorld().spawnParticle(Particle.GLOW, viewPos, 1, 0, 0, 0);
                     player.getWorld().spawnParticle(Particle.END_ROD, viewPos, 1, 0, 0, 0);
-                    double rX = range - x;
-                    double rY = range - y;
-                    double rZ = range - z;
-                    Collection<Entity> closebyMonsters = player.getWorld().getNearbyEntities(viewPos, rX, rY, rZ);
+                    Collection<Entity> closebyMonsters = viewPos.getNearbyEntities(1, 1, 1);
                     for (Entity closebyMonster : closebyMonsters) {
                         if (!(closebyMonster instanceof LivingEntity livingMonster) || (closebyMonster == player) || (closebyMonster instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
                             continue;
-                        SkillUtils.damage(livingMonster, damage, player);
+                        damage(livingMonster, damage, player);
                         Vector viewNormalized = (viewDir.normalize()).multiply(kb);
-                        livingMonster.setVelocity(viewNormalized);
+                        knockback(livingMonster, viewNormalized);
                     }
                     viewPos.subtract(x, y, z);
                 }
@@ -204,6 +203,6 @@ public class UmbrakinesisHades extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.BLACK_DYE), ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "[Umbrakinesis]", ChatColor.GRAY + "Manipulate the shadows beside you and turn them into shadowy tendrils", ChatColor.GRAY + "that attack enemies in front of you. You can cancel this ability by recasting", ChatColor.GRAY + "it before the final hit (the 4th one) to push off the ground using the shadowy tendrils to", ChatColor.GRAY + "fly in the direction that you are facing.");
+        return ItemUtils.getItem(new ItemStack(Material.BLACK_DYE), ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "[Umbrakinesis]", ChatColor.GRAY + "Manipulate the shadows beside you", ChatColor.GRAY + "and turn them into shadowy tendrils", ChatColor.GRAY + "that attack enemies in front of you. You", ChatColor.GRAY + "can cancel this ability by recasting", ChatColor.GRAY + "it before the final hit (the 4th one) to", ChatColor.GRAY + "push off the ground using the shadowy tendrils to", ChatColor.GRAY + "grapple in the direction that you are facing.");
     }
 }

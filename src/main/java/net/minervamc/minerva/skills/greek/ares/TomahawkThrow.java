@@ -7,9 +7,7 @@ import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -26,11 +24,11 @@ import org.joml.Matrix4f;
 public class TomahawkThrow extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-        double damage = 18;
+        double damage = 6;
         double speed = 20;
         int rotationSpeed = 2; // ticks per rotation
         double kb = 0.3;
-        long cooldown = 6000;
+        long cooldown = 3000;
         double distance = 10;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "tomahawk")) {
@@ -51,7 +49,7 @@ public class TomahawkThrow extends Skill {
         new BukkitRunnable() {
             int ticks = 0;
             float angle = 0; // Start angle for rotation
-            Location loc = display.getLocation();
+            final Location loc = display.getLocation();
 
             @Override
             public void run() {
@@ -80,10 +78,10 @@ public class TomahawkThrow extends Skill {
 
 
                 for (Entity entity : display.getWorld().getNearbyEntities(display.getLocation(), 1, 1, 1)) {
-                    if (!(entity instanceof LivingEntity livingMonster) || (entity == display) || (entity.getScoreboardTags().contains("aresSummoned")) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
+                    if (!(entity instanceof LivingEntity livingMonster) || (entity == display) || entity.getScoreboardTags().contains(player.getUniqueId().toString()) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
                         continue;
-                    SkillUtils.damage(livingMonster, damage, player);
-                    livingMonster.setVelocity(livingMonster.getVelocity().add(direction.clone().multiply(kb)));
+                    damage(livingMonster, damage, player, false, true);
+                    knockback(livingMonster, livingMonster.getVelocity().add(direction.clone().multiply(kb)));
                     display.getWorld().playSound(display.getLocation(), Sound.ENTITY_ITEM_BREAK, 1f, 0.5f);
                     display.remove();
                     this.cancel();
@@ -110,6 +108,6 @@ public class TomahawkThrow extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.IRON_AXE), ChatColor.BOLD + "" + ChatColor.RED + "Tomahawk Throw", ChatColor.GRAY + "You throw a tomahawk with all your might,", ChatColor.GRAY + "striking enemies in its path.");
+        return ItemUtils.getItem(new ItemStack(Material.IRON_AXE), ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "[Tomahawk Throw]", ChatColor.GRAY + "You throw a tomahawk with all your might,", ChatColor.GRAY + "striking enemies in its path.");
     }
 }

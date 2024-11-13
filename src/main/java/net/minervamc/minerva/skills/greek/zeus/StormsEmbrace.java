@@ -8,7 +8,6 @@ import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.FastUtils;
 import net.minervamc.minerva.utils.ItemUtils;
 import net.minervamc.minerva.utils.ParticleUtils;
-import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -36,7 +35,7 @@ public class StormsEmbrace extends Skill {
             case 2 -> {
                 maxEntitiesDamaged = 7;
                 radius = Math.sqrt(3); // Change the middle.
-                damage = 10;
+                damage = 5;
                 triggers = 30;
                 timeBetweenTriggers = 5;
                 cooldown = 9500;
@@ -68,10 +67,10 @@ public class StormsEmbrace extends Skill {
             default -> {
                 maxEntitiesDamaged = 5;
                 radius = Math.sqrt(3); // Change the middle.
-                damage = 90;
+                damage = 3;
                 triggers = 20;
                 timeBetweenTriggers = 5;
-                cooldown = 10000;
+                cooldown = 20000;
             }
         }
 
@@ -105,10 +104,10 @@ public class StormsEmbrace extends Skill {
 
                     if (finalParticle != null) {
                         branch(player, finalParticle, new Vector(0, -1, 0), 5, 3, damage);
-                        finalParticle.getWorld().playSound(finalParticle, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.3f, 1f);
+                        finalParticle.getWorld().playSound(finalParticle, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.1f, 1f);
                     }
 
-                    player.getLocation().getWorld().playSound(player.getLocation(), Sound.WEATHER_RAIN, 1f, 1f);
+                    player.getLocation().getWorld().playSound(player.getLocation(), Sound.WEATHER_RAIN, 0.2f, 1f);
 
                     if (triggersCompleted % 5 == 0) {
                         triggersCompleted++;
@@ -119,9 +118,9 @@ public class StormsEmbrace extends Skill {
                             if (entitiesHarmed > maxEntitiesDamaged) return;
 
                             if (entity instanceof LivingEntity livingEntity && livingEntity != player && !(livingEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
-                                SkillUtils.damage(livingEntity, damage, player);
-                                livingEntity.setVelocity(ParticleUtils.getDirection(player.getLocation(), livingEntity.getLocation()).multiply(0.1));
-                                stun(livingEntity, 4);
+                                damage(livingEntity, damage, player);
+                                knockback(livingEntity, ParticleUtils.getDirection(player.getLocation(), livingEntity.getLocation()).multiply(0.1));
+                                stun(player, livingEntity, 4);
                                 entitiesHarmed++;
                             }
                         }
@@ -177,6 +176,6 @@ public class StormsEmbrace extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.QUARTZ), ChatColor.GRAY + "" + ChatColor.BOLD + "[Storm's Embrace]", ChatColor.GRAY + "Summon a rain cloud that pours down a storm of lightning and rain upon your enemies", ChatColor.GRAY + "in a large radius, damaging them and stunning them.");
+        return ItemUtils.getItem(new ItemStack(Material.QUARTZ), ChatColor.GRAY + "" + ChatColor.BOLD + "[Storm's Embrace]", ChatColor.GRAY + "Summon a rain cloud that pours", ChatColor.GRAY + "down a storm of lightning and", ChatColor.GRAY + "rain upon your enemies in a", ChatColor.GRAY + "large radius, damaging them", ChatColor.GRAY + "and stunning them.");
     }
 }

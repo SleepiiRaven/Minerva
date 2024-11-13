@@ -189,6 +189,17 @@ public class ParticleUtils {
         return points;
     }
 
+    public static List<Vector> getCubicBezierPoints(Vector A, Vector B, Vector C, Vector D, double particles) {
+        List<Vector> points = new ArrayList<>();
+        for (double i = 0; i <= particles; i += 1) {
+            double t = i / particles;
+            double u = 1 - t;
+            Vector bezierPoint = A.clone().multiply(Math.pow(u, 3)).add(B.clone().multiply(3 * t * Math.pow(u, 2))).add(C.clone().multiply(3 * u * Math.pow(t, 2))).add(D.clone().multiply(Math.pow(t, 3)));
+            points.add(bezierPoint.clone());
+        }
+        return points;
+    }
+
     public static Vector rotateXAxis(Vector position, double degrees) {
         // Angle is negative, since:
         // This is 1:1 with Minecraft; -90 is up, 90 is down, 0 is straight ahead.

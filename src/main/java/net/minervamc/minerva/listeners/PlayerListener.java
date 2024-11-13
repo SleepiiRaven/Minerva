@@ -1,5 +1,7 @@
 package net.minervamc.minerva.listeners;
 
+import java.util.Arrays;
+import java.util.Objects;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.guis.AncestryGUI;
@@ -8,9 +10,11 @@ import net.minervamc.minerva.guis.MythicalCreaturesGUI;
 import net.minervamc.minerva.guis.RomanGodsGUI;
 import net.minervamc.minerva.guis.SkillsGUI;
 import net.minervamc.minerva.guis.TitansGUI;
+import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
-import net.minervamc.minerva.utils.ItemUtils;
+import net.minervamc.minerva.utils.SkillUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -24,6 +28,7 @@ import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class PlayerListener implements Listener {
     private final Minerva plugin = Minerva.getInstance();
@@ -34,13 +39,40 @@ public class PlayerListener implements Listener {
         Player p = e.getPlayer();
         cooldownManager.createContainer(p.getUniqueId());
         PlayerStats pData = PlayerStats.getStats(p.getUniqueId());
+        if (pData.getLogoutLoc() == null) {
+            pData.setLogoutLoc(p.getLocation());
+        } else {
+            p.teleport(pData.getLogoutLoc());
+        }
+
+        Bukkit.getLogger().info(String.valueOf(Arrays.stream(pData.getInventory()).allMatch(Objects::isNull)));
+        if (!Arrays.stream(pData.getInventory()).allMatch(Objects::isNull)) {
+            p.getInventory().setStorageContents(pData.getInventory());
+        }
+        if (!Arrays.stream(pData.getArmor()).allMatch(Objects::isNull)) {
+            p.getInventory().setArmorContents(pData.getArmor());
+        }
+        if (pData.getOffhand()[0] != null) {
+            p.getInventory().setItemInOffHand(pData.getOffhand()[0]);
+        }
+
+        pData.setInventory(new ItemStack[36]);
+        pData.setArmor(new ItemStack[4]);
+        pData.setOffhand(new ItemStack[1]);
         pData.save();
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
         Player p = e.getPlayer();
+        Minerva.runPermRemoveCommand(p, "venturechat.blueteamchat");
+        Minerva.runPermRemoveCommand(p, "venturechat.redteamchat");
         PlayerStats pData = PlayerStats.getStats(p.getUniqueId());
+        if (CaptureTheFlag.isPlaying() && CaptureTheFlag.isInGame(p)) {
+            pData.setLogoutLoc(CaptureTheFlag.getStartLoc().get(p.getUniqueId()));
+        } else {
+            pData.setLogoutLoc(p.getLocation());
+        }
         pData.save();
     }
 
@@ -51,8 +83,10 @@ public class PlayerListener implements Listener {
 
         if (playerStats.skillMode) {
             // PlayerInteractEvent doesn't work with LEFT_CLICK_BLOCK in adventure mode, so using this for that.
-            if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") || event.getAnimationType() != PlayerAnimationType.ARM_SWING || !ItemUtils.weapons.contains(player.getInventory().getItemInMainHand().getType()))
-                return;
+            if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") ||
+                event.getAnimationType() != PlayerAnimationType.ARM_SWING ||
+                !SkillUtils.isFocus(player.getInventory().getItemInMainHand()))
+                    return;
             long cooldown = 50;
 
             if (playerStats.skillTriggers.spellMode) {
@@ -73,7 +107,7 @@ public class PlayerListener implements Listener {
         PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
         Action action = event.getAction();
         if (playerStats.skillMode) {
-            if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") || !(action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) || !ItemUtils.weapons.contains(player.getInventory().getItemInMainHand().getType()))
+            if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") || !(action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) || !SkillUtils.isFocus(player.getInventory().getItemInMainHand()))
                 return;
             long cooldown = 50;
             cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);

@@ -26,6 +26,6 @@ public class HuntressAgility extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.FEATHER), ChatColor.BOLD + "" + ChatColor.GRAY + "[Huntress' Agility]", ChatColor.GRAY + "With a Huntress's speed and agility, run quicker while holding a bow.");
+        return ItemUtils.getItem(new ItemStack(Material.FEATHER), ChatColor.GRAY + "" + ChatColor.BOLD + "[Huntress' Agility]", ChatColor.GRAY + "With a Huntress's speed and agility,", ChatColor.GRAY + "run quicker while holding a bow.");
     }
 }

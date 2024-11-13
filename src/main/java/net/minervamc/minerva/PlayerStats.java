@@ -7,12 +7,16 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 import net.minervamc.minerva.skills.SkillTriggers;
 import net.minervamc.minerva.skills.Skills;
 import net.minervamc.minerva.types.HeritageType;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.JsonUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
 
 public class PlayerStats {
     private static final Path STORAGE_FOLDER = Minerva.getInstance().getDataFolder().toPath().resolve("PlayerData");
@@ -42,12 +46,17 @@ public class PlayerStats {
     private int maxLevel = 1;
     private int maxPoints = 0;
     private int points = 0;
+    @Setter @Getter private Location logoutLoc;
+    private ItemStack[] inventory = new ItemStack[36];
+    private ItemStack[] armor = new ItemStack[4];
+    private ItemStack[] offhand = new ItemStack[1];
     //endregion
 
     public PlayerStats(UUID uuid) {
         this.uuid = uuid;
         this.storage = STORAGE_FOLDER.resolve(uuid + ".json");
         this.skillTriggers = new SkillTriggers(Bukkit.getPlayer(uuid));
+        this.logoutLoc = Bukkit.getPlayer(uuid).getLocation();
     }
 
     //region JSON Stuff
@@ -70,11 +79,15 @@ public class PlayerStats {
             }
             playerStats.put(uuid, data);
         }
+        if (data == null) {
+            Minerva.getInstance().getSLF4JLogger().error("PlayerStats.java, somehow got past all the checks as null. UUID: " + uuid);
+        }
         return data;
     }
 
     public static void saveAll() {
         for (PlayerStats stats : playerStats.values()) {
+            stats.setLogoutLoc(Bukkit.getPlayer(stats.getUuid()).getLocation());
             stats.save();
         }
     }
@@ -90,7 +103,11 @@ public class PlayerStats {
 
     //region Setters
     public void setHeritage(HeritageType heritage) {
-        this.heritage = heritage;
+        if (heritage == null) {
+            this.heritage = HeritageType.NONE;
+        } else {
+            this.heritage = heritage;
+        }
     }
 
     public Skill getSkillRRR() {
@@ -98,7 +115,11 @@ public class PlayerStats {
     }
 
     public void setSkillRRR(Skill skillRRR) {
-        this.skillRRR = skillRRR;
+        if (skillRRR == null) {
+            this.skillRRR = Skills.DEFAULT;
+        } else {
+            this.skillRRR = skillRRR;
+        }
     }
 
     public Skill getSkillRLR() {
@@ -106,7 +127,11 @@ public class PlayerStats {
     }
 
     public void setSkillRLR(Skill skillRLR) {
-        this.skillRLR = skillRLR;
+        if (skillRLR == null) {
+            this.skillRLR = Skills.DEFAULT;
+        } else {
+            this.skillRLR = skillRLR;
+        }
     }
 
     public Skill getSkillRLL() {
@@ -114,7 +139,11 @@ public class PlayerStats {
     }
 
     public void setSkillRLL(Skill skillRLL) {
-        this.skillRLL = skillRLL;
+        if (skillRLL == null) {
+            this.skillRLL = Skills.DEFAULT;
+        } else {
+            this.skillRLL = skillRLL;
+        }
     }
 
     public Skill getSkillRRL() {
@@ -122,7 +151,11 @@ public class PlayerStats {
     }
 
     public void setSkillRRL(Skill skillRRL) {
-        this.skillRRL = skillRRL;
+        if (skillRRL == null) {
+            this.skillRRL = Skills.DEFAULT;
+        } else {
+            this.skillRRL = skillRRL;
+        }
     }
 
     public Skill getPassive() {
@@ -130,7 +163,11 @@ public class PlayerStats {
     }
 
     public void setPassive(Skill passive) {
-        this.passive = passive;
+        if (passive == null) {
+            this.passive = Skills.DEFAULT;
+        } else {
+            this.passive = passive;
+        }
     }
 
     public boolean getRRRActive() {
@@ -237,6 +274,42 @@ public class PlayerStats {
 
     public void setMaxPoints(int points) {
         maxPoints = points;
+    }
+
+    public ItemStack[] getInventory() {
+        return inventory;
+    }
+
+    public ItemStack[] getArmor() {
+        return armor;
+    }
+
+    public ItemStack[] getOffhand() {
+        return offhand;
+    }
+
+    public void setInventory(ItemStack[] inventory) {
+        if (inventory == null) {
+            this.inventory = new ItemStack[36];
+        } else {
+            this.inventory = inventory;
+        }
+    }
+
+    public void setArmor(ItemStack[] armor) {
+        if (armor == null) {
+            this.armor = new ItemStack[4];
+        } else {
+            this.armor = armor;
+        }
+    }
+
+    public void setOffhand(ItemStack[] offhand) {
+        if (offhand == null) {
+            this.offhand = new ItemStack[1];
+        } else {
+            this.offhand = offhand;
+        }
     }
 
     public void createJSON() throws IOException {

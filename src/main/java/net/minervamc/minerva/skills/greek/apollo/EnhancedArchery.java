@@ -93,6 +93,6 @@ public class EnhancedArchery extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemUtils.getItem(new ItemStack(Material.BOW), ChatColor.YELLOW + "" + ChatColor.BOLD + "[Enhanced Archery]", ChatColor.GRAY + "For a short time after casting this skill, your arrows home in on nearby enemies.");
+        return ItemUtils.getItem(new ItemStack(Material.BOW), ChatColor.YELLOW + "" + ChatColor.BOLD + "[Enhanced Archery]", ChatColor.GRAY + "For a short time after casting", ChatColor.GRAY + "this skill, your arrows", ChatColor.GRAY + "home in on nearby enemies.");
     }
 }
