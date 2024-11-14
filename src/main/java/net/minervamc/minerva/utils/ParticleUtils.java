@@ -65,6 +65,18 @@ public class ParticleUtils {
         return points;
     }
 
+    public static List<Vector> getCirclePoints(double radius, double particles) {
+        List<Vector> points = new ArrayList<>();
+        for (int d = 0; d < particles; d += 1) {
+            double angle = (2 * Math.PI * d) / particles;
+            // Cosine for X
+            Vector vector = new Vector(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
+            points.add(vector);
+        }
+
+        return points;
+    }
+
     public static List<Vector> getVerticalCirclePoints(double radius, float pitch, float yaw, int particles) {
         List<Vector> points = new ArrayList<>();
         for (int i = 0; i < particles; i++) {

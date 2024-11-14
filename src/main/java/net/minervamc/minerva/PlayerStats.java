@@ -50,6 +50,7 @@ public class PlayerStats {
     private ItemStack[] inventory = new ItemStack[36];
     private ItemStack[] armor = new ItemStack[4];
     private ItemStack[] offhand = new ItemStack[1];
+    @Setter @Getter private Map<String, Integer> stackingAbilities = new HashMap<>();
     //endregion
 
     public PlayerStats(UUID uuid) {

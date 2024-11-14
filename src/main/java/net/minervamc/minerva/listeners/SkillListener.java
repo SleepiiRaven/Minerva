@@ -52,12 +52,27 @@ public class SkillListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerKill(EntityDamageByEntityEvent event) {
+    public void onPlayerDamage(EntityDamageByEntityEvent event) {
+        if (!(event.getDamager() instanceof Player player)) {
+            return;
+        }
+        PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
+        Skill passive = stats.getPassive();
+        boolean passiveActive = stats.getPassiveActive();
+        if (passive == Skills.SMOLDER && passiveActive) {
+            int stacks = Skill.getStacks(player, "smolder");
+            if (stacks > 0) {
+                event.setDamage(event.getDamage() + event.getDamage() * 0.16 * Math.pow(stacks, 2));
+                Skill.stack(player, "smolder", -5, "Smolder", 0);
+            }
+        }
+
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (event.getEntity() instanceof LivingEntity entity && event.getDamager() instanceof Player player && entity.getHealth() == 0) {
-                    if (PlayerStats.getStats(player.getUniqueId()).getPassive() == Skills.LIFE_STEAL && PlayerStats.getStats(player.getUniqueId()).getPassiveActive()) {
+                // if it's a kill
+                if (event.getEntity() instanceof LivingEntity entity && entity.getHealth() == 0) {
+                    if (passive == Skills.LIFE_STEAL && PlayerStats.getStats(player.getUniqueId()).getPassiveActive()) {
                         // Hades'/Pluto's Life-steal ability
                         if (player.getHealth() > (player.getMaxHealth() - 1)) {
                             player.setHealth(player.getMaxHealth());
@@ -97,12 +112,17 @@ public class SkillListener implements Listener {
     @EventHandler
     public void onPlayerTakeDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player player) {
-            if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
-                if (PlayerStats.getStats(player.getUniqueId()).getPassive() == Skills.PROTECTIVE_CLOUD && PlayerStats.getStats(player.getUniqueId()).getPassiveActive()) {
+            PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
+            Skill passive = stats.getPassive();
+            boolean passiveActive = stats.getPassiveActive();
+            if (passive == Skills.SMOLDER && passiveActive && event.getDamageSource().getCausingEntity() != null) {
+                Skill.stack(player, "smolder", 1,  "Smolder", 5000);
+            } else if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
+                if (passive == Skills.PROTECTIVE_CLOUD && passiveActive) {
                     event.setCancelled(true);
                 }
             } else if (event.getCause() == EntityDamageEvent.DamageCause.POISON) {
-                if (PlayerStats.getStats(player.getUniqueId()).getPassive() == Skills.DRUNKEN_REVELRY && PlayerStats.getStats(player.getUniqueId()).getPassiveActive()) {
+                if (passive == Skills.DRUNKEN_REVELRY && passiveActive) {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 40, 0));
                     player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 40, 0));
                 }

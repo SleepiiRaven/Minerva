@@ -2,11 +2,14 @@ package net.minervamc.minerva.types;
 
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import java.util.Arrays;
+import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.Skills;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
+import net.minervamc.minerva.skills.greek.hephaestus.Smolder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -62,6 +65,11 @@ public abstract class Skill {
             case "cleave" -> Skills.CLEAVE;
             case "primalScream" -> Skills.PRIMAL_SCREAM;
             case "tomahawkThrow" -> Skills.TOMAHAWK_THROW;
+            case "imbuedChains" -> Skills.IMBUED_CHAINS;
+            case "livingForge" -> Skills.LIVING_FORGE;
+            case "magmatism" -> Skills.MAGMATISM;
+            case "shrapnelGrenade" -> Skills.SHRAPNEL_GRENADE;
+            case "smolder" -> Skills.SMOLDER;
             default -> Skills.DEFAULT;
         };
     }
@@ -222,5 +230,38 @@ public abstract class Skill {
         }
 
         entity.setVelocity(kb);
+    }
+
+    public static void stack(Player player, String ability, int increment, String abilityFormal, long timeUntilExpires) {
+        Map<String, Integer> stackingAbilities = PlayerStats.getStats(player.getUniqueId()).getStackingAbilities();
+        int newStacks = getStacks(player, ability) + increment;
+        int maxStack = switch (ability) {
+            case "smolder" -> ((Smolder) Skills.SMOLDER).stackSmolder(player, newStacks, timeUntilExpires);
+            default -> 99;
+        };
+        if (maxStack < newStacks) newStacks = maxStack;
+
+        if (newStacks <= 0) {
+            stackingAbilities.remove(ability);
+            Minerva.getInstance().getCdInstance().setCooldownFromNow(player.getUniqueId(), ability, 0L);
+            return;
+        }
+
+        stackingAbilities.put(ability, newStacks);
+        if (player.isOnline()) {
+            player.sendActionBar(ChatColor.YELLOW + abilityFormal + " stacks: " + newStacks);
+        }
+
+        Minerva.getInstance().getCdInstance().setCooldownFromNow(player.getUniqueId(), ability, timeUntilExpires);
+    }
+
+    public static int getStacks(Player player, String ability) {
+        Map<String, Integer> stackingAbilities = PlayerStats.getStats(player.getUniqueId()).getStackingAbilities();
+        if (Minerva.getInstance().getCdInstance().isCooldownDone(player.getUniqueId(), ability)) {
+            stackingAbilities.remove(ability);
+            return 0;
+        } else {
+            return stackingAbilities.getOrDefault(ability, 0);
+        }
     }
 }

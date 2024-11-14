@@ -110,6 +110,7 @@ public class SkillUtils {
                     setSkills(player, Skills.VINE_WHIP, Skills.GRAPE_SHOT, Skills.MAD_GODS_DRINK, Skills.FRENZIED_DANCE, Skills.DRUNKEN_REVELRY);
             case ARES, MARS ->
                     setSkills(player, Skills.SPIRITOFVENGEANCE, Skills.TOMAHAWK_THROW, Skills.CLEAVE, Skills.PRIMAL_SCREAM, Skills.ARES_BLESSING);
+            case HEPHAESTUS, VULCAN -> setSkills(player, Skills.SHRAPNEL_GRENADE, Skills.MAGMATISM, Skills.LIVING_FORGE, Skills.IMBUED_CHAINS, Skills.SMOLDER);
         }
     }
 
