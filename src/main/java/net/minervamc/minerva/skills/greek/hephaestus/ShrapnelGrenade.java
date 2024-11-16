@@ -121,7 +121,8 @@ public class ShrapnelGrenade extends Skill {
                         damage(livingMonster, dmgCurr, player);
                         double distance = display.getLocation().distance(livingMonster.getLocation());
                         knockback(livingMonster, ParticleUtils.getDirection(display.getLocation(), livingMonster.getLocation()).normalize().divide(new Vector(distance, distance, distance)).multiply(kb));
-                        if (damageEntity.getScoreboardTags().contains(player.getUniqueId().toString())) {
+                        if (damageEntity.getScoreboardTags().contains(player.getUniqueId().toString()) && getStacks(player, "smolder") > 0) {
+                            stack(player, "smolder", -1, "Smolder", 5000);
                             livingForgeExplosion(damageForge, kbForge, player, damageEntity, radius * 2);
                             damageEntity.remove();
                         }

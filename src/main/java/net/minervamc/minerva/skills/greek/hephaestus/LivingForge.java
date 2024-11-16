@@ -71,7 +71,7 @@ public class LivingForge extends Skill {
             public void run() {
                 if (ticks >= duration || !player.isOnline() || player.isDead()) {
                     if (ticks >= duration) {
-                        summonGolem(player, despawnTicks, init.getEyeLocation(), init.getFireTicks() > 0);
+                        summonGolem(player, despawnTicks, init.getEyeLocation(), (init.getFireTicks() > 0 && getStacks(player, "smolder") > 0));
                     }
                     this.cancel();
                     init.remove();
@@ -101,7 +101,10 @@ public class LivingForge extends Skill {
         IronGolem golem = (IronGolem) loc.getWorld().spawnEntity(loc, EntityType.IRON_GOLEM);
         golem.addScoreboardTag(player.getUniqueId().toString());
 
-        if (overheat) overheat(golem);
+        if (overheat) {
+            stack(player, "smolder", -1, "Smolder", 5000);
+            overheat(golem);
+        }
 
         new BukkitRunnable() {
             int ticks = 0;

@@ -65,7 +65,7 @@ public abstract class Skill {
             case "cleave" -> Skills.CLEAVE;
             case "primalScream" -> Skills.PRIMAL_SCREAM;
             case "tomahawkThrow" -> Skills.TOMAHAWK_THROW;
-            case "imbuedChains" -> Skills.IMBUED_CHAINS;
+            case "groundBreaker" -> Skills.GROUND_BREAKER;
             case "livingForge" -> Skills.LIVING_FORGE;
             case "magmatism" -> Skills.MAGMATISM;
             case "shrapnelGrenade" -> Skills.SHRAPNEL_GRENADE;
@@ -249,7 +249,7 @@ public abstract class Skill {
 
         stackingAbilities.put(ability, newStacks);
         if (player.isOnline()) {
-            player.sendActionBar(ChatColor.YELLOW + abilityFormal + " stacks: " + newStacks);
+            player.sendActionBar(ChatColor.YELLOW + abilityFormal + " Stacks: " + newStacks);
         }
 
         Minerva.getInstance().getCdInstance().setCooldownFromNow(player.getUniqueId(), ability, timeUntilExpires);

@@ -25,7 +25,7 @@ import net.minervamc.minerva.skills.greek.hades.LifeSteal;
 import net.minervamc.minerva.skills.greek.hades.ShadowTravel;
 import net.minervamc.minerva.skills.greek.hades.SkeletalHands;
 import net.minervamc.minerva.skills.greek.hades.UmbrakinesisHades;
-import net.minervamc.minerva.skills.greek.hephaestus.ImbuedChains;
+import net.minervamc.minerva.skills.greek.hephaestus.GroundBreaker;
 import net.minervamc.minerva.skills.greek.hephaestus.LivingForge;
 import net.minervamc.minerva.skills.greek.hephaestus.Magmatism;
 import net.minervamc.minerva.skills.greek.hephaestus.ShrapnelGrenade;
@@ -79,7 +79,7 @@ public interface Skills {
     Skill CLEAVE = new Cleave();
     Skill PRIMAL_SCREAM = new PrimalScream();
     Skill TOMAHAWK_THROW = new TomahawkThrow();
-    Skill IMBUED_CHAINS = new ImbuedChains();
+    Skill GROUND_BREAKER = new GroundBreaker();
     Skill LIVING_FORGE = new LivingForge();
     Skill MAGMATISM = new Magmatism();
     Skill SHRAPNEL_GRENADE = new ShrapnelGrenade();

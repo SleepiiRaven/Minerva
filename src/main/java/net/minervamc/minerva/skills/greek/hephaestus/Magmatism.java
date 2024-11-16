@@ -113,7 +113,8 @@ public class Magmatism extends Skill {
                             Vector knockback = target.getLocation().toVector().subtract(origin.toVector()).normalize().multiply(0.5);
                             target.setVelocity(knockback);
 
-                            if (target instanceof IronGolem && target.getScoreboardTags().contains(player.getUniqueId().toString())) {
+                            if (target instanceof IronGolem && target.getScoreboardTags().contains(player.getUniqueId().toString()) && getStacks(player, "smolder") > 0) {
+                                stack(player, "smolder", -1, "Smolder", 5000);
                                 LivingForge.overheat(target);
                             }
                         }

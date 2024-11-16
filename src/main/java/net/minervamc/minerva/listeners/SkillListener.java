@@ -62,7 +62,7 @@ public class SkillListener implements Listener {
         if (passive == Skills.SMOLDER && passiveActive) {
             int stacks = Skill.getStacks(player, "smolder");
             if (stacks > 0) {
-                event.setDamage(event.getDamage() + event.getDamage() * 0.16 * Math.pow(stacks, 2));
+                event.setDamage(event.getDamage() + event.getDamage() * 0.06 * Math.pow(stacks, 2));
                 Skill.stack(player, "smolder", -5, "Smolder", 0);
             }
         }
@@ -116,7 +116,9 @@ public class SkillListener implements Listener {
             Skill passive = stats.getPassive();
             boolean passiveActive = stats.getPassiveActive();
             if (passive == Skills.SMOLDER && passiveActive && event.getDamageSource().getCausingEntity() != null) {
-                Skill.stack(player, "smolder", 1,  "Smolder", 5000);
+                Skill.stack(player, "smolder", 1, "Smolder", 5000);
+            } else if (passive == Skills.SMOLDER && passiveActive && event.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK || event.getCause() == EntityDamageEvent.DamageCause.FIRE) {
+                Skill.stack(player, "smolder", 2, "Smolder", 5000);
             } else if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 if (passive == Skills.PROTECTIVE_CLOUD && passiveActive) {
                     event.setCancelled(true);
