@@ -13,6 +13,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
 import org.joml.Matrix4f;
 
 public class GroundBreaker extends Skill {
@@ -20,7 +22,7 @@ public class GroundBreaker extends Skill {
     public void cast(Player player, CooldownManager cooldownManager, int level) {
         double damageSmolderMultiplier = 4;
         boolean hasSmolder = (getStacks(player, "smolder") > 0);
-        int ticksToFall = 200;
+        int ticksToFall = 20;
         int initialHeight = 20;
         Color[] gradient = {
                 Color.fromRGB(79, 28, 13),
@@ -45,11 +47,25 @@ public class GroundBreaker extends Skill {
             return;
         }
 
+        RayTraceResult result = player.rayTraceBlocks(20);
+        Location loc;
+        if (result == null) return;
+        if (result.getHitBlock() == null) {
+            if (result.getHitEntity() == null) {
+                return;
+            }
+            loc = result.getHitEntity().getLocation();
+        } else {
+            loc = result.getHitBlock().getLocation();
+        }
+
         cooldownManager.setCooldownFromNow(player.getUniqueId(), "groundBreaker", cooldown);
         cooldownAlarm(player, cooldown, "Ground Breaker");
 
-        Location loc = player.getLocation();
-        BlockDisplay anvil = (BlockDisplay) player.getWorld().spawnEntity(loc.add(0, initialHeight, 0), EntityType.BLOCK_DISPLAY);
+
+        loc.setDirection(new Vector(1, 0, 0)).add(-2.5, 0, 2.5);
+
+        BlockDisplay anvil = (BlockDisplay) player.getWorld().spawnEntity(loc.clone().add(0, initialHeight, 0), EntityType.BLOCK_DISPLAY);
         anvil.setBlock(Bukkit.createBlockData(Material.ANVIL));
         anvil.setTransformationMatrix(new Matrix4f().identity().scale(5, 5, 5));
 
@@ -59,12 +75,11 @@ public class GroundBreaker extends Skill {
             public void run() {
                 Location tpLoc = anvil.getLocation().subtract(0, ((double) initialHeight)/ticksToFall, 0);
                 anvil.teleport(tpLoc);
-                if (tpLoc.equals(loc)) {
+                if (Math.abs(tpLoc.getY() - loc.getY()) < 0.01) {
                     hitInitLoc = true;
                 }
 
-                if (tpLoc.getBlock().getType().isSolid() && hitInitLoc) {
-                    player.sendMessage("Hit GROUND");
+                if (tpLoc.clone().add(-2.5, -1, 2.5).getBlock().getType().isSolid() && hitInitLoc) {
                     this.cancel();
                     return;
                 }
