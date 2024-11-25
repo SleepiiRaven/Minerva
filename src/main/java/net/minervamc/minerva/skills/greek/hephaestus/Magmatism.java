@@ -137,7 +137,7 @@ public class Magmatism extends Skill {
                         } else if (entity instanceof LivingEntity && entity != player) {
                             LivingEntity target = (LivingEntity) entity;
                             target.setFireTicks(fireTicks);  // Set target on fire
-                            target.damage(damage, player);  // Deal 4 damage
+                            damage(target, damage, player);  // Deal 4 damage
                             Vector knockback = target.getLocation().toVector().subtract(origin.toVector()).normalize().multiply(0.5);
                             target.setVelocity(knockback);
 

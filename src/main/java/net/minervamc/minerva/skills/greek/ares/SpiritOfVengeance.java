@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
+import net.minervamc.minerva.listeners.CombatListener;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
@@ -143,7 +144,8 @@ public class SpiritOfVengeance extends Skill {
                                 }
                                 continue;
                             }
-                            monster.setTarget(potentialTarget);
+                            if (CombatListener.isInCombatOrHostile(player, potentialTarget))
+                                monster.setTarget(potentialTarget);
                         }
                     }
                 }
@@ -176,6 +178,7 @@ public class SpiritOfVengeance extends Skill {
 
         Vindicator pillager = (Vindicator) loc.getWorld().spawnEntity(pillagerLocation.setDirection(pillagerDirection), EntityType.VINDICATOR);
         pillager.addScoreboardTag("aresSummoned");
+        PlayerStats.getSummoned().get(player).add(pillager);
         pillager.addScoreboardTag(player.getUniqueId().toString());
         pillager.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, (int) (pillagerDespawnTicks * 5), 0));
         return pillager;

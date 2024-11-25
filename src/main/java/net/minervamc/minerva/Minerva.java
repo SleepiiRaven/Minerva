@@ -10,6 +10,7 @@ import net.minervamc.minerva.commands.SkillModeToggle;
 import net.minervamc.minerva.commands.SkillsCommand;
 import net.minervamc.minerva.commands.UnfocusCommand;
 import net.minervamc.minerva.lib.Lib;
+import net.minervamc.minerva.listeners.CombatListener;
 import net.minervamc.minerva.listeners.CtfListener;
 import net.minervamc.minerva.listeners.PlayerListener;
 import net.minervamc.minerva.listeners.RegionListener;
@@ -78,6 +79,7 @@ public final class Minerva extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new SkillListener(), this);
         getServer().getPluginManager().registerEvents(new CtfListener(), this);
+        getServer().getPluginManager().registerEvents(new CombatListener(), this);
     }
 
     public void registerCommands() {

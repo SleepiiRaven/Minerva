@@ -5,6 +5,8 @@ import java.util.Random;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.lib.util.ItemCreator;
+import net.minervamc.minerva.listeners.CombatListener;
+import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ParticleUtils;
@@ -14,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.LivingEntity;
@@ -131,13 +134,19 @@ public class LivingForge extends Skill {
                     }
                 }
 
-//                if (!(golem.getTarget() instanceof LivingEntity) || golem.getTarget() == player || golem.getTarget().isDead()) {
-//                    for (Entity e : golem.getLocation().getNearbyEntities(20, 20, 20)) {
-//                        if (e instanceof LivingEntity livingEntity && e != golem && e != player && !(e instanceof Player pTarget && Party.isPlayerInPlayerParty(player, pTarget)) && (livingEntity.getTargetEntity(30) != null || livingEntity instanceof Player && livingEntity.getWorld().getPVP())) {
-//                            golem.setTarget(livingEntity);
-//                        }
-//                    }
-//                }
+                if (golem.getTarget() == null || golem.getTarget() == player || golem.getTarget().isDead()) {
+                    for (Entity e : golem.getLocation().getNearbyEntities(20, 20, 20)) {
+                        if (e instanceof LivingEntity livingEntity
+                                && e != golem
+                                && e != player
+                                && !(e instanceof Player pTarget
+                                    && (Party.isPlayerInPlayerParty(player, pTarget)
+                                        || pTarget.getWorld().getPVP()))
+                                && CombatListener.isInCombatOrHostile(player, livingEntity)) {
+                            golem.setTarget(livingEntity);
+                        }
+                    }
+                }
                 ticks++;
             }
         }.runTaskTimer(Minerva.getInstance(), 0L, 1L);

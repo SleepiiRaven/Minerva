@@ -19,6 +19,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -161,8 +162,9 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void playerDamagePlayer(EntityDamageByEntityEvent event) {
+        if (event.getDamager() == event.getEntity()) return;
         if (event.getDamager() instanceof Player damager && event.getEntity() instanceof Player player) {
             if (Party.isPlayerInPlayerParty(damager, player)) event.setCancelled(true);
         }

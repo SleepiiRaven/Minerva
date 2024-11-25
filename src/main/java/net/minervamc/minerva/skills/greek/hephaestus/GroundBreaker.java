@@ -170,7 +170,7 @@ public class GroundBreaker extends Skill {
                     for (Entity entity : location.getNearbyEntities(2.5, 2.5, 2.5)) {
                         if (!(entity instanceof LivingEntity livingMonster) || (entity == player) || (entity == anvil) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)) || PlayerStats.isSummoned(player, entity))
                             continue;
-                        livingMonster.damage(damage);
+                        damage(livingMonster, damage, player);
                         stun(player, livingMonster, stunTicks);
                         if (hasSmolder) livingMonster.setFireTicks(fireTicks);
                     }

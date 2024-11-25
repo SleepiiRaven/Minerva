@@ -29,12 +29,15 @@ public class ShrapnelGrenade extends Skill {
         double damage = 4;
         double speed = 30;
         int rotationSpeed = 2; // ticks per rotation
-        double kb = 2;
+        double baseKnockback = 1.5;
+        double baseKnockbackForge = 3.0;
+        double airKnockbackMultiplier = 1.8;
+        double knockbackFalloff = 0.5;
+
         long cooldown = 9000;
         double distance = 10;
         int radius = 3;
         double damageForge = 14;
-        double kbForge = 3;
         Color[] colors = {
               Color.fromRGB(223,184,119),
               Color.fromRGB(231,165,58),
@@ -73,9 +76,18 @@ public class ShrapnelGrenade extends Skill {
                         double dmgCurr = (livingMonster == player) ? damage/4 : damage;
                         damage(livingMonster, dmgCurr, player);
                         double distance = display.getLocation().distance(livingMonster.getLocation());
-                        knockback(livingMonster, ParticleUtils.getDirection(display.getLocation(), livingMonster.getLocation()).normalize().divide(new Vector(distance, distance, distance)).multiply(kb));
+
+                        Vector knockbackForce = ParticleUtils.getDirection(display.getLocation(), livingMonster.getLocation())
+                                .normalize()
+                                .multiply(baseKnockback)
+                                .multiply(livingMonster.isOnGround() ? 1 : airKnockbackMultiplier)
+                                .divide(new Vector(Math.pow(distance + knockbackFalloff, 2), Math.pow(distance + knockbackFalloff, 2), Math.pow(distance + knockbackFalloff, 2)));
+
+
+                        knockback(livingMonster, livingMonster.getVelocity().add(knockbackForce));
+
                         if (PlayerStats.isSummoned(player, damageEntity) && damageEntity.getScoreboardTags().contains("livingForge")) {
-                            livingForgeExplosion(damageForge, kbForge, player, damageEntity, radius * 2);
+                            livingForgeExplosion(damageForge, baseKnockbackForge, airKnockbackMultiplier, knockbackFalloff, player, damageEntity, radius * 2);
                             damageEntity.remove();
                         }
                     }
@@ -121,9 +133,19 @@ public class ShrapnelGrenade extends Skill {
                         double dmgCurr = (livingMonster == player) ? damage/4 : damage;
                         damage(livingMonster, dmgCurr, player);
                         double distance = display.getLocation().distance(livingMonster.getLocation());
-                        knockback(livingMonster, ParticleUtils.getDirection(display.getLocation(), livingMonster.getLocation()).normalize().divide(new Vector(distance, distance, distance)).multiply(kb));
+
+                        Vector knockbackForce = ParticleUtils.getDirection(display.getLocation(), livingMonster.getLocation())
+                                .normalize()
+                                .multiply(baseKnockback)
+                                .multiply(livingMonster.isOnGround() ? 1 : airKnockbackMultiplier)
+                                .divide(new Vector(Math.pow(distance + knockbackFalloff, 2), Math.pow(distance + knockbackFalloff, 2), Math.pow(distance + knockbackFalloff, 2)));
+
+
+                        knockback(livingMonster, livingMonster.getVelocity().add(knockbackForce));
+                        //knockback(livingMonster, ParticleUtils.getDirection(display.getLocation(), livingMonster.getLocation()).normalize().divide(new Vector(distance, distance, distance)).multiply(kb));
+
                         if (PlayerStats.isSummoned(player, damageEntity) && damageEntity.getScoreboardTags().contains("livingForge")) {
-                            livingForgeExplosion(damageForge, kbForge, player, damageEntity, radius * 2);
+                            livingForgeExplosion(damageForge, baseKnockbackForge, airKnockbackMultiplier, knockbackFalloff, player, damageEntity, radius * 2);
                             damageEntity.remove();
                         }
                     }
@@ -150,7 +172,7 @@ public class ShrapnelGrenade extends Skill {
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_TRIAL_SPAWNER_BREAK, 1f, 0.9f);
     }
 
-    private void livingForgeExplosion(double damage, double kb, Player player, Entity entity, int radius) {
+    private void livingForgeExplosion(double damage, double baseKnockback, double airKnockbackMultiplier, double knockbackFalloff, Player player, Entity entity, int radius) {
         for (Entity damageEntity : entity.getWorld().getNearbyEntities(entity.getLocation(), radius, radius, radius)) {
             if (!(damageEntity instanceof LivingEntity livingMonster) || (damageEntity == entity) || (damageEntity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
                 continue;
@@ -158,7 +180,12 @@ public class ShrapnelGrenade extends Skill {
             double dmgCurr = (livingMonster == player) ? damage/4 : damage;
             damage(livingMonster, dmgCurr, player);
             double distance = entity.getLocation().distance(livingMonster.getLocation());
-            knockback(livingMonster, ParticleUtils.getDirection(entity.getLocation(), livingMonster.getLocation()).normalize().divide(new Vector(distance, distance, distance)).multiply(kb));
+            Vector knockbackForce = ParticleUtils.getDirection(entity.getLocation(), livingMonster.getLocation())
+                    .normalize()
+                    .multiply(baseKnockback)
+                    .multiply(livingMonster.isOnGround() ? 1 : airKnockbackMultiplier)
+                    .divide(new Vector(Math.pow(distance + knockbackFalloff, 2), Math.pow(distance + knockbackFalloff, 2), Math.pow(distance + knockbackFalloff, 2)));
+            knockback(livingMonster, livingMonster.getVelocity().add(knockbackForce));
         }
 
         entity.getWorld().spawnParticle(Particle.LARGE_SMOKE, entity.getLocation(), 100, 0, 0, 0, 0.4);

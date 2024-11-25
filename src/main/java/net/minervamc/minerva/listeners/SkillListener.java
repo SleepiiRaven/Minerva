@@ -27,6 +27,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.SpectralArrow;
 import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -63,12 +64,13 @@ public class SkillListener implements Listener {
         if (event.getEntity().hasMetadata("NPC") && event.getEntity().getScoreboardTags().contains("mirrorImage")) {
             Entity entity = event.getEntity();
             if (event.getDamager() instanceof Player player && PlayerStats.isSummoned(player, entity)) {
+                event.setCancelled(true);
+                return;
+            } else {
                 Location loc = entity.getLocation();
                 String name = entity.getName();
                 entity.remove();
                 MirrorImage.explode(loc, Bukkit.getPlayer(name));
-            } else {
-                event.setCancelled(true);
             }
         }
 
@@ -130,7 +132,7 @@ public class SkillListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerTakeDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player player) {
             if (player.hasMetadata("NPC")) {
@@ -144,7 +146,7 @@ public class SkillListener implements Listener {
             PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
             Skill passive = stats.getPassive();
             boolean passiveActive = stats.getPassiveActive();
-            if (passive == Skills.SMOLDER && passiveActive && event.getDamageSource().getCausingEntity() != null) {
+            if (event.getFinalDamage() > 0.1 && passive == Skills.SMOLDER && passiveActive && event.getDamageSource().getCausingEntity() != null && event.getDamageSource().getCausingEntity() != event.getEntity()) {
                 Skill.stack(player, "smolder", 1, "Smolder", 5000);
             } else if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 if (passive == Skills.PROTECTIVE_CLOUD && passiveActive) {
@@ -293,9 +295,8 @@ public class SkillListener implements Listener {
 
     @EventHandler
     public void onTargetEntity(EntityTargetLivingEntityEvent event) {
-        if (event.getTarget() instanceof Player player && PlayerStats.isSummoned(player, event.getEntity())) {
+        if (event.getTarget() instanceof Player player && PlayerStats.isSummoned(player, event.getEntity()))
             event.setCancelled(true);
-        }
         if (PlayerStats.whoSummonedMe(event.getEntity()) != null) {
             if (!(event.getTarget() instanceof LivingEntity potentialTarget) || (potentialTarget instanceof Tameable && ((Tameable) potentialTarget).getOwner() != null)) {
                 event.setCancelled(true);
