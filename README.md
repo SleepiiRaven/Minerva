@@ -27,14 +27,7 @@ Minerva is a Minecraft server with inspirations from the Percy Jackson books as 
 * A capture the flag minigame coming soon
 
 ## Requirements
-The application can be run locally or in a docker container, the requirements for each setup are listed below.
-
-
-### EGO
-A running instance of [EGO](https://github.com/overture-stack/ego/) is required to generate the Authorization tokens and to provide the verification key.
-
-[EGO](https://github.com/overture-stack/ego/) can be cloned and run locally if no public server is available. 
-
+No releases of the plugin will be made publicly. If one wants to download the plugin for themselves, PLEASE contact "sleepingraven" on discord, and the plugin must be compiled first. The requirements to compile and run Minerva are as follows:
 
 ### Local
 * Java 21 SDK
@@ -42,4 +35,4 @@ A running instance of [EGO](https://github.com/overture-stack/ego/) is required 
 
 
 ### Server
-* Paper server in 1.21.1
+* Paper server in 1.20.6
