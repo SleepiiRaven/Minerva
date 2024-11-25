@@ -126,7 +126,7 @@ public class CaptureTheFlag extends Minigame {
             }
             p.sendActionBar(Component.text(player.getName() + " joined the queue!", NamedTextColor.GREEN));
         });
-        if(queue.size() > 4) start();
+        if(queue.size() >= 4) start();
 
         if (scoreboardUpdater == null) {
             scoreboardUpdater = new BukkitRunnable() {
