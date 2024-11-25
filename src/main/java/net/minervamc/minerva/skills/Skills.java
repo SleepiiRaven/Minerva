@@ -1,5 +1,10 @@
 package net.minervamc.minerva.skills;
 
+import net.minervamc.minerva.skills.greek.aphrodite.Bittersweet;
+import net.minervamc.minerva.skills.greek.aphrodite.BlindingLove;
+import net.minervamc.minerva.skills.greek.aphrodite.Charm;
+import net.minervamc.minerva.skills.greek.aphrodite.Heartbreak;
+import net.minervamc.minerva.skills.greek.aphrodite.MirrorImage;
 import net.minervamc.minerva.skills.greek.apollo.ApollosHymn;
 import net.minervamc.minerva.skills.greek.apollo.ArrowsOfTheSun;
 import net.minervamc.minerva.skills.greek.apollo.BurningLight;
@@ -84,5 +89,10 @@ public interface Skills {
     Skill MAGMATISM = new Magmatism();
     Skill SHRAPNEL_GRENADE = new ShrapnelGrenade();
     Skill SMOLDER = new Smolder();
+    Skill BLINDING_LOVE = new BlindingLove();
+    Skill CHARM = new Charm();
+    Skill HEARTBREAK = new Heartbreak();
+    Skill MIRROR_IMAGE = new MirrorImage();
+    Skill BITTERSWEET = new Bittersweet();
     Skill DEFAULT = new DefaultSkill();
 }

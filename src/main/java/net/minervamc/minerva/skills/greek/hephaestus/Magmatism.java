@@ -3,6 +3,7 @@ package net.minervamc.minerva.skills.greek.hephaestus;
 import java.util.ArrayList;
 import java.util.List;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
@@ -12,7 +13,6 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.LivingEntity;
@@ -40,20 +40,17 @@ public class Magmatism extends Skill {
         cooldownManager.setCooldownFromNow(player.getUniqueId(), "magmatism", cooldown);
         cooldownAlarm(player, cooldown, "Magmatism");
 
-        // Initialize display entities in a circular pattern
         List<ArmorStand> magmaChunks = new ArrayList<>();
-        int numberOfChunks = 16;  // More chunks for a more complete circle
+        int numberOfChunks = 16;
 
         for (int i = 0; i < numberOfChunks; i++) {
             double angle = i * (2 * Math.PI / numberOfChunks);
             Location spawnLoc = origin.clone().add(Math.cos(angle), 0, Math.sin(angle));
             ArmorStand displayEntity = (ArmorStand) world.spawnEntity(spawnLoc, EntityType.ARMOR_STAND);
 
-            // Armor stand customization for magma visual
             displayEntity.setInvisible(true);
             displayEntity.setInvulnerable(true);
 
-            // Use magma block as display item
             displayEntity.getEquipment().setHelmet(new ItemStack(Material.MAGMA_BLOCK));
             displayEntity.addScoreboardTag("magmaChunk");
             magmaChunks.add(displayEntity);
@@ -62,6 +59,7 @@ public class Magmatism extends Skill {
         // Schedule the movement and interaction logic
         new BukkitRunnable() {
             int ticks = 0;
+            List<ArmorStand> toRemove = new ArrayList<>();
 
             @Override
             public void run() {
@@ -76,6 +74,27 @@ public class Magmatism extends Skill {
                     return;
                 }
 
+                for (ArmorStand a : toRemove) {
+                    World wrld = a.getWorld();
+                    Location locA = a.getLocation().add(0, 2, 0);
+
+                    wrld.spawnParticle(Particle.LARGE_SMOKE, locA, 5, 0, 0, 0, 0.2);
+                    wrld.spawnParticle(Particle.LAVA, locA, 5, 0, 0, 0, 0.3);
+                    wrld.spawnParticle(Particle.EXPLOSION, locA, 1, 0, 0, 0, 0.1);
+                    wrld.spawnParticle(Particle.FIREWORK, locA, 5, 0, 0, 0, 0.2);
+                    wrld.spawnParticle(Particle.FLAME, locA, 10, 0, 0, 0, 0.2);
+                    magmaChunks.remove(a);
+                    a.remove();
+                }
+
+                toRemove.clear();
+
+                for (ArmorStand a : magmaChunks) {
+                    if (a.isOnGround() && ticks >= 5) {
+                        toRemove.add(a);
+                    }
+                }
+
                 if (ticks++ <= 5) {
                     return;
                 } else if (ticks == 6) {
@@ -85,7 +104,16 @@ public class Magmatism extends Skill {
                 }
 
                 if (ticks++ > duration) {
-                    magmaChunks.forEach(Entity::remove);
+                    magmaChunks.forEach((a) -> {
+                        World wrld = a.getWorld();
+                        Location locA = a.getLocation().add(0, 2, 0);
+                        wrld.spawnParticle(Particle.LARGE_SMOKE, locA, 5, 0, 0, 0, 0.2);
+                        wrld.spawnParticle(Particle.LAVA, locA, 5, 0, 0, 0, 0.3);
+                        wrld.spawnParticle(Particle.EXPLOSION, locA, 1, 0, 0, 0, 0.1);
+                        wrld.spawnParticle(Particle.FIREWORK, locA, 5, 0, 0, 0, 0.2);
+                        wrld.spawnParticle(Particle.FLAME, locA, 10, 0, 0, 0, 0.2);
+                        a.remove();
+                    });
                     cancel();
                     return;
                 }
@@ -113,8 +141,7 @@ public class Magmatism extends Skill {
                             Vector knockback = target.getLocation().toVector().subtract(origin.toVector()).normalize().multiply(0.5);
                             target.setVelocity(knockback);
 
-                            if (target instanceof IronGolem && target.getScoreboardTags().contains(player.getUniqueId().toString()) && getStacks(player, "smolder") > 0) {
-                                stack(player, "smolder", -1, "Smolder", 5000);
+                            if (target instanceof IronGolem && target.getScoreboardTags().contains("livingForge") && PlayerStats.isSummoned(player, target)) {
                                 LivingForge.overheat(target);
                             }
                         }

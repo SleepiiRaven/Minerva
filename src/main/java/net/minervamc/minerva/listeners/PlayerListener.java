@@ -34,9 +34,28 @@ public class PlayerListener implements Listener {
     private final Minerva plugin = Minerva.getInstance();
     CooldownManager cooldownManager = plugin.getCdInstance();
 
+    // public static Map<Player, NPC> npcs = new HashMap<>();
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
+
+        if (p.hasMetadata("NPC")) return;
+
+        // This will not be implemented until Aphrodite is released.
+//        // INITIALIZE NPC WITH PLAYER'S SKIN FOR QUICK LOADING
+//        NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, p.getName());
+//        npc.getOrAddTrait(SkinTrait.class).setSkinName(p.getName());
+//        npc.getOrAddTrait(SkinTrait.class).setShouldUpdateSkins(true);
+//        npc.spawn(p.getLocation());
+//        new BukkitRunnable() {
+//            @Override
+//            public void run() {
+//                npc.despawn();
+//            }
+//        }.runTaskLater(Minerva.getInstance(), 20L);
+//        npcs.put(p, npc);
+
         cooldownManager.createContainer(p.getUniqueId());
         PlayerStats pData = PlayerStats.getStats(p.getUniqueId());
         if (pData.getLogoutLoc() == null) {
@@ -65,6 +84,8 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
         Player p = e.getPlayer();
+        if (p.hasMetadata("NPC")) return;
+
         Minerva.runPermRemoveCommand(p, "venturechat.blueteamchat");
         Minerva.runPermRemoveCommand(p, "venturechat.redteamchat");
         PlayerStats pData = PlayerStats.getStats(p.getUniqueId());
@@ -79,6 +100,9 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void playerLeftClick(PlayerAnimationEvent event) {
         Player player = event.getPlayer();
+
+        if (player.hasMetadata("NPC")) return;
+
         PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
 
         if (playerStats.skillMode) {
@@ -104,6 +128,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void playerRightClick(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+        if (player.hasMetadata("NPC")) return;
         PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
         Action action = event.getAction();
         if (playerStats.skillMode) {

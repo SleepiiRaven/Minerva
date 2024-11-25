@@ -70,6 +70,11 @@ public abstract class Skill {
             case "magmatism" -> Skills.MAGMATISM;
             case "shrapnelGrenade" -> Skills.SHRAPNEL_GRENADE;
             case "smolder" -> Skills.SMOLDER;
+            case "bittersweet" -> Skills.BITTERSWEET;
+            case "charm" -> Skills.CHARM;
+            case "blindingLove" -> Skills.BLINDING_LOVE;
+            case "mirrorImage" -> Skills.MIRROR_IMAGE;
+            case "heartbreak" -> Skills.HEARTBREAK;
             default -> Skills.DEFAULT;
         };
     }
@@ -97,6 +102,8 @@ public abstract class Skill {
     }
 
     public static void stun(Player inflictor, Entity entity, long stunTicks) {
+        if (entity.hasMetadata("NPC")) return;
+
         Location tpLoc = entity.getLocation();
 
         if (entity instanceof Player player && Party.isPlayerInPlayerParty(inflictor, player)) {
@@ -127,6 +134,7 @@ public abstract class Skill {
     public abstract ItemStack getItem();
 
     public static void damage(LivingEntity livingEntity, double damage, Player damager) {
+        if (livingEntity.hasMetadata("NPC")) return;
         if (livingEntity instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE)) {
             return;
         }
@@ -172,6 +180,8 @@ public abstract class Skill {
     }
 
     public static void damage(LivingEntity livingEntity, double damage, Player damager, boolean ignoreInvulnTicks, boolean addStr) {
+        if (livingEntity.hasMetadata("NPC")) return;
+
         if (livingEntity instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE)) {
             return;
         }
@@ -196,7 +206,7 @@ public abstract class Skill {
             magicResist = MMOPlayerData.get(livingEntity.getUniqueId()).getStatMap().getStat("MAGIC_DAMAGE_REDUCTION");
         }
 
-        if (damager.hasPotionEffect(PotionEffectType.STRENGTH)) {
+        if (damager.hasPotionEffect(PotionEffectType.STRENGTH) && addStr) {
             damage += 3 * (damager.getPotionEffect(PotionEffectType.STRENGTH).getAmplifier() + 1);
         }
 
@@ -221,6 +231,8 @@ public abstract class Skill {
     }
 
     public static void knockback(Entity entity, Vector kb) {
+        if (entity.hasMetadata("NPC")) return;
+
         if (entity instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE)) {
             return;
         }
@@ -233,6 +245,7 @@ public abstract class Skill {
     }
 
     public static void stack(Player player, String ability, int increment, String abilityFormal, long timeUntilExpires) {
+        if (player.hasMetadata("NPC")) return;
         Map<String, Integer> stackingAbilities = PlayerStats.getStats(player.getUniqueId()).getStackingAbilities();
         int newStacks = getStacks(player, ability) + increment;
         int maxStack = switch (ability) {
@@ -256,6 +269,7 @@ public abstract class Skill {
     }
 
     public static int getStacks(Player player, String ability) {
+        if (player.hasMetadata("NPC")) return 0;
         Map<String, Integer> stackingAbilities = PlayerStats.getStats(player.getUniqueId()).getStackingAbilities();
         if (Minerva.getInstance().getCdInstance().isCooldownDone(player.getUniqueId(), ability)) {
             stackingAbilities.remove(ability);

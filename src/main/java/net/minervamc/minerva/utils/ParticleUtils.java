@@ -2,10 +2,15 @@ package net.minervamc.minerva.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.util.Vector;
 
 public class ParticleUtils {
+    private static Random random = new Random();
+
     public static List<Vector> getStarPoints(int vertices, double starSize, double starHeaviness, int interpolationCount) {
         Vector[] polygonVertices = new Vector[2 * vertices];
 
@@ -41,6 +46,11 @@ public class ParticleUtils {
         }
 
         return points;
+    }
+
+    public static Particle.DustOptions getDustOptionsFromGradient(Color[] colors, float size) {
+        int index = random.nextInt(0, colors.length - 1);
+        return new Particle.DustOptions(colors[index], size);
     }
 
     public static List<Vector> getLinePoints(Vector start, Vector end, double step) {

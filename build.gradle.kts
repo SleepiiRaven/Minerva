@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "net.minervamc"
-version = "1.0"
+version = "0.1.1"
 
 repositories {
     mavenCentral()
@@ -30,6 +30,11 @@ repositories {
         name = "onarandombox"
         url = uri("https://repo.onarandombox.com/content/groups/public/")
     }
+
+    maven {
+        name = "citizens-repo"
+        url = uri("https://maven.citizensnpcs.co/repo")
+    }
 }
 
 dependencies {
@@ -38,6 +43,7 @@ dependencies {
     compileOnly("io.lumine:MythicLib-dist:1.7.1-SNAPSHOT")
     compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
     compileOnly("com.onarandombox.multiversecore:Multiverse-Core:4.3.1")
+    compileOnly("net.citizensnpcs:citizens-main:2.0.36-SNAPSHOT")
     implementation ("fr.mrmicky:fastboard:2.1.3")
     paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
 }
@@ -77,5 +83,3 @@ tasks.shadowJar {
     destinationDirectory.set(file("D:/Servers/Minerva/plugins"))
     //destinationDirectory.set(file("run/plugins")) //Faceless
 }
-
-

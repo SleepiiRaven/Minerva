@@ -67,6 +67,11 @@ public final class Minerva extends JavaPlugin {
         CaptureTheFlag.stop("");
         PlayerStats.saveAll();
         RegionManager.saveRegionsToFile(); // not really necessary but safer
+
+//        for (NPC npc : PlayerListener.npcs.values()) {
+//            npc.despawn();
+//            CitizensAPI.getNPCRegistry().deregister(npc);
+//        }
     }
 
     public void registerListeners() {

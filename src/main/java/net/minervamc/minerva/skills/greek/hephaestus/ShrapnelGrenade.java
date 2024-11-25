@@ -3,6 +3,7 @@ package net.minervamc.minerva.skills.greek.hephaestus;
 import java.util.List;
 import java.util.Random;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
@@ -31,7 +32,7 @@ public class ShrapnelGrenade extends Skill {
         double kb = 2;
         long cooldown = 9000;
         double distance = 10;
-        int radius = 5;
+        int radius = 3;
         double damageForge = 14;
         double kbForge = 3;
         Color[] colors = {
@@ -73,7 +74,7 @@ public class ShrapnelGrenade extends Skill {
                         damage(livingMonster, dmgCurr, player);
                         double distance = display.getLocation().distance(livingMonster.getLocation());
                         knockback(livingMonster, ParticleUtils.getDirection(display.getLocation(), livingMonster.getLocation()).normalize().divide(new Vector(distance, distance, distance)).multiply(kb));
-                        if (damageEntity.getScoreboardTags().contains(player.getUniqueId().toString())) {
+                        if (PlayerStats.isSummoned(player, damageEntity) && damageEntity.getScoreboardTags().contains("livingForge")) {
                             livingForgeExplosion(damageForge, kbForge, player, damageEntity, radius * 2);
                             damageEntity.remove();
                         }
@@ -121,8 +122,7 @@ public class ShrapnelGrenade extends Skill {
                         damage(livingMonster, dmgCurr, player);
                         double distance = display.getLocation().distance(livingMonster.getLocation());
                         knockback(livingMonster, ParticleUtils.getDirection(display.getLocation(), livingMonster.getLocation()).normalize().divide(new Vector(distance, distance, distance)).multiply(kb));
-                        if (damageEntity.getScoreboardTags().contains(player.getUniqueId().toString()) && getStacks(player, "smolder") > 0) {
-                            stack(player, "smolder", -1, "Smolder", 5000);
+                        if (PlayerStats.isSummoned(player, damageEntity) && damageEntity.getScoreboardTags().contains("livingForge")) {
                             livingForgeExplosion(damageForge, kbForge, player, damageEntity, radius * 2);
                             damageEntity.remove();
                         }

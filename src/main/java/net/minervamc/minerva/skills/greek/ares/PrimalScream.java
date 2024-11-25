@@ -2,6 +2,7 @@ package net.minervamc.minerva.skills.greek.ares;
 
 import java.util.List;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
@@ -68,7 +69,7 @@ public class PrimalScream extends Skill {
 
                     for (Entity entity : player.getWorld().getNearbyEntities(currLoc, 1, 1, 1)) {
                         if (!(entity instanceof LivingEntity livingMonster) || entity == player) continue;
-                        if (entity.getScoreboardTags().contains(player.getUniqueId().toString()) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
+                        if (PlayerStats.isSummoned(player, entity) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
                             livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, effTime, 1));
                             livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, effTime, 0));
                         } else {

@@ -2,12 +2,15 @@ package net.minervamc.minerva.listeners;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.Skills;
+import net.minervamc.minerva.skills.greek.aphrodite.MirrorImage;
 import net.minervamc.minerva.skills.greek.poseidon.AquaticLimbExtensions;
 import net.minervamc.minerva.types.Skill;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -47,15 +50,32 @@ public class SkillListener implements Listener {
             return;
         }
 
-        if (event.getDrops() != null && event.getEntity().getScoreboardTags().contains("aresSummoned"))
+        Set<String> tags = event.getEntity().getScoreboardTags();
+
+        if (event.getDrops() != null &&
+                (tags.contains("aresSummoned") ||
+                tags.contains("livingForge")))
             event.getDrops().clear();
     }
 
     @EventHandler
     public void onPlayerDamage(EntityDamageByEntityEvent event) {
+        if (event.getEntity().hasMetadata("NPC") && event.getEntity().getScoreboardTags().contains("mirrorImage")) {
+            Entity entity = event.getEntity();
+            if (event.getDamager() instanceof Player player && PlayerStats.isSummoned(player, entity)) {
+                Location loc = entity.getLocation();
+                String name = entity.getName();
+                entity.remove();
+                MirrorImage.explode(loc, Bukkit.getPlayer(name));
+            } else {
+                event.setCancelled(true);
+            }
+        }
+
         if (!(event.getDamager() instanceof Player player)) {
             return;
         }
+
         PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
         Skill passive = stats.getPassive();
         boolean passiveActive = stats.getPassiveActive();
@@ -95,6 +115,7 @@ public class SkillListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+        if (player.hasMetadata("NPC")) return;
         if (player.getLocation().getBlock().getType() == Material.WATER || (player.getLocation().getBlock().getBlockData() instanceof Waterlogged waterlogged && waterlogged.isWaterlogged())) {
             if (PlayerStats.getStats(player.getUniqueId()).getPassive() == Skills.OCEANS_EMBRACE && PlayerStats.getStats(player.getUniqueId()).getPassiveActive()) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 60, 0));
@@ -112,13 +133,19 @@ public class SkillListener implements Listener {
     @EventHandler
     public void onPlayerTakeDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player player) {
+            if (player.hasMetadata("NPC")) {
+                if (player.getScoreboardTags().contains("mirrorImage")) {
+                    if (event.getDamageSource().getCausingEntity() == null) {
+                        event.setCancelled(true);
+                    }
+                }
+                return;
+            }
             PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
             Skill passive = stats.getPassive();
             boolean passiveActive = stats.getPassiveActive();
             if (passive == Skills.SMOLDER && passiveActive && event.getDamageSource().getCausingEntity() != null) {
                 Skill.stack(player, "smolder", 1, "Smolder", 5000);
-            } else if (passive == Skills.SMOLDER && passiveActive && event.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK || event.getCause() == EntityDamageEvent.DamageCause.FIRE) {
-                Skill.stack(player, "smolder", 2, "Smolder", 5000);
             } else if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 if (passive == Skills.PROTECTIVE_CLOUD && passiveActive) {
                     event.setCancelled(true);
@@ -139,6 +166,7 @@ public class SkillListener implements Listener {
         }
     }
 
+
     @EventHandler
     public void onPlayerPunch(PlayerAnimationEvent event) {
         Player player = event.getPlayer();
@@ -152,6 +180,7 @@ public class SkillListener implements Listener {
     @EventHandler
     public void onShoot(EntityShootBowEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
+        if (player.hasMetadata("NPC")) return;
         Arrow originalArrow = (Arrow) event.getProjectile();
         if (PlayerStats.getStats(player.getUniqueId()).getPassive() == Skills.ARROWS_OF_THE_SUN && PlayerStats.getStats(player.getUniqueId()).getPassiveActive()) {
             Random random = new Random();
@@ -182,7 +211,7 @@ public class SkillListener implements Listener {
                                             target = livingEntityNear;
                                         }
                                     } else {
-                                        if (!near.getScoreboardTags().contains("artemisWolf")) {
+                                        if (PlayerStats.isSummoned(player, near)) {
                                             if (target == null) {
                                                 target = livingEntityNear;
                                             } else if (arrow.getLocation().distanceSquared(livingEntityNear.getEyeLocation()) < arrow.getLocation().distanceSquared(target.getEyeLocation())) {
@@ -264,15 +293,18 @@ public class SkillListener implements Listener {
 
     @EventHandler
     public void onTargetEntity(EntityTargetLivingEntityEvent event) {
-        if (event.getEntity().getScoreboardTags().contains("aresSummoned")) {
-            if (!(event.getTarget() instanceof LivingEntity potentialTarget) || (potentialTarget instanceof Tameable && ((Tameable) potentialTarget).getOwner() != null) || potentialTarget.getScoreboardTags().contains("aresSummoned")) {
+        if (event.getTarget() instanceof Player player && PlayerStats.isSummoned(player, event.getEntity())) {
+            event.setCancelled(true);
+        }
+        if (PlayerStats.whoSummonedMe(event.getEntity()) != null) {
+            if (!(event.getTarget() instanceof LivingEntity potentialTarget) || (potentialTarget instanceof Tameable && ((Tameable) potentialTarget).getOwner() != null)) {
                 event.setCancelled(true);
             } else if (event.getTarget() instanceof Player player) {
-                if (event.getEntity().getScoreboardTags().contains(player.getUniqueId().toString())) {
+                if (PlayerStats.isSummoned(player, event.getEntity())) {
                     event.setCancelled(true);
                 } else if (Party.isInParty(player)) {
                     for (Player partyMember : Party.partyList(player)) {
-                        if (event.getEntity().getScoreboardTags().contains(partyMember.getUniqueId().toString()))
+                        if (PlayerStats.isSummoned(partyMember, event.getEntity()))
                             event.setCancelled(true);
                     }
                 }

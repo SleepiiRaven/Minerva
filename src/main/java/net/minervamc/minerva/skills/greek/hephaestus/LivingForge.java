@@ -3,8 +3,8 @@ package net.minervamc.minerva.skills.greek.hephaestus;
 import java.util.List;
 import java.util.Random;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.lib.util.ItemCreator;
-import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.ParticleUtils;
@@ -14,7 +14,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.LivingEntity;
@@ -100,6 +99,8 @@ public class LivingForge extends Skill {
     public static void summonGolem(Player player, long despawnTicks, Location loc, boolean overheat) {
         IronGolem golem = (IronGolem) loc.getWorld().spawnEntity(loc, EntityType.IRON_GOLEM);
         golem.addScoreboardTag(player.getUniqueId().toString());
+        golem.addScoreboardTag("livingForge");
+        PlayerStats.getSummoned().get(player).add(golem);
 
         if (overheat) {
             stack(player, "smolder", -1, "Smolder", 5000);
@@ -111,6 +112,7 @@ public class LivingForge extends Skill {
             @Override
             public void run() {
                 if (ticks > despawnTicks || !player.isOnline() || player.isDead()) {
+                    PlayerStats.getSummoned().get(player).remove(golem);
                     golem.remove();
                     this.cancel();
                     return;
@@ -129,13 +131,13 @@ public class LivingForge extends Skill {
                     }
                 }
 
-                if (!(golem.getTarget() instanceof LivingEntity) || golem.getTarget() == player || golem.getTarget().isDead()) {
-                    for (Entity e : golem.getLocation().getNearbyEntities(20, 20, 20)) {
-                        if (e instanceof LivingEntity livingEntity && e != golem && e != player && !(e instanceof Player pTarget && Party.isPlayerInPlayerParty(player, pTarget)) && (livingEntity.getTargetEntity(30) != null || livingEntity instanceof Player && livingEntity.getWorld().getPVP())) {
-                            golem.setTarget(livingEntity);
-                        }
-                    }
-                }
+//                if (!(golem.getTarget() instanceof LivingEntity) || golem.getTarget() == player || golem.getTarget().isDead()) {
+//                    for (Entity e : golem.getLocation().getNearbyEntities(20, 20, 20)) {
+//                        if (e instanceof LivingEntity livingEntity && e != golem && e != player && !(e instanceof Player pTarget && Party.isPlayerInPlayerParty(player, pTarget)) && (livingEntity.getTargetEntity(30) != null || livingEntity instanceof Player && livingEntity.getWorld().getPVP())) {
+//                            golem.setTarget(livingEntity);
+//                        }
+//                    }
+//                }
                 ticks++;
             }
         }.runTaskTimer(Minerva.getInstance(), 0L, 1L);

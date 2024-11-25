@@ -154,7 +154,7 @@ public class RomanGodsGUI {
                 chooseHeritage(HeritageType.MARS, "child of Mars", (Player) event.getWhoClicked());
                 break;
             case venusSlot:
-                //chooseHeritage(HeritageType.VENUS, "child of Venus", (Player) event.getWhoClicked());
+                // chooseHeritage(HeritageType.VENUS, "child of Venus", (Player) event.getWhoClicked());
                 break;
             case bacchusSlot:
                 chooseHeritage(HeritageType.BACCHUS, "child of Bacchus", (Player) event.getWhoClicked());

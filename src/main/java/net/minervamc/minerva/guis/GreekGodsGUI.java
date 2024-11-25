@@ -45,15 +45,15 @@ public class GreekGodsGUI {
     private static final int psycheSlot = 28;
     private static final int hermesSlot = 29;
     private static final int artemisSlot = 30;
-    private static final int athenaSlot = 39;
-    private static final int hephaestusSlot = 42;
+    private static final int athenaSlot = 40;
+    private static final int hephaestusSlot = 41;
     private static final int demeterSlot = 33;
     private static final int hestiaSlot = 34;
     private static final int arkeSlot = 35;
     private static final int hecateSlot = 38;
-    private static final int aresSlot = 40;
+    private static final int aresSlot = 39;
     private static final int dionysusSlot = 31;
-    private static final int aphroditeSlot = 41;
+    private static final int aphroditeSlot = 42;
     private static final int apolloSlot = 32;
     private static final int backSlot = 45;
 
@@ -154,7 +154,7 @@ public class GreekGodsGUI {
                 chooseHeritage(HeritageType.ARES, "child of Ares", (Player) event.getWhoClicked());
                 break;
             case aphroditeSlot:
-                //chooseHeritage(HeritageType.APHRODITE, "child of Aphrodite", (Player) event.getWhoClicked());
+                // chooseHeritage(HeritageType.APHRODITE, "child of Aphrodite", (Player) event.getWhoClicked());
                 break;
             case dionysusSlot:
                 chooseHeritage(HeritageType.DIONYSUS, "child of Dionysus", (Player) event.getWhoClicked());

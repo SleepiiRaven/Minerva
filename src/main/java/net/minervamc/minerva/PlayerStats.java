@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.Getter;
@@ -16,6 +18,8 @@ import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.JsonUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerStats {
@@ -51,17 +55,39 @@ public class PlayerStats {
     private ItemStack[] armor = new ItemStack[4];
     private ItemStack[] offhand = new ItemStack[1];
     @Setter @Getter private Map<String, Integer> stackingAbilities = new HashMap<>();
+    @Setter @Getter private static Map<Player, List<Entity>> summoned = new HashMap<>();
     //endregion
 
     public PlayerStats(UUID uuid) {
-        this.uuid = uuid;
-        this.storage = STORAGE_FOLDER.resolve(uuid + ".json");
-        this.skillTriggers = new SkillTriggers(Bukkit.getPlayer(uuid));
-        this.logoutLoc = Bukkit.getPlayer(uuid).getLocation();
+        if (Bukkit.getPlayer(uuid) == null) {
+            this.uuid = uuid;
+            this.storage = null;
+            this.skillTriggers = null;
+            this.logoutLoc = null;
+        } else {
+            summoned.put(Bukkit.getPlayer(uuid), new ArrayList<>());
+            this.uuid = uuid;
+            this.storage = STORAGE_FOLDER.resolve(uuid + ".json");
+            this.skillTriggers = new SkillTriggers(Bukkit.getPlayer(uuid));
+            this.logoutLoc = Bukkit.getPlayer(uuid).getLocation();
+        }
+    }
+
+    public static boolean isSummoned(Player player, Entity entity) {
+        return summoned.get(player).contains(entity);
+    }
+
+    public static Player whoSummonedMe(Entity entity) {
+        for (Player player : summoned.keySet()) {
+            if (summoned.get(player).contains(entity)) return player;
+        }
+        return null;
     }
 
     //region JSON Stuff
     public static PlayerStats getStats(UUID uuid) {
+        if (Bukkit.getPlayer(uuid) == null) return null;
+
         PlayerStats data = playerStats.getOrDefault(uuid, null);
         if (data == null) {
             Path path = STORAGE_FOLDER.resolve(uuid.toString() + ".json");
