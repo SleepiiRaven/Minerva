@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
 import net.minervamc.minerva.utils.FastUtils;
@@ -61,6 +62,7 @@ public class CallOfTheWild extends Skill {
 
             Wolf wolf = (Wolf) player.getWorld().spawnEntity(wolfLocation.setDirection(wolfDirection), EntityType.WOLF);
             wolf.addScoreboardTag("artemisWolf");
+            PlayerStats.getSummoned().get(player).add(wolf);
             wolf.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, (int) (wolfDespawnTicks * 5), 3));
             wolves.add(wolf);
         }
@@ -78,6 +80,7 @@ public class CallOfTheWild extends Skill {
                 if (player.isDead() || !player.isOnline() || ticks >= wolfDespawnTicks) {
                     player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WOLF_WHINE, 1f, 1f);
                     for (Wolf wolf : wolves) {
+                        PlayerStats.getSummoned().get(player).remove(wolf);
                         wolf.remove();
                         Location particleLoc = wolf.getLocation();
                         wolf.getWorld().spawnParticle(Particle.ENCHANT, particleLoc, 10);

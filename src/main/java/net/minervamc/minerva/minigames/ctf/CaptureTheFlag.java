@@ -514,7 +514,6 @@ public class CaptureTheFlag extends Minigame {
                             player.getInventory().addItem(redFlagBreaker());
                             int size = redSpawn.size();
                             int randInt = (size <= 1) ? 0 : random.nextInt(size);
-                            LOGGER.info(randInt + "");
                             player.teleport(redSpawn.get(randInt));
                             Minerva.runPermCommand(player, "venturechat.redteamchat");
                             new BukkitRunnable() {
@@ -866,7 +865,7 @@ public class CaptureTheFlag extends Minigame {
         Vector dir = player.getLocation().getDirection();
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 0.7f, 0.7f);
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FISHING_BOBBER_THROW, 1.2f, 1.3f);
-        player.setVelocity(dir.setY(1).normalize().multiply(2));
+        player.setVelocity(dir.setY(1).normalize().multiply(1.5));
 
         if (player.getAttribute(Attribute.GENERIC_FALL_DAMAGE_MULTIPLIER) == null) return;
         double currAttribute = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_FALL_DAMAGE_MULTIPLIER)).getBaseValue();
@@ -928,12 +927,10 @@ public class CaptureTheFlag extends Minigame {
                 if (blue.contains(player)) {
                     int size = blueSpawn.size();
                     int randInt = (size == 1) ? 0 : random.nextInt(size);
-                    LOGGER.info(randInt + "");
                     player.teleport(blueSpawn.get(randInt));
                 } else {
                     int size = redSpawn.size();
                     int randInt = (size == 1) ? 0 : random.nextInt(size);
-                    LOGGER.info(randInt + "");
                     player.teleport(redSpawn.get(randInt));
                 }
             }

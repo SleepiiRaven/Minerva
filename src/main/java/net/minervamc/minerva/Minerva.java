@@ -10,6 +10,7 @@ import net.minervamc.minerva.commands.SkillModeToggle;
 import net.minervamc.minerva.commands.SkillsCommand;
 import net.minervamc.minerva.commands.UnfocusCommand;
 import net.minervamc.minerva.lib.Lib;
+import net.minervamc.minerva.listeners.CombatListener;
 import net.minervamc.minerva.listeners.CtfListener;
 import net.minervamc.minerva.listeners.PlayerListener;
 import net.minervamc.minerva.listeners.RegionListener;
@@ -67,12 +68,18 @@ public final class Minerva extends JavaPlugin {
         CaptureTheFlag.stop("");
         PlayerStats.saveAll();
         RegionManager.saveRegionsToFile(); // not really necessary but safer
+
+//        for (NPC npc : PlayerListener.npcs.values()) {
+//            npc.despawn();
+//            CitizensAPI.getNPCRegistry().deregister(npc);
+//        }
     }
 
     public void registerListeners() {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new SkillListener(), this);
         getServer().getPluginManager().registerEvents(new CtfListener(), this);
+        getServer().getPluginManager().registerEvents(new CombatListener(), this);
     }
 
     public void registerCommands() {

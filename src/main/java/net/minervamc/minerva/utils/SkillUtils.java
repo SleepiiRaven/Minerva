@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class SkillUtils {
     public static void redirect(Player player, UUID pUUID, SkillType skillType) {
+        if (player.hasMetadata("NPC")) return;
         PlayerStats stats = PlayerStats.getStats(pUUID);
         Skill spell = getSkill(skillType, stats);
         int level = 1;
@@ -83,6 +84,7 @@ public class SkillUtils {
     }
 
     public static void setDefaultSkills(HeritageType heritageType, Player player) {
+        if (player.hasMetadata("NPC")) return;
         PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
         stats.setPoints(stats.getMaxPoints());
         stats.setRRRLevel(1);
@@ -110,10 +112,15 @@ public class SkillUtils {
                     setSkills(player, Skills.VINE_WHIP, Skills.GRAPE_SHOT, Skills.MAD_GODS_DRINK, Skills.FRENZIED_DANCE, Skills.DRUNKEN_REVELRY);
             case ARES, MARS ->
                     setSkills(player, Skills.SPIRITOFVENGEANCE, Skills.TOMAHAWK_THROW, Skills.CLEAVE, Skills.PRIMAL_SCREAM, Skills.ARES_BLESSING);
+            case HEPHAESTUS, VULCAN ->
+                    setSkills(player, Skills.SHRAPNEL_GRENADE, Skills.MAGMATISM, Skills.LIVING_FORGE, Skills.GROUND_BREAKER, Skills.SMOLDER);
+            case APHRODITE, VENUS ->
+                    setSkills(player, Skills.MIRROR_IMAGE, Skills.CHARM, Skills.HEARTBREAK, Skills.BLINDING_LOVE, Skills.BITTERSWEET);
         }
     }
 
     private static void setSkills(Player player, Skill rrr, Skill rlr, Skill rll, Skill rrl, Skill passive) {
+        if (player.hasMetadata("NPC")) return;
         PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
         stats.setSkillRRR(rrr);
         stats.setSkillRLR(rlr);

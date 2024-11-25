@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
@@ -25,8 +26,8 @@ public class Cleave extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
         long cooldown = 10000;
-        double damage = 5;
-        double damageSlam = 10;
+        double damage = 2;
+        double damageSlam = 5;
         double kb = 0.2;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "cleave")) {
@@ -98,15 +99,11 @@ public class Cleave extends Skill {
                         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_DROWNED_SHOOT, 0.2f, 0.6f);
                         player.getWorld().playSound(player.getLocation(), Sound.ITEM_AXE_SCRAPE, 0.2f, 0.6f);
                         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.2f, 0.6f);
-                        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.7f, 1.2f);
                     }
 
                     player.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, player.getLocation().add((Vector) vectors[ticks]), 1, 0.1, 0.1, 0.1, 0.05);
-
-                    player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getLocation().add((Vector) vectors[ticks]), 1, 0, 0, 0, 0);
-                    player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getLocation().add((Vector) vectors[ticks + 1]), 1, 0, 0, 0, 0);
                     for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation().add((Vector) vectors[ticks + 1]), 1, 1, 1)) {
-                        if (!(entity instanceof LivingEntity livingMonster) || entity.getScoreboardTags().contains(player.getUniqueId().toString()) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
+                        if (!(entity instanceof LivingEntity livingMonster) || PlayerStats.getStats(player.getUniqueId()).getSummoned().get(player).contains(livingMonster) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
                             continue;
                         damage(livingMonster, damage, player, false, true);
                         Vector viewNormalized = (new Vector(0, 1, 0)).multiply(kb);
@@ -119,9 +116,8 @@ public class Cleave extends Skill {
                         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FOX_DEATH, 1.0f, 0.6f);
                         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ENDER_CHEST_CLOSE, 1.0f, 0.6f);
                     }
-                    player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getLocation().add((Vector) vecs[ticks2]), 1, 0, 0, 0, 0);
                     for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation().add((Vector) vecs[ticks2]), 1, 1, 1)) {
-                        if (!(entity instanceof LivingEntity livingMonster) || entity.getScoreboardTags().contains(player.getUniqueId().toString()) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
+                        if (!(entity instanceof LivingEntity livingMonster) || PlayerStats.isSummoned(player, entity) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
                             continue;
                         damage(livingMonster, damage, player, false, true);
                         Vector viewNormalized = (new Vector(0, 1, 0)).multiply(kb);
@@ -138,7 +134,7 @@ public class Cleave extends Skill {
                     player.getWorld().spawnParticle(Particle.EXPLOSION, player.getLocation().add(iSlamC), 1, 0, 0, 0, 0.05);
                     player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation().add(iSlamC), 10, 0.3, 0.3, 0.3, 0.01);
                     for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation().add(iSlamC), 4, 4, 4)) {
-                        if (!(entity instanceof LivingEntity livingMonster) || entity.getScoreboardTags().contains(player.getUniqueId().toString()) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
+                        if (!(entity instanceof LivingEntity livingMonster) || PlayerStats.isSummoned(player, entity) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
                             continue;
                         damage(livingMonster, damageSlam, player, true, true);
                         Vector viewNormalized = (new Vector(0, 1, 0)).multiply(kb);

@@ -2,6 +2,7 @@ package net.minervamc.minerva.skills.greek.ares;
 
 import java.util.List;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
@@ -78,7 +79,7 @@ public class TomahawkThrow extends Skill {
 
 
                 for (Entity entity : display.getWorld().getNearbyEntities(display.getLocation(), 1, 1, 1)) {
-                    if (!(entity instanceof LivingEntity livingMonster) || (entity == display) || entity.getScoreboardTags().contains(player.getUniqueId().toString()) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
+                    if (!(entity instanceof LivingEntity livingMonster) || (entity == display) || PlayerStats.isSummoned(player, entity) || (entity == player) || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
                         continue;
                     damage(livingMonster, damage, player, false, true);
                     knockback(livingMonster, livingMonster.getVelocity().add(direction.clone().multiply(kb)));

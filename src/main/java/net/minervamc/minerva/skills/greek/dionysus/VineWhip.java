@@ -59,7 +59,7 @@ public class VineWhip extends Skill {
                     }
                     Location particleLoc = location.clone().add(linePoints.get(ticks));
                     player.getWorld().spawnParticle(Particle.DUST, particleLoc, 0, 0, 0, 0, 0, new Particle.DustOptions(Color.GREEN, 2f));
-                    for (Entity entity : particleLoc.getNearbyEntities(1, 1, 1)) {
+                    for (Entity entity : particleLoc.getNearbyEntities(0.3, 0.3, 0.3)) {
                         if (entity instanceof LivingEntity livingEntity && !hitEnemies.contains(livingEntity) && livingEntity != player && !(livingEntity instanceof Player livingPlayer && livingPlayer.getGameMode() != GameMode.CREATIVE && Party.isPlayerInPlayerParty(player, livingPlayer))) {
                             Vector direction = location.clone().toVector().subtract(livingEntity.getLocation().toVector()).normalize();
                             if (!hit)

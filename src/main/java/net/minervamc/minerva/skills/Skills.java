@@ -1,5 +1,10 @@
 package net.minervamc.minerva.skills;
 
+import net.minervamc.minerva.skills.greek.aphrodite.Bittersweet;
+import net.minervamc.minerva.skills.greek.aphrodite.BlindingLove;
+import net.minervamc.minerva.skills.greek.aphrodite.Charm;
+import net.minervamc.minerva.skills.greek.aphrodite.Heartbreak;
+import net.minervamc.minerva.skills.greek.aphrodite.MirrorImage;
 import net.minervamc.minerva.skills.greek.apollo.ApollosHymn;
 import net.minervamc.minerva.skills.greek.apollo.ArrowsOfTheSun;
 import net.minervamc.minerva.skills.greek.apollo.BurningLight;
@@ -25,6 +30,11 @@ import net.minervamc.minerva.skills.greek.hades.LifeSteal;
 import net.minervamc.minerva.skills.greek.hades.ShadowTravel;
 import net.minervamc.minerva.skills.greek.hades.SkeletalHands;
 import net.minervamc.minerva.skills.greek.hades.UmbrakinesisHades;
+import net.minervamc.minerva.skills.greek.hephaestus.GroundBreaker;
+import net.minervamc.minerva.skills.greek.hephaestus.LivingForge;
+import net.minervamc.minerva.skills.greek.hephaestus.Magmatism;
+import net.minervamc.minerva.skills.greek.hephaestus.ShrapnelGrenade;
+import net.minervamc.minerva.skills.greek.hephaestus.Smolder;
 import net.minervamc.minerva.skills.greek.poseidon.AquaticLimbExtensions;
 import net.minervamc.minerva.skills.greek.poseidon.OceansEmbrace;
 import net.minervamc.minerva.skills.greek.poseidon.OceansSurge;
@@ -74,5 +84,15 @@ public interface Skills {
     Skill CLEAVE = new Cleave();
     Skill PRIMAL_SCREAM = new PrimalScream();
     Skill TOMAHAWK_THROW = new TomahawkThrow();
+    Skill GROUND_BREAKER = new GroundBreaker();
+    Skill LIVING_FORGE = new LivingForge();
+    Skill MAGMATISM = new Magmatism();
+    Skill SHRAPNEL_GRENADE = new ShrapnelGrenade();
+    Skill SMOLDER = new Smolder();
+    Skill BLINDING_LOVE = new BlindingLove();
+    Skill CHARM = new Charm();
+    Skill HEARTBREAK = new Heartbreak();
+    Skill MIRROR_IMAGE = new MirrorImage();
+    Skill BITTERSWEET = new Bittersweet();
     Skill DEFAULT = new DefaultSkill();
 }

@@ -3,6 +3,8 @@ package net.minervamc.minerva.skills.greek.ares;
 import java.util.ArrayList;
 import java.util.List;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.PlayerStats;
+import net.minervamc.minerva.listeners.CombatListener;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
@@ -125,6 +127,7 @@ public class SpiritOfVengeance extends Skill {
                     if (player.isDead() || !player.isOnline() || ticks >= pillagerDespawnTicks) {
                         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WOLF_WHINE, 1f, 1f);
                         for (LivingEntity pillager : pillagers) {
+                            PlayerStats.getSummoned().get(player).remove(pillager);
                             pillager.remove();
                             Location particleLoc = pillager.getLocation();
                             pillager.getWorld().spawnParticle(Particle.ENCHANT, particleLoc, 10);
@@ -135,13 +138,14 @@ public class SpiritOfVengeance extends Skill {
                     for (LivingEntity pillager : pillagers) {
                         Monster monster = (Monster) pillager;
                         for (Entity entity : pillager.getWorld().getNearbyEntities(pillager.getLocation(), angerRadius, angerRadius, angerRadius)) {
-                            if (!(entity instanceof LivingEntity potentialTarget) || (potentialTarget instanceof Tameable && ((Tameable) potentialTarget).getOwner() != null) || potentialTarget.getScoreboardTags().contains(player.getUniqueId().toString()) || potentialTarget == player || (potentialTarget instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
+                            if (!(entity instanceof LivingEntity potentialTarget) || (potentialTarget instanceof Tameable && ((Tameable) potentialTarget).getOwner() != null) || PlayerStats.isSummoned(player, potentialTarget) || potentialTarget == player || (potentialTarget instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer))) {
                                 if (monster.getTarget() == player) {
                                     monster.setTarget(null);
                                 }
                                 continue;
                             }
-                            monster.setTarget(potentialTarget);
+                            if (CombatListener.isInCombatOrHostile(player, potentialTarget))
+                                monster.setTarget(potentialTarget);
                         }
                     }
                 }
@@ -156,12 +160,12 @@ public class SpiritOfVengeance extends Skill {
     }
 
     private Pillager summonPillager(Location loc, Player player, Vector offset, Vector pillagerDirection, long pillagerDespawnTicks) {
-
         Location pillagerLocation = loc.clone().add(offset);
         loc.getWorld().playSound(loc.clone(), Sound.ENTITY_IRON_GOLEM_DAMAGE, 1f, 0.4f);
 
         Pillager pillager = (Pillager) loc.getWorld().spawnEntity(pillagerLocation.setDirection(pillagerDirection), EntityType.PILLAGER);
         pillager.addScoreboardTag("aresSummoned");
+        PlayerStats.getSummoned().get(player).add(pillager);
         pillager.addScoreboardTag(player.getUniqueId().toString());
         pillager.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, (int) (pillagerDespawnTicks * 5), 0));
         return pillager;
@@ -174,6 +178,7 @@ public class SpiritOfVengeance extends Skill {
 
         Vindicator pillager = (Vindicator) loc.getWorld().spawnEntity(pillagerLocation.setDirection(pillagerDirection), EntityType.VINDICATOR);
         pillager.addScoreboardTag("aresSummoned");
+        PlayerStats.getSummoned().get(player).add(pillager);
         pillager.addScoreboardTag(player.getUniqueId().toString());
         pillager.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, (int) (pillagerDespawnTicks * 5), 0));
         return pillager;

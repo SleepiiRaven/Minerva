@@ -72,7 +72,7 @@ public class RomanGodsGUI {
         inv.setItem(mercurySlot, comingSoon);
         inv.setItem(dianaSlot, diana);
         inv.setItem(bellonaSlot, comingSoon);
-        inv.setItem(vulcanSlot, comingSoon);
+        inv.setItem(vulcanSlot, vulcan);
         inv.setItem(ceresSlot, comingSoon);
         inv.setItem(vestaSlot, comingSoon);
         inv.setItem(arceSlot, comingSoon);
@@ -133,7 +133,7 @@ public class RomanGodsGUI {
                 //chooseHeritage(HeritageType.BELLONA, "child of Bellona", (Player) event.getWhoClicked());
                 break;
             case vulcanSlot:
-                //chooseHeritage(HeritageType.VULCAN, "child of Vulcan", (Player) event.getWhoClicked());
+                chooseHeritage(HeritageType.VULCAN, "child of Vulcan", (Player) event.getWhoClicked());
                 break;
             case ceresSlot:
                 //(HeritageType.CERES, "child of Ceres", (Player) event.getWhoClicked());
@@ -154,7 +154,7 @@ public class RomanGodsGUI {
                 chooseHeritage(HeritageType.MARS, "child of Mars", (Player) event.getWhoClicked());
                 break;
             case venusSlot:
-                //chooseHeritage(HeritageType.VENUS, "child of Venus", (Player) event.getWhoClicked());
+                // chooseHeritage(HeritageType.VENUS, "child of Venus", (Player) event.getWhoClicked());
                 break;
             case bacchusSlot:
                 chooseHeritage(HeritageType.BACCHUS, "child of Bacchus", (Player) event.getWhoClicked());

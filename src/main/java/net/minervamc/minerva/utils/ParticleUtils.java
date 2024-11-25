@@ -2,10 +2,15 @@ package net.minervamc.minerva.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.util.Vector;
 
 public class ParticleUtils {
+    private static Random random = new Random();
+
     public static List<Vector> getStarPoints(int vertices, double starSize, double starHeaviness, int interpolationCount) {
         Vector[] polygonVertices = new Vector[2 * vertices];
 
@@ -43,6 +48,11 @@ public class ParticleUtils {
         return points;
     }
 
+    public static Particle.DustOptions getDustOptionsFromGradient(Color[] colors, float size) {
+        int index = random.nextInt(0, colors.length - 1);
+        return new Particle.DustOptions(colors[index], size);
+    }
+
     public static List<Vector> getLinePoints(Vector start, Vector end, double step) {
         List<Vector> points = new ArrayList<>();
         for (double i = 0; i < (getDistance(start, end)); i += step) {
@@ -57,6 +67,18 @@ public class ParticleUtils {
         List<Vector> points = new ArrayList<>();
         for (int d = 0; d < 20; d += 1) {
             double angle = (2 * Math.PI * d) / 20;
+            // Cosine for X
+            Vector vector = new Vector(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
+            points.add(vector);
+        }
+
+        return points;
+    }
+
+    public static List<Vector> getCirclePoints(double radius, double particles) {
+        List<Vector> points = new ArrayList<>();
+        for (int d = 0; d < particles; d += 1) {
+            double angle = (2 * Math.PI * d) / particles;
             // Cosine for X
             Vector vector = new Vector(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
             points.add(vector);
