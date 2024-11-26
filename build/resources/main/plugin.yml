@@ -1,4 +1,4 @@
-name: Minerva
+name: MinervaRPGCore
 version: '0.1.1'
 main: net.minervamc.minerva.Minerva
 api-version: '1.20'

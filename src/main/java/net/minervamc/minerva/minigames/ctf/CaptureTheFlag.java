@@ -670,6 +670,7 @@ public class CaptureTheFlag extends Minigame {
         startingTimerTicks = 0;
 
         inGame.forEach(player -> {
+            player.getActivePotionEffects().clear();
             boolean isRed = red.contains(player);
             Component title;
             Component subtitle;

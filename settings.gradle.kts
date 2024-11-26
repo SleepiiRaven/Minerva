@@ -1,1 +1,1 @@
-rootProject.name = "Minerva"
+rootProject.name = "MinervaRPGCore"

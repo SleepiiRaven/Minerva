@@ -297,6 +297,8 @@ public class CtfListener implements Listener {
             int seconds = (ticks - remainder)/20;
             @Override
             public void run() {
+                if (!CaptureTheFlag.playing) return;
+
                 Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
                 Title title = Title.title(
                         Component.text("You Died!", NamedTextColor.RED),
