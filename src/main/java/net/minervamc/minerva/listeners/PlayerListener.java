@@ -14,7 +14,6 @@ import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.utils.SkillUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -65,7 +64,6 @@ public class PlayerListener implements Listener {
             p.teleport(pData.getLogoutLoc());
         }
 
-        Bukkit.getLogger().info(String.valueOf(Arrays.stream(pData.getInventory()).allMatch(Objects::isNull)));
         if (!Arrays.stream(pData.getInventory()).allMatch(Objects::isNull)) {
             p.getInventory().setStorageContents(pData.getInventory());
         }

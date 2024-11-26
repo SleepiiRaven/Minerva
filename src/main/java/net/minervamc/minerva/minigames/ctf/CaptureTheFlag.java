@@ -86,7 +86,7 @@ public class CaptureTheFlag extends Minigame {
     private static final HashMap<UUID, FastBoard> boards = new HashMap<>();
     @Getter private static final HashMap<UUID, Location> startLoc = new HashMap<>();
     private static BukkitTask scoreboardUpdater = null;
-    private static int globalCountdown = 6;
+    private static int globalCountdown = 61;
 
     static BukkitTask startTimer;
     private static int startingTimerTicks = 0;
@@ -126,7 +126,16 @@ public class CaptureTheFlag extends Minigame {
             }
             p.sendActionBar(Component.text(player.getName() + " joined the queue!", NamedTextColor.GREEN));
         });
-        if(queue.size() >= 4) start();
+
+        if (queue.size() >= 12) {
+            globalCountdown = Math.min(globalCountdown, 6);
+        } else if (queue.size() >= 8) {
+            globalCountdown = Math.min(globalCountdown, 11);
+        } else if (queue.size() >= 6) {
+            globalCountdown = Math.min(globalCountdown, 31);
+        } else if (queue.size() >= 4) {
+            globalCountdown = Math.min(globalCountdown, 61);
+        }
 
         if (scoreboardUpdater == null) {
             scoreboardUpdater = new BukkitRunnable() {
@@ -150,6 +159,22 @@ public class CaptureTheFlag extends Minigame {
                         }
                         return;
                     }
+
+                    if (queue.size() >= 4) {
+                        starting = true;
+
+                        if (globalCountdown > 0) {
+                            globalCountdown--;
+                        } else {
+                            starting = false;
+                            start();
+                            return;
+                        }
+                    } else {
+                        starting = false;
+                        globalCountdown = 61;
+                    }
+
                     for (Player player : queue) {
                         FastBoard board = boards.computeIfAbsent(player.getUniqueId(), k -> new FastBoard(player));
                         if(starting) {
@@ -159,9 +184,10 @@ public class CaptureTheFlag extends Minigame {
                                 case 2 -> TextColor.color(0xFF4500);
                                 case 3 -> TextColor.color(0xFFA500);
                                 case 4 -> TextColor.color(0xFFFF00);
-                                case 5 -> NamedTextColor.GREEN;
-                                default -> NamedTextColor.WHITE;
+                                default -> NamedTextColor.GREEN;
                             };
+
+                            board.updateLine(1, ChatColor.AQUA + "In Queue: " + ChatColor.YELLOW + queue.size());
 
                             Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
                             Title title = Title.title(
@@ -170,7 +196,9 @@ public class CaptureTheFlag extends Minigame {
                             );
 
                             player.showTitle(title);
-                            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
+                            if (globalCountdown < 6) {
+                                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
+                            }
                         } else {
                             board.updateTitle(ChatColor.GOLD + "Capture the Flag");
                             board.updateLine(0, ChatColor.GRAY +"+=+=+=+=+=+=+=+=+=+=+");
@@ -179,7 +207,7 @@ public class CaptureTheFlag extends Minigame {
                         }
                     }
                 }
-            }.runTaskTimer(Minerva.getInstance(), 0, 20);
+            }.runTaskTimer(Minerva.getInstance(), 0, 20l);
         }
     }
 
@@ -395,181 +423,168 @@ public class CaptureTheFlag extends Minigame {
             return;
         }
 
-        starting = true;
         preparePhase = true;
+        ScoreboardManager manager = Bukkit.getScoreboardManager();
+        scoreboard = manager.getNewScoreboard();
 
-        new BukkitRunnable() {
+        blueTeam = scoreboard.registerNewTeam("Blue");
+        blueTeam.color(NamedTextColor.BLUE);
+        blueTeam.setAllowFriendlyFire(false);
 
+        redTeam = scoreboard.registerNewTeam("Red");
+        redTeam.color(NamedTextColor.RED);
+        redTeam.setAllowFriendlyFire(false);
+
+        inGame.addAll(queue);
+        Collections.shuffle(inGame);
+        queue.clear();
+
+        saveAndClearInventories(inGame);
+
+        startTimer = new BukkitRunnable() {
             @Override
             public void run() {
-                if (globalCountdown > 0) globalCountdown--;
-                else {
-                    ScoreboardManager manager = Bukkit.getScoreboardManager();
-                    scoreboard = manager.getNewScoreboard();
+                if (startingTimerTicks <= 54) {
+                    startingTimerTicks++;
+                    return;
+                }
 
-                    blueTeam = scoreboard.registerNewTeam("Blue");
-                    blueTeam.color(NamedTextColor.BLUE);
-                    blueTeam.setAllowFriendlyFire(false);
-
-                    redTeam = scoreboard.registerNewTeam("Red");
-                    redTeam.color(NamedTextColor.RED);
-                    redTeam.setAllowFriendlyFire(false);
-
-                    inGame.addAll(queue);
-                    Collections.shuffle(inGame);
-                    queue.clear();
-
-                    saveAndClearInventories(inGame);
-
-                    startTimer = new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            if (startingTimerTicks <= 54) {
-                                startingTimerTicks++;
-                                return;
-                            }
-
-                            Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
-                            if (startingTimerTicks == 60) {
-                                autoPlaceBanner("blue");
-                                autoPlaceBanner("red");
-                                preparePhase = false;
-                                Title title = Title.title(
-                                        Component.text("Go!"),
-                                        Component.text("the barriers have lifted."), times
-                                );
-                                for (Player player : inGame) {
-                                    player.showTitle(title);
-                                    player.playSound(player.getLocation(), Sound.ITEM_GOAT_HORN_SOUND_0, 1, 1);
-                                }
-                                this.cancel();
-                            } else {
-                                TextColor color = switch (60 - startingTimerTicks) {
-                                    case 1 -> TextColor.color(0xFF0024);
-                                    case 2 -> TextColor.color(0xFFA500);
-                                    case 3 -> NamedTextColor.GREEN;
-                                    default -> NamedTextColor.WHITE;
-                                };
-
-                                Title title = Title.title(
-                                        Component.text((60 - startingTimerTicks) + "", color),
-                                        Component.text("seconds before the barrier drops."), times
-                                );
-
-                                for (Player player : inGame) {
-                                    player.showTitle(title);
-                                    player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
-                                }
-                            }
-
-                            startingTimerTicks++;
-                        }
-                    }.runTaskTimer(Minerva.getInstance(), 0L, 20L);
-
-                    boolean startWithBlue = new Random().nextBoolean();
-                    int i = 0;
-                    int blueRemainder = 0;
-                    if (!startWithBlue) {
-                        blueRemainder = 1;
-                    }
+                Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO);
+                if (startingTimerTicks == 60) {
+                    autoPlaceBanner("blue");
+                    autoPlaceBanner("red");
+                    preparePhase = false;
+                    Title title = Title.title(
+                            Component.text("Go!"),
+                            Component.text("the barriers have lifted."), times
+                    );
                     for (Player player : inGame) {
-                        startLoc.put(player.getUniqueId(), player.getLocation());
-                        player.setHealth(player.getMaxHealth());
-                        player.setFoodLevel(20);
-                        player.clearActivePotionEffects();
-
-                        player.sendMessage(Component.text("The barrier will drop soon. You have 60 seconds to prepare. Used items will ", NamedTextColor.GOLD).append(Component.text("NOT", NamedTextColor.RED).decorate(TextDecoration.BOLD)).append(Component.text(" replenish after death", NamedTextColor.GOLD)));
-
-                        Random random = new Random();
-                        random.setSeed(System.currentTimeMillis() + random.nextInt(1000));
-                        if (i % 2 == blueRemainder) {
-                            blue.add(player);
-                            blueTeam.addEntry(player.getName());
-                            player.setScoreboard(scoreboard);
-                            player.sendMessage(
-                                    Component.text("You are on the ")
-                                            .append(Component.text("blue", NamedTextColor.BLUE, TextDecoration.BOLD))
-                                            .append(Component.text(" team!"))
-                            );
-                            player.getInventory().addItem(blueFlagBreaker());
-                            int size = blueSpawn.size();
-                            int randInt = (size <= 1) ? 0 : random.nextInt(size);
-                            player.teleport(blueSpawn.get(randInt));
-                            Minerva.runPermCommand(player, "venturechat.blueteamchat");
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    Minerva.runChannelCommand(player, "blueteam");
-                                }
-                            }.runTaskLater(Minerva.getInstance(), 5L);
-                        } else {
-                            red.add(player);
-                            redTeam.addEntry(player.getName());
-                            player.setScoreboard(scoreboard);
-                            player.sendMessage(
-                                    Component.text("You are on the ")
-                                            .append(Component.text("red", NamedTextColor.RED, TextDecoration.BOLD))
-                                            .append(Component.text(" team!"))
-                            );
-                            player.getInventory().addItem(redFlagBreaker());
-                            int size = redSpawn.size();
-                            int randInt = (size <= 1) ? 0 : random.nextInt(size);
-                            player.teleport(redSpawn.get(randInt));
-                            Minerva.runPermCommand(player, "venturechat.redteamchat");
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    Minerva.runChannelCommand(player, "redteam");
-                                }
-                            }.runTaskLater(Minerva.getInstance(), 5L);
-                        }
-
-                        player.showTitle(Title.title(Component.text("Game Started!", NamedTextColor.GREEN), Component.empty()));
-                        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
-                        player.setGameMode(GameMode.ADVENTURE);
-                        kits(player, "ctf");
-                        i++;
+                        player.showTitle(title);
+                        player.playSound(player.getLocation(), Sound.ITEM_GOAT_HORN_SOUND_0, 1, 1);
                     }
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            Random random = new Random();
-                            random.setSeed(System.currentTimeMillis() + random.nextInt(1000));
-                            // Add blue flag to random player in blue team's inventory
-                            if (!blue.isEmpty()) {
-                                int randomIndex;
-                                if (blue.size() <= 1) {
-                                    randomIndex = 0;
-                                } else {
-                                    randomIndex = random.nextInt(blue.size());
-                                }
-                                if (randomIndex >= 0 && randomIndex < blue.size()) {
-                                    blue.get(randomIndex).getInventory().addItem(blueFlag());
-                                    blue.get(randomIndex).sendMessage(Component.text("You have been given the flag for your team! Place it on Mycelium (the purple mushroom dirt stuff) and defend it (with your life)", NamedTextColor.YELLOW));
-                                }
-                            }
-
-                            if (!red.isEmpty()) {
-                                int randomIndex;
-                                if (red.size() <= 1) {
-                                    randomIndex = 0;
-                                } else {
-                                    randomIndex = random.nextInt(red.size());
-                                }
-                                if (randomIndex >= 0 && randomIndex < red.size()) {
-                                    red.get(randomIndex).getInventory().addItem(redFlag());
-                                    red.get(randomIndex).sendMessage(Component.text("You have been given the flag for your team! Place it on Podzol (the dark brown grass) and defend it (with your life)"));
-                                }
-                            }
-                        }
-                    }.runTaskLater(Minerva.getInstance(), 1L);
-
-                    playing = true;
-                    starting = false;
                     this.cancel();
+                } else {
+                    TextColor color = switch (60 - startingTimerTicks) {
+                        case 1 -> TextColor.color(0xFF0024);
+                        case 2 -> TextColor.color(0xFFA500);
+                        case 3 -> NamedTextColor.GREEN;
+                        default -> NamedTextColor.WHITE;
+                    };
+
+                    Title title = Title.title(
+                            Component.text((60 - startingTimerTicks) + "", color),
+                            Component.text("seconds before the barrier drops."), times
+                    );
+
+                    for (Player player : inGame) {
+                        player.showTitle(title);
+                        player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
+                    }
+                }
+
+                startingTimerTicks++;
+            }
+        }.runTaskTimer(Minerva.getInstance(), 0L, 20L);
+
+        boolean startWithBlue = new Random().nextBoolean();
+        int i = 0;
+        int blueRemainder = 0;
+        if (!startWithBlue) {
+            blueRemainder = 1;
+        }
+        for (Player player : inGame) {
+            startLoc.put(player.getUniqueId(), player.getLocation());
+            player.setHealth(player.getMaxHealth());
+            player.setFoodLevel(20);
+            player.clearActivePotionEffects();
+
+            player.sendMessage(Component.text("The barrier will drop soon. You have 60 seconds to prepare. Used items will ", NamedTextColor.GOLD).append(Component.text("NOT", NamedTextColor.RED).decorate(TextDecoration.BOLD)).append(Component.text(" replenish after death", NamedTextColor.GOLD)));
+
+            Random random = new Random();
+            random.setSeed(System.currentTimeMillis() + random.nextInt(1000));
+            if (i % 2 == blueRemainder) {
+                blue.add(player);
+                blueTeam.addEntry(player.getName());
+                player.setScoreboard(scoreboard);
+                player.sendMessage(
+                        Component.text("You are on the ")
+                                .append(Component.text("blue", NamedTextColor.BLUE, TextDecoration.BOLD))
+                                .append(Component.text(" team!"))
+                );
+                player.getInventory().addItem(blueFlagBreaker());
+                int size = blueSpawn.size();
+                int randInt = (size <= 1) ? 0 : random.nextInt(size);
+                player.teleport(blueSpawn.get(randInt));
+                Minerva.runPermCommand(player, "venturechat.blueteamchat");
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        Minerva.runChannelCommand(player, "blueteam");
+                    }
+                }.runTaskLater(Minerva.getInstance(), 5L);
+            } else {
+                red.add(player);
+                redTeam.addEntry(player.getName());
+                player.setScoreboard(scoreboard);
+                player.sendMessage(
+                        Component.text("You are on the ")
+                                .append(Component.text("red", NamedTextColor.RED, TextDecoration.BOLD))
+                                .append(Component.text(" team!"))
+                );
+                player.getInventory().addItem(redFlagBreaker());
+                int size = redSpawn.size();
+                int randInt = (size <= 1) ? 0 : random.nextInt(size);
+                player.teleport(redSpawn.get(randInt));
+                Minerva.runPermCommand(player, "venturechat.redteamchat");
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        Minerva.runChannelCommand(player, "redteam");
+                    }
+                }.runTaskLater(Minerva.getInstance(), 5L);
+            }
+
+            player.showTitle(Title.title(Component.text("Game Started!", NamedTextColor.GREEN), Component.empty()));
+            player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
+            player.setGameMode(GameMode.ADVENTURE);
+            kits(player, "ctf");
+            i++;
+        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Random random = new Random();
+                random.setSeed(System.currentTimeMillis() + random.nextInt(1000));
+                // Add blue flag to random player in blue team's inventory
+                if (!blue.isEmpty()) {
+                    int randomIndex;
+                    if (blue.size() <= 1) {
+                        randomIndex = 0;
+                    } else {
+                        randomIndex = random.nextInt(blue.size());
+                    }
+                    if (randomIndex >= 0 && randomIndex < blue.size()) {
+                        blue.get(randomIndex).getInventory().addItem(blueFlag());
+                        blue.get(randomIndex).sendMessage(Component.text("You have been given the flag for your team! Place it on Mycelium (the purple mushroom dirt stuff) and defend it (with your life)", NamedTextColor.YELLOW));
+                    }
+                }
+
+                if (!red.isEmpty()) {
+                    int randomIndex;
+                    if (red.size() <= 1) {
+                        randomIndex = 0;
+                    } else {
+                        randomIndex = random.nextInt(red.size());
+                    }
+                    if (randomIndex >= 0 && randomIndex < red.size()) {
+                        red.get(randomIndex).getInventory().addItem(redFlag());
+                        red.get(randomIndex).sendMessage(Component.text("You have been given the flag for your team! Place it on Podzol (the dark brown grass) and defend it (with your life)"));
+                    }
                 }
             }
-        }.runTaskTimer(Minerva.getInstance(), 0, 20L);
+        }.runTaskLater(Minerva.getInstance(), 1L);
+
+        playing = true;
     }
 
     public static void autoPlaceBanner(String team) {
