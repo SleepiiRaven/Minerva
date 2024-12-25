@@ -2,8 +2,10 @@ package net.minervamc.minerva.skills.greek.hephaestus;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
+import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
@@ -163,6 +165,16 @@ public class Magmatism extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemCreator.create(Material.MAGMA_BLOCK);
+        return ItemCreator.get(Material.MAGMA_BLOCK)
+                .setName(TextContext.formatLegacy("&lMagmatism", false).color(NamedTextColor.RED))
+                .setLore(List.of(
+                        TextContext.formatLegacy("&7Tear magma from beneath", false),
+                        TextContext.formatLegacy("&7the ground around you,", false),
+                        TextContext.formatLegacy("&7then shoot it outwards in", false),
+                        TextContext.formatLegacy("&7a circle. Upon hitting", false),
+                        TextContext.formatLegacy("&7enemies, the magma will", false),
+                        TextContext.formatLegacy("&7push them back, damage them,", false),
+                        TextContext.formatLegacy("&7and light them ablaze.", false)
+                )).build();
     }
 }

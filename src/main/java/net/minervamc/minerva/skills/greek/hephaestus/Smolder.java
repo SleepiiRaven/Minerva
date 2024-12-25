@@ -2,7 +2,9 @@ package net.minervamc.minerva.skills.greek.hephaestus;
 
 import java.util.List;
 import java.util.Random;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
@@ -133,6 +135,16 @@ public class Smolder extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemCreator.create(Material.BLAZE_POWDER);
+        return ItemCreator.get(Material.BLAZE_POWDER)
+                .setName(TextContext.formatLegacy("&lSmolder", false).color(NamedTextColor.GOLD))
+                .setLore(List.of(
+                        TextContext.formatLegacy("&7When you get hit, gain a", false),
+                        TextContext.formatLegacy("&7stack of Smolder. With a", false),
+                        TextContext.formatLegacy("&7maximum of 5 stacks, each", false),
+                        TextContext.formatLegacy("&7stack increases your next", false),
+                        TextContext.formatLegacy("&7hit's damage by an exponential", false),
+                        TextContext.formatLegacy("&7amount. Smolder stacks are", false),
+                        TextContext.formatLegacy("&7used in other skills as well.", false)
+                )).build();
     }
 }

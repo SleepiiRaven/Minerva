@@ -19,6 +19,8 @@ commands:
   unfocus:
     description: Stop focusing on the item in your hand, removing the ability to use skills from it.
     usage: "§6Correct usage: /unfocus"
+  omegatrail:
+    description: Open the GUI to select your Omega Trail.
   permissions:
     minerva.skills.set:
       description: Allows you to set your own stats
@@ -34,3 +36,5 @@ commands:
       description: Allows you to choose Poseidon in the Skills GUI.
     minerva.bigthree.hades:
       description: Allows you to choose Hades in the Skills GUI.
+    minerva.omegatrail:
+      description: Allows you to have a trail behind your player.

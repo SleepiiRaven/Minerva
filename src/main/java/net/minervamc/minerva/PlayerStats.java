@@ -27,16 +27,17 @@ public class PlayerStats {
     public static Map<UUID, PlayerStats> playerStats = new HashMap<>();
     private final Path storage;
 
+    //region Getters
     //region Stats
-    private final UUID uuid;
+    @Getter private final UUID uuid;
     public SkillTriggers skillTriggers;
     public boolean skillMode = true;
-    private HeritageType heritage = HeritageType.NONE;
-    private Skill skillRRR = Skills.DEFAULT;
-    private Skill skillRLR = Skills.DEFAULT;
-    private Skill skillRLL = Skills.DEFAULT;
-    private Skill skillRRL = Skills.DEFAULT;
-    private Skill passive = Skills.DEFAULT_PASSIVE;
+    @Getter private HeritageType heritage = HeritageType.NONE;
+    @Getter private Skill skillRRR = Skills.DEFAULT;
+    @Getter private Skill skillRLR = Skills.DEFAULT;
+    @Getter private Skill skillRLL = Skills.DEFAULT;
+    @Getter private Skill skillRRL = Skills.DEFAULT;
+    @Getter private Skill passive = Skills.DEFAULT_PASSIVE;
     private boolean rrrActive = true;
     private boolean rlrActive = true;
     private boolean rllActive = true;
@@ -46,13 +47,25 @@ public class PlayerStats {
     private int rlrLevel = 1;
     private int rllLevel = 1;
     private int rrlLevel = 1;
+    @Getter
+    @Setter
     private int passiveLevel = 1;
+    @Getter
+    @Setter
     private int maxLevel = 1;
+    @Getter
+    @Setter
     private int maxPoints = 0;
+    @Getter
+    @Setter
     private int points = 0;
     @Setter @Getter private Location logoutLoc;
+    @Setter @Getter private String omegaTrail = "rainbow";
+    @Getter
     private ItemStack[] inventory = new ItemStack[36];
+    @Getter
     private ItemStack[] armor = new ItemStack[4];
+    @Getter
     private ItemStack[] offhand = new ItemStack[1];
     @Setter @Getter private Map<String, Integer> stackingAbilities = new HashMap<>();
     @Setter @Getter private static Map<Player, List<Entity>> summoned = new HashMap<>();
@@ -119,15 +132,6 @@ public class PlayerStats {
         }
     }
 
-    //region Getters
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public HeritageType getHeritage() {
-        return heritage;
-    }
-
     //region Setters
     public void setHeritage(HeritageType heritage) {
         if (heritage == null) {
@@ -135,10 +139,6 @@ public class PlayerStats {
         } else {
             this.heritage = heritage;
         }
-    }
-
-    public Skill getSkillRRR() {
-        return skillRRR;
     }
 
     public void setSkillRRR(Skill skillRRR) {
@@ -149,20 +149,12 @@ public class PlayerStats {
         }
     }
 
-    public Skill getSkillRLR() {
-        return skillRLR;
-    }
-
     public void setSkillRLR(Skill skillRLR) {
         if (skillRLR == null) {
             this.skillRLR = Skills.DEFAULT;
         } else {
             this.skillRLR = skillRLR;
         }
-    }
-
-    public Skill getSkillRLL() {
-        return skillRLL;
     }
 
     public void setSkillRLL(Skill skillRLL) {
@@ -173,20 +165,12 @@ public class PlayerStats {
         }
     }
 
-    public Skill getSkillRRL() {
-        return skillRRL;
-    }
-
     public void setSkillRRL(Skill skillRRL) {
         if (skillRRL == null) {
             this.skillRRL = Skills.DEFAULT;
         } else {
             this.skillRRL = skillRRL;
         }
-    }
-
-    public Skill getPassive() {
-        return passive;
     }
 
     public void setPassive(Skill passive) {
@@ -230,12 +214,12 @@ public class PlayerStats {
         rrlActive = active;
     }
 
-    public boolean getPassiveActive() {
-        return passiveActive;
-    }
-
     public void setPassiveActive(boolean active) {
         passiveActive = active;
+    }
+
+    public boolean getPassiveActive() {
+        return passiveActive;
     }
 
     public int getRRRLevel() {
@@ -269,51 +253,7 @@ public class PlayerStats {
     public void setRRLLevel(int level) {
         rrlLevel = level;
     }
-
-    public int getPassiveLevel() {
-        return passiveLevel;
-    }
-
-    public void setPassiveLevel(int level) {
-        passiveLevel = level;
-    }
-
-    public int getMaxLevel() {
-        return maxLevel;
-    }
-
-    public void setMaxLevel(int maxLevel) {
-        this.maxLevel = maxLevel;
-    }
-
-    public int getPoints() {
-        return points;
-    }
     //endregion
-
-    public void setPoints(int points) {
-        this.points = points;
-    }
-
-    public int getMaxPoints() {
-        return maxPoints;
-    }
-
-    public void setMaxPoints(int points) {
-        maxPoints = points;
-    }
-
-    public ItemStack[] getInventory() {
-        return inventory;
-    }
-
-    public ItemStack[] getArmor() {
-        return armor;
-    }
-
-    public ItemStack[] getOffhand() {
-        return offhand;
-    }
 
     public void setInventory(ItemStack[] inventory) {
         if (inventory == null) {

@@ -91,8 +91,8 @@ public class ParticleUtils {
         List<Vector> points = new ArrayList<>();
         for (int i = 0; i < particles; i++) {
             double theta = i * 2 * Math.PI / particles;
-            double x = radius * Math.sin(theta);
-            double y = radius * Math.cos(theta);
+            double x = radius * Math.cos(theta);
+            double y = radius * Math.sin(theta);
 
             Vector point = new Vector(x, y, 0);
             point = rotateXAxis(point, pitch);
@@ -101,6 +101,14 @@ public class ParticleUtils {
             points.add(point);
         }
         return points;
+    }
+
+    public static Color colorFromHex(String hexCode) {
+        hexCode = hexCode.replace("#", "");
+        int resultRed = Integer.valueOf(hexCode.substring(0, 2), 16);
+        int resultGreen = Integer.valueOf(hexCode.substring(2, 4), 16);
+        int resultBlue = Integer.valueOf(hexCode.substring(4, 6), 16);
+        return Color.fromRGB(resultRed, resultGreen, resultBlue);
     }
 
     public static List<Vector> getSpiralPoints(double radius, double radiusIncrease, double maxY) {
@@ -211,15 +219,32 @@ public class ParticleUtils {
         return points;
     }
 
-    public static List<Vector> getCubicBezierPoints(Vector A, Vector B, Vector C, Vector D, double particles) {
+    public static List<Vector> getNthBezierPoints(int particles, Vector... vecs) {
         List<Vector> points = new ArrayList<>();
-        for (double i = 0; i <= particles; i += 1) {
-            double t = i / particles;
+        int n = vecs.length - 1;
+        for (int i = 0; i <= particles; i++) {
+            double t = i / (double) particles;
             double u = 1 - t;
-            Vector bezierPoint = A.clone().multiply(Math.pow(u, 3)).add(B.clone().multiply(3 * t * Math.pow(u, 2))).add(C.clone().multiply(3 * u * Math.pow(t, 2))).add(D.clone().multiply(Math.pow(t, 3)));
+
+            Vector bezierPoint = new Vector(0, 0, 0);
+
+            for (int j = 0; j <= n; j++) {
+                double binomialCoefficient = factorial(n) / (factorial(j) * factorial(n - j));
+                double basis = binomialCoefficient * Math.pow(u, j) * Math.pow(t, n - j);
+                Vector temp = vecs[j].clone().multiply(basis);
+
+                bezierPoint.add(temp);
+            }
+
             points.add(bezierPoint.clone());
         }
         return points;
+    }
+
+    public static double factorial(double n) {
+        long fact = 1;
+        for (int i = 2; i <= n; i++) fact = fact*i;
+        return fact;
     }
 
     public static Vector rotateXAxis(Vector position, double degrees) {

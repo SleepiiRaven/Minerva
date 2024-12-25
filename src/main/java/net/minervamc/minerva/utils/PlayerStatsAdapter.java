@@ -51,6 +51,7 @@ public class PlayerStatsAdapter implements JsonSerializer<PlayerStats>, JsonDese
         object.addProperty("inventory", itemStackArrayToBase64(data.getInventory()));
         object.addProperty("armor", itemStackArrayToBase64(data.getArmor()));
         object.addProperty("offhand", itemStackArrayToBase64(data.getOffhand()));
+        object.addProperty("omegaTrail", data.getOmegaTrail());
         return object;
     }
 
@@ -122,7 +123,8 @@ public class PlayerStatsAdapter implements JsonSerializer<PlayerStats>, JsonDese
             else playerDataJSON.setMaxPoints(object.get("maxPoints").getAsInt());
             if (!object.has("logoutLoc")) playerDataJSON.setLogoutLoc(null);
             else playerDataJSON.setLogoutLoc(stringToLocation(object.get("logoutLoc").getAsString()));
-
+            if (!object.has("omegaTrail")) playerDataJSON.setOmegaTrail("rainbow");
+            else playerDataJSON.setOmegaTrail(object.get("omegaTrail").getAsString());
             try {
                 if (object.has("inventory")) {
                     playerDataJSON.setInventory(itemStackArrayFromBase64(object.get("inventory").getAsString()));

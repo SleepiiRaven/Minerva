@@ -2,8 +2,10 @@ package net.minervamc.minerva.skills.greek.hephaestus;
 
 import java.util.List;
 import java.util.Random;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
+import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.listeners.CombatListener;
 import net.minervamc.minerva.party.Party;
@@ -64,7 +66,7 @@ public class LivingForge extends Skill {
         init.setSmall(true);
         init.getEquipment().setHelmet(new ItemStack(Material.IRON_BLOCK));
         init.setVelocity(player.getLocation().getDirection());
-        List<Vector> curve = ParticleUtils.getCubicBezierPoints(new Vector(5, 2.5, 0), new Vector(0, 5, 0), new Vector(5, 0, 0), new Vector(0, 0, 0), 20);
+        List<Vector> curve = ParticleUtils.getNthBezierPoints(20, new Vector(5, 2.5, 0), new Vector(0, 5, 0), new Vector(5, 0, 0), new Vector(0, 0, 0), new Vector(0, 0, 0));
 
         new BukkitRunnable() {
             int ticks = 0;
@@ -170,6 +172,22 @@ public class LivingForge extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemCreator.create(Material.IRON_BLOCK);
+        return ItemCreator.get(Material.IRON_BLOCK)
+                .setName(TextContext.formatLegacy("&lLiving Forge", false).color(NamedTextColor.DARK_AQUA))
+                .setLore(List.of(
+                        TextContext.formatLegacy("&7Throw a chunk of materials", false),
+                        TextContext.formatLegacy("&7and channel your power into", false),
+                        TextContext.formatLegacy("&7it. After a short duration,", false),
+                        TextContext.formatLegacy("&7a golem will build itself", false),
+                        TextContext.formatLegacy("&7out of those scraps and", false),
+                        TextContext.formatLegacy("&7fight with you. Light it", false),
+                        TextContext.formatLegacy("&7ablaze with magmatism or", false),
+                        TextContext.formatLegacy("&7the smoldered version of", false),
+                        TextContext.formatLegacy("&8Groundbreaker &7to overheat", false),
+                        TextContext.formatLegacy("&7it, gaining strength and", false),
+                        TextContext.formatLegacy("&7speed. Explode it with a", false),
+                        TextContext.formatLegacy("&7Shrapnel Grenade to create", false),
+                        TextContext.formatLegacy("&7a bigger explosion.", false)
+                )).build();
     }
 }

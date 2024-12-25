@@ -2,8 +2,10 @@ package net.minervamc.minerva.skills.greek.hephaestus;
 
 import java.util.List;
 import java.util.Random;
+import net.kyori.adventure.text.format.TextColor;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
+import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
@@ -207,6 +209,17 @@ public class ShrapnelGrenade extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemCreator.create(Material.FIREWORK_STAR);
+        return ItemCreator.get(Material.FIREWORK_STAR)
+                .setName(TextContext.formatLegacy("&lShrapnel Grenade", false).color(TextColor.color(160,82,45)))
+                .setLore(List.of(
+                        TextContext.formatLegacy("&7Shoot a grenade that,", false),
+                        TextContext.formatLegacy("&7upon landing, explodes.", false),
+                        TextContext.formatLegacy("&7Entities hit in the explosion", false),
+                        TextContext.formatLegacy("&7will suffer damage and a", false),
+                        TextContext.formatLegacy("&7large amount of knockback.", false),
+                        TextContext.formatLegacy("&7This could be used as a", false),
+                        TextContext.formatLegacy("&7movement ability, given", false),
+                        TextContext.formatLegacy("&7sharp aim and great timing.", false)
+                )).build();
     }
 }

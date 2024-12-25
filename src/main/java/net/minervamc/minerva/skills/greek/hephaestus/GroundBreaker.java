@@ -1,7 +1,10 @@
 package net.minervamc.minerva.skills.greek.hephaestus;
 
+import java.util.List;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
+import net.minervamc.minerva.lib.text.TextContext;
 import net.minervamc.minerva.lib.util.ItemCreator;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
@@ -191,6 +194,18 @@ public class GroundBreaker extends Skill {
 
     @Override
     public ItemStack getItem() {
-        return ItemCreator.create(Material.ANVIL);
+        return ItemCreator.get(Material.ANVIL)
+                .setName(TextContext.formatLegacy("&lGroundbreaker", false).color(NamedTextColor.GRAY))
+                .setLore(List.of(
+            TextContext.formatLegacy("&7An anvil will fall from", false),
+            TextContext.formatLegacy("&7the skies where you aim,", false),
+            TextContext.formatLegacy("&7and upon landing, it will", false),
+            TextContext.formatLegacy("&7damage enemies and cause a", false),
+            TextContext.formatLegacy("&7stunning shockwave. If you", false),
+            TextContext.formatLegacy("&7have a stack of smolder,", false),
+            TextContext.formatLegacy("&7the shockwave will light", false),
+            TextContext.formatLegacy("&7ablaze, setting enemies", false),
+            TextContext.formatLegacy("&7on fire.", false)
+        )).build();
     }
 }
