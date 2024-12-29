@@ -65,7 +65,7 @@ public abstract class Skill {
             case "vineWhip" -> Skills.VINE_WHIP;
             case "madGodsDrink" -> Skills.MAD_GODS_DRINK;
             case "aresBlessing" -> Skills.ARES_BLESSING;
-            case "spiritOfVengeance" -> Skills.SPIRITOFVENGEANCE;
+            case "spiritOfVengeance" -> Skills.SPIRIT_OF_VENGEANCE;
             case "cleave" -> Skills.CLEAVE;
             case "primalScream" -> Skills.PRIMAL_SCREAM;
             case "tomahawkThrow" -> Skills.TOMAHAWK_THROW;
@@ -74,11 +74,11 @@ public abstract class Skill {
             case "magmatism" -> Skills.MAGMATISM;
             case "shrapnelGrenade" -> Skills.SHRAPNEL_GRENADE;
             case "smolder" -> Skills.SMOLDER;
-            case "bittersweet" -> Skills.BITTERSWEET;
+            case "centerOfAttention" -> Skills.CENTER_OF_ATTENTION;
             case "charm" -> Skills.CHARM;
             case "blindingLove" -> Skills.BLINDING_LOVE;
             case "mirrorImage" -> Skills.MIRROR_IMAGE;
-            case "heartbreak" -> Skills.HEARTBREAK;
+            case "heartSeeker" -> Skills.HEART_SEEKER;
             default -> Skills.DEFAULT;
         };
     }

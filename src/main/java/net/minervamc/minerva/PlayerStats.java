@@ -86,7 +86,24 @@ public class PlayerStats {
         }
     }
 
+    public static void summon(Player player, Entity entity) {
+        summoned.get(player).add(entity);
+    }
+
+    public static void removeSummon(Player player, Entity entity) {
+        summoned.get(player).remove(entity);
+    }
+
+    public static void removeAllSummons() {
+        for (UUID uuid : playerStats.keySet()) {
+            for (Entity entity : summoned.get(Bukkit.getPlayer(uuid))) {
+                entity.remove();
+            }
+        }
+    }
+
     public static boolean isSummoned(Player player, Entity entity) {
+        if (summoned.get(player) == null) return false;
         return summoned.get(player).contains(entity);
     }
 

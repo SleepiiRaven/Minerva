@@ -8,7 +8,15 @@ import org.bukkit.inventory.ItemStack;
 public class Charm extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
+        long cooldown = 10000;
 
+        if (!cooldownManager.isCooldownDone(player.getUniqueId(), "charm")) {
+            onCooldown(player);
+            return;
+        }
+
+        cooldownManager.setCooldownFromNow(player.getUniqueId(), "charm", cooldown);
+        cooldownAlarm(player, cooldown, "Charm");
     }
 
     @Override

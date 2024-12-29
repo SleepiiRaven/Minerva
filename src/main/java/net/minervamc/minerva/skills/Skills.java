@@ -1,9 +1,9 @@
 package net.minervamc.minerva.skills;
 
-import net.minervamc.minerva.skills.greek.aphrodite.Bittersweet;
+import net.minervamc.minerva.skills.greek.aphrodite.CenterOfAttention;
 import net.minervamc.minerva.skills.greek.aphrodite.BlindingLove;
 import net.minervamc.minerva.skills.greek.aphrodite.Charm;
-import net.minervamc.minerva.skills.greek.aphrodite.Heartbreak;
+import net.minervamc.minerva.skills.greek.aphrodite.HeartSeeker;
 import net.minervamc.minerva.skills.greek.aphrodite.MirrorImage;
 import net.minervamc.minerva.skills.greek.apollo.ApollosHymn;
 import net.minervamc.minerva.skills.greek.apollo.ArrowsOfTheSun;
@@ -80,7 +80,7 @@ public interface Skills {
     Skill VINE_WHIP = new VineWhip();
     Skill MAD_GODS_DRINK = new MadGodsDrink();
     Skill ARES_BLESSING = new AresBlessing();
-    Skill SPIRITOFVENGEANCE = new SpiritOfVengeance();
+    Skill SPIRIT_OF_VENGEANCE = new SpiritOfVengeance();
     Skill CLEAVE = new Cleave();
     Skill PRIMAL_SCREAM = new PrimalScream();
     Skill TOMAHAWK_THROW = new TomahawkThrow();
@@ -91,8 +91,8 @@ public interface Skills {
     Skill SMOLDER = new Smolder();
     Skill BLINDING_LOVE = new BlindingLove();
     Skill CHARM = new Charm();
-    Skill HEARTBREAK = new Heartbreak();
+    Skill HEART_SEEKER = new HeartSeeker();
     Skill MIRROR_IMAGE = new MirrorImage();
-    Skill BITTERSWEET = new Bittersweet();
+    Skill CENTER_OF_ATTENTION = new CenterOfAttention();
     Skill DEFAULT = new DefaultSkill();
 }

@@ -5,10 +5,9 @@ import net.minervamc.minerva.types.Skill;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class Heartbreak extends Skill {
+public class CenterOfAttention extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-
     }
 
     @Override
@@ -18,7 +17,7 @@ public class Heartbreak extends Skill {
 
     @Override
     public String toString() {
-        return "heartbreak";
+        return "centerOfAttention";
     }
 
     @Override

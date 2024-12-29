@@ -111,11 +111,11 @@ public class SkillUtils {
             case DIONYSUS, BACCHUS ->
                     setSkills(player, Skills.VINE_WHIP, Skills.GRAPE_SHOT, Skills.MAD_GODS_DRINK, Skills.FRENZIED_DANCE, Skills.DRUNKEN_REVELRY);
             case ARES, MARS ->
-                    setSkills(player, Skills.SPIRITOFVENGEANCE, Skills.TOMAHAWK_THROW, Skills.CLEAVE, Skills.PRIMAL_SCREAM, Skills.ARES_BLESSING);
+                    setSkills(player, Skills.SPIRIT_OF_VENGEANCE, Skills.TOMAHAWK_THROW, Skills.CLEAVE, Skills.PRIMAL_SCREAM, Skills.ARES_BLESSING);
             case HEPHAESTUS, VULCAN ->
                     setSkills(player, Skills.SHRAPNEL_GRENADE, Skills.MAGMATISM, Skills.LIVING_FORGE, Skills.GROUND_BREAKER, Skills.SMOLDER);
             case APHRODITE, VENUS ->
-                    setSkills(player, Skills.MIRROR_IMAGE, Skills.CHARM, Skills.HEARTBREAK, Skills.BLINDING_LOVE, Skills.BITTERSWEET);
+                    setSkills(player, Skills.MIRROR_IMAGE, Skills.CHARM, Skills.HEART_SEEKER, Skills.BLINDING_LOVE, Skills.CENTER_OF_ATTENTION);
         }
     }
 

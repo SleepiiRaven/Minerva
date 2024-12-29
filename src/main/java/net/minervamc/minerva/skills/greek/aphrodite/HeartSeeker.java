@@ -5,9 +5,18 @@ import net.minervamc.minerva.types.Skill;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class Bittersweet extends Skill {
+public class HeartSeeker extends Skill {
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
+        long cooldown = 10000;
+
+        if (!cooldownManager.isCooldownDone(player.getUniqueId(), "heartSeeker")) {
+            onCooldown(player);
+            return;
+        }
+
+        cooldownManager.setCooldownFromNow(player.getUniqueId(), "heartSeeker", cooldown);
+        cooldownAlarm(player, cooldown, "Heart Seeker");
     }
 
     @Override
@@ -17,7 +26,7 @@ public class Bittersweet extends Skill {
 
     @Override
     public String toString() {
-        return "bittersweet";
+        return "heartSeeker";
     }
 
     @Override

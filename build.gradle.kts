@@ -35,6 +35,10 @@ repositories {
         name = "citizens-repo"
         url = uri("https://maven.citizensnpcs.co/repo")
     }
+    maven {
+        name = "dmulloy2-repo"
+        url = uri("https://repo.dmulloy2.net/repository/public/")
+    }
 }
 
 dependencies {
@@ -44,6 +48,7 @@ dependencies {
     compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
     compileOnly("com.onarandombox.multiversecore:Multiverse-Core:4.3.1")
     compileOnly("net.citizensnpcs:citizens-main:2.0.36-SNAPSHOT")
+    compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0")
     implementation ("fr.mrmicky:fastboard:2.1.3")
     paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
 }

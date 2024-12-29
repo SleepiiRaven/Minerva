@@ -67,6 +67,7 @@ public final class Minerva extends JavaPlugin {
     public void onDisable() {
         CaptureTheFlag.stop("");
         PlayerStats.saveAll();
+        PlayerStats.removeAllSummons();
         RegionManager.saveRegionsToFile(); // not really necessary but safer
 
 //        for (NPC npc : PlayerListener.npcs.values()) {

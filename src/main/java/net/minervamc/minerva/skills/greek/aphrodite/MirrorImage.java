@@ -6,9 +6,14 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.Gravity;
 import net.citizensnpcs.trait.SkinTrait;
 import net.minervamc.minerva.Minerva;
+import net.minervamc.minerva.PlayerStats;
+import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.types.Skill;
+import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -17,6 +22,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -24,7 +31,21 @@ public class MirrorImage extends Skill {
 
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
-        long dur = 200;
+        long dur = 150;
+        double rad = 3;
+        double damage = 4;
+        int blindnessDur = 40;
+        int blindnessAmp = 1;
+        long cooldown = 20000;
+
+        if (!cooldownManager.isCooldownDone(player.getUniqueId(), "mirrorImage")) {
+            onCooldown(player);
+            return;
+        }
+
+        cooldownManager.setCooldownFromNow(player.getUniqueId(), "mirrorImage", cooldown);
+        cooldownAlarm(player, cooldown, "Mirror Image");
+
         Location location = player.getLocation();
         NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, player.getName());
         npc.getOrAddTrait(SkinTrait.class).setSkinName(player.getName());
@@ -36,8 +57,13 @@ public class MirrorImage extends Skill {
         npc.spawn(location);
         npc.getEntity().addScoreboardTag("mirrorImage");
         npc.getEntity().addScoreboardTag(player.getUniqueId().toString());
+        PlayerStats.summon(player, npc.getEntity());
         ((Player) npc.getEntity()).setNoDamageTicks(0);
         npc.setProtected(false);
+
+        player.getWorld().playSound(player, Sound.ENTITY_ILLUSIONER_MIRROR_MOVE, 0.5f, 1.9f);
+        player.getWorld().playSound(player, Sound.ENTITY_ILLUSIONER_PREPARE_MIRROR, 0.75f, 1.6f);
+        player.getWorld().playSound(player, Sound.ENTITY_ALLAY_ITEM_GIVEN, 0.5f, 1.4f);
 
         new BukkitRunnable() {
             int ticks = 0;
@@ -45,9 +71,36 @@ public class MirrorImage extends Skill {
             @Override
             public void run() {
                 if (!player.isOnline() || player.isDead() || ticks >= dur) {
+                    npc.getEntity().getWorld().spawnParticle(Particle.REVERSE_PORTAL, npc.getEntity().getLocation(), 40, 1, 1, 1, 1);
+                    npc.getEntity().getWorld().playSound(npc.getEntity().getLocation(), Sound.ENTITY_WARDEN_HEARTBEAT, 1f, 1.9f);
+                    npc.getEntity().getWorld().playSound(npc.getEntity().getLocation(), Sound.BLOCK_BUBBLE_COLUMN_BUBBLE_POP, 2f, 0.5f);
+                    PlayerStats.removeSummon(player, npc.getEntity());
                     npc.despawn();
                     CitizensAPI.getNPCRegistry().deregister(npc);
                     cancel();
+                    return;
+                }
+
+                if (npc.getEntity().isDead()) {
+                    npc.getEntity().getWorld().spawnParticle(Particle.REVERSE_PORTAL, npc.getEntity().getLocation(), 40, 1, 1, 1, 1);
+                    npc.getEntity().getWorld().spawnParticle(Particle.INSTANT_EFFECT, npc.getEntity().getLocation(), 40, 1, 1, 1, 1);
+                    npc.getEntity().getWorld().spawnParticle(Particle.DUST, npc.getEntity().getLocation(), 40, 1, 1, 1, 1, new Particle.DustOptions(Color.fromRGB(212,16,81), 2f));
+                    npc.getEntity().getWorld().playSound(npc.getEntity().getLocation(), Sound.ENTITY_WARDEN_HEARTBEAT, 1f, 1.9f);
+                    npc.getEntity().getWorld().playSound(npc.getEntity().getLocation(), Sound.BLOCK_BUBBLE_COLUMN_BUBBLE_POP, 2f, 0.5f);
+                    npc.getEntity().getWorld().playSound(npc.getEntity().getLocation(), Sound.ENTITY_ALLAY_AMBIENT_WITH_ITEM, 2f, 0.95f);
+
+                    for (Entity entity : npc.getEntity().getLocation().getNearbyEntities(rad, rad, rad)) {
+                        if (!(entity instanceof LivingEntity livingMonster) || entity == player || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
+                            continue;
+
+                        livingMonster.damage(damage);
+                        livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, blindnessDur, blindnessAmp));
+                    }
+
+                    PlayerStats.removeSummon(player, npc.getEntity());
+                    npc.despawn();
+                    CitizensAPI.getNPCRegistry().deregister(npc);
+                    this.cancel();;
                     return;
                 }
 
@@ -62,6 +115,7 @@ public class MirrorImage extends Skill {
                 } else {
                     npc.setSneaking(false);
                 }
+
 
                 Location playerLoc = player.getLocation();
                 Location npcLoc = location.clone();
