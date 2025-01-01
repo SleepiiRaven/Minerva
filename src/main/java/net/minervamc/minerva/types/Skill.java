@@ -1,11 +1,13 @@
 package net.minervamc.minerva.types;
 
 import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.lib.api.player.EquipmentSlot;
+import io.lumine.mythic.lib.api.event.AttackUnregisteredEvent;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
+import io.lumine.mythic.lib.api.stat.provider.StatProvider;
 import io.lumine.mythic.lib.damage.AttackMetadata;
 import io.lumine.mythic.lib.damage.DamageMetadata;
-import io.lumine.mythic.lib.damage.DamageType;
+import io.lumine.mythic.lib.listener.option.DamageIndicators;
+import java.util.Arrays;
 import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -16,16 +18,21 @@ import net.minervamc.minerva.skills.Skills;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.skills.greek.hephaestus.Smolder;
 import net.minervamc.minerva.utils.ParticleUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -162,7 +169,7 @@ public abstract class Skill {
     public abstract ItemStack getItem();
 
     public static void damage(LivingEntity livingEntity, double damage, Player damager) {
-        if (livingEntity.hasMetadata("NPC")) return;
+        // if (livingEntity.hasMetadata("NPC")) return;
         if (livingEntity instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE)) {
             return;
         }
@@ -176,22 +183,61 @@ public abstract class Skill {
                 return;
             }
         }
+
+        if (damager.getScoreboardTags().contains("charmed") && damager.getScoreboardTags().contains(livingEntity.getUniqueId().toString())) {
+            return;
+        }
+
+        double magicDamage = 0;
+        double magicResist = 0;
+        if (MMOPlayerData.isLoaded(damager.getUniqueId())) {
+            magicDamage = MMOPlayerData.get(damager.getUniqueId()).getStatMap().getStat("MAGIC_DAMAGE");
+        }
+
+        if (MMOPlayerData.isLoaded(livingEntity.getUniqueId())) {
+            magicResist = MMOPlayerData.get(livingEntity.getUniqueId()).getStatMap().getStat("MAGIC_DAMAGE_REDUCTION");
+        }
+
+        damage *= (magicDamage + 100)/100;
+        damage *= (100 - magicResist)/100;
 
         if (livingEntity.getNoDamageTicks() > 0) return;
 
-        DamageMetadata damageFinal = new DamageMetadata(damage, DamageType.MAGIC);
-        AttackMetadata attack = new AttackMetadata(damageFinal, MMOPlayerData.get(damager).getStatMap().cache(EquipmentSlot.MAIN_HAND));
-        MythicLib.plugin.getDamage().damage(attack, livingEntity);
+        if (livingEntity.getHealth()-damage <= 0) {
+            if (livingEntity.isDead()) {
+                return;
+            }
+            livingEntity.setHealth(0);
+            livingEntity.setKiller(damager);
+            if (livingEntity instanceof Player p) {
+                Bukkit.getPluginManager().callEvent(new PlayerDeathEvent(p, DamageSource.builder(DamageType.MAGIC).build(), Arrays.asList(p.getInventory().getStorageContents()), 0, Component.text(p.getName() + " was killed by " + damager.getName() + "'s heritage skill.")));
+            }
+        } else {
+            livingEntity.setHealth(livingEntity.getHealth() - damage);
+        }
+        livingEntity.damage(0, damager);
+
+        DamageIndicators indicators = new DamageIndicators(MythicLib.plugin.getConfig().getConfigurationSection("game-indicators.damage"));
+        DamageMetadata damageFinal = new DamageMetadata(damage, io.lumine.mythic.lib.damage.DamageType.MAGIC);
+        AttackMetadata attack = new AttackMetadata(damageFinal, livingEntity, StatProvider.get(damager));
+
+        indicators.displayIndicators(new AttackUnregisteredEvent(
+                new EntityDamageEvent(
+                        livingEntity, EntityDamageEvent.DamageCause.MAGIC, DamageSource.builder(DamageType.MAGIC).withDirectEntity(livingEntity).withCausingEntity(damager).build(),
+                        damage
+                ),
+                attack
+        ));
     }
 
     public static void damage(LivingEntity livingEntity, double damage, Player damager, boolean ignoreInvulnTicks, boolean addStr) {
-        if (livingEntity.hasMetadata("NPC")) return;
+        // if (livingEntity.hasMetadata("NPC")) return;
 
         if (livingEntity instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE)) {
             return;
         }
 
-        if (livingEntity instanceof Player && !livingEntity.getWorld().getPVP()) {
+        if (livingEntity instanceof Player && !livingEntity.getWorld().getPVP() || livingEntity.isInvulnerable()) {
             return;
         }
 
@@ -199,17 +245,54 @@ public abstract class Skill {
             if (((Tameable) livingEntity).getOwner() != null) {
                 return;
             }
+        }
+
+        double magicDamage = 0;
+        double magicResist = 0;
+        if (MMOPlayerData.isLoaded(damager.getUniqueId())) {
+            magicDamage = MMOPlayerData.get(damager.getUniqueId()).getStatMap().getStat("MAGIC_DAMAGE");
+        }
+
+        if (MMOPlayerData.isLoaded(livingEntity.getUniqueId())) {
+            magicResist = MMOPlayerData.get(livingEntity.getUniqueId()).getStatMap().getStat("MAGIC_DAMAGE_REDUCTION");
         }
 
         if (damager.hasPotionEffect(PotionEffectType.STRENGTH) && addStr) {
             damage += 3 * (damager.getPotionEffect(PotionEffectType.STRENGTH).getAmplifier() + 1);
         }
 
+
+
+        damage *= (magicDamage + 100)/100;
+        damage *= (100 - magicResist)/100;
+
         if (livingEntity.getNoDamageTicks() > 0 && !ignoreInvulnTicks) return;
 
-        DamageMetadata damageFinal = new DamageMetadata(damage, DamageType.MAGIC);
-        AttackMetadata attack = new AttackMetadata(damageFinal, MMOPlayerData.get(damager).getStatMap().cache(EquipmentSlot.MAIN_HAND));
-        MythicLib.plugin.getDamage().damage(attack, livingEntity);
+        if (livingEntity.getHealth()-damage <= 0) {
+            if (livingEntity.isDead()) {
+                return;
+            }
+            livingEntity.setHealth(0);
+            livingEntity.setKiller(damager);
+            if (livingEntity instanceof Player p) {
+                Bukkit.getPluginManager().callEvent(new PlayerDeathEvent(p, DamageSource.builder(DamageType.MAGIC).build(), Arrays.asList(p.getInventory().getStorageContents()), 0, Component.text(p.getName() + " was killed by " + damager.getName() + "'s heritage skill.")));
+            }
+        } else {
+            livingEntity.setHealth(livingEntity.getHealth() - damage);
+        }
+        livingEntity.damage(0, damager);
+
+        DamageIndicators indicators = new DamageIndicators(MythicLib.plugin.getConfig().getConfigurationSection("game-indicators.damage"));
+        DamageMetadata damageFinal = new DamageMetadata(damage, io.lumine.mythic.lib.damage.DamageType.MAGIC);
+        AttackMetadata attack = new AttackMetadata(damageFinal, livingEntity, StatProvider.get(damager));
+
+        indicators.displayIndicators(new AttackUnregisteredEvent(
+                new EntityDamageEvent(
+                        livingEntity, EntityDamageEvent.DamageCause.MAGIC, DamageSource.builder(DamageType.MAGIC).withDirectEntity(livingEntity).withCausingEntity(damager).build(),
+                        damage
+                ),
+                attack
+        ));
     }
 
     public static void knockback(Entity entity, Vector kb) {

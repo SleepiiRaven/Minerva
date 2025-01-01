@@ -7,10 +7,8 @@ import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.Skills;
-import net.minervamc.minerva.skills.greek.aphrodite.MirrorImage;
 import net.minervamc.minerva.skills.greek.poseidon.AquaticLimbExtensions;
 import net.minervamc.minerva.types.Skill;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -61,16 +59,17 @@ public class SkillListener implements Listener {
 
     @EventHandler
     public void onPlayerDamage(EntityDamageByEntityEvent event) {
+        if (event.getDamager().getScoreboardTags().contains("charmed") && event.getDamager().getScoreboardTags().contains(event.getEntity().getUniqueId().toString())) {
+            event.setCancelled(true);
+        }
+
         if (event.getEntity().hasMetadata("NPC") && event.getEntity().getScoreboardTags().contains("mirrorImage")) {
             Entity entity = event.getEntity();
             if (event.getDamager() instanceof Player player && PlayerStats.isSummoned(player, entity)) {
                 event.setCancelled(true);
                 return;
             } else {
-                Location loc = entity.getLocation();
-                String name = entity.getName();
                 entity.remove();
-                MirrorImage.explode(loc, Bukkit.getPlayer(name));
             }
         }
 

@@ -181,7 +181,6 @@ public class PlayerStatsAdapter implements JsonSerializer<PlayerStats>, JsonDese
                 location.getPitch();
     }
 
-
     public static Location stringToLocation(String locationString) {
         if (locationString == null || locationString.isEmpty()) {
             return null;

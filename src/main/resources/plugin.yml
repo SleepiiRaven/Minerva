@@ -5,8 +5,8 @@ api-version: '1.20'
 depend: [NBTAPI]
 commands:
   mskills:
-    description: Minerva commands that relate to skills, heritage, and ancestry.
-    usage: "\u00A76Correct usage: /mskills [option]"
+      description: Minerva commands that relate to skills, heritage, and ancestry.
+      usage: "\u00A76Correct usage: /mskills [option]"
   skillmode:
     description: Allows you to toggle on and off Minerva's skills system.
     usage: "\u00A76Correct usage: /skillmode"

@@ -93,7 +93,7 @@ public class MirrorImage extends Skill {
                         if (!(entity instanceof LivingEntity livingMonster) || entity == player || (entity instanceof Player livingPlayer && Party.isPlayerInPlayerParty(player, livingPlayer)))
                             continue;
 
-                        livingMonster.damage(damage);
+                        damage(livingMonster, damage, player);
                         livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, blindnessDur, blindnessAmp));
                     }
 
@@ -149,10 +149,6 @@ public class MirrorImage extends Skill {
                 }
             }
         }.runTaskTimer(Minerva.getInstance(), 1L, 1L);
-    }
-
-    public static void explode(Location location, Player creator) {
-
     }
 
     @Override

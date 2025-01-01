@@ -103,6 +103,13 @@ public class ParticleUtils {
         return points;
     }
 
+    public static Vector rotatePitchYawFromXY(Vector point, float pitch, float yaw) {
+        point = rotateXAxis(point, pitch);
+        point = rotateYAxis(point, yaw);
+
+        return point;
+    }
+
     public static Color colorFromHex(String hexCode) {
         hexCode = hexCode.replace("#", "");
         int resultRed = Integer.valueOf(hexCode.substring(0, 2), 16);

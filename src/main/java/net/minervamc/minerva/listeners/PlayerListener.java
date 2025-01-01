@@ -1,7 +1,6 @@
 package net.minervamc.minerva.listeners;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -18,13 +17,10 @@ import net.minervamc.minerva.guis.TitansGUI;
 import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
-import net.minervamc.minerva.utils.ParticleUtils;
 import net.minervamc.minerva.utils.SkillUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -51,6 +47,8 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void prePlayerLogIn(PlayerPreLoginEvent e) {
+        // load in player's skin:-)
+
         NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, e.getName() + " - Loading In");
         npc.getOrAddTrait(SkinTrait.class).setSkinName(e.getName());
         npc.getOrAddTrait(SkinTrait.class).setShouldUpdateSkins(true);
@@ -103,82 +101,84 @@ public class PlayerListener implements Listener {
         pData.setOffhand(new ItemStack[1]);
         pData.save();
 
-        p.sendMessage("WEH" + pData.getOmegaTrail());
-        if (!pData.getOmegaTrail().isEmpty() && p.hasPermission("minerva.omegatrail")) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    String[] strings = pData.getOmegaTrail().split(",");
-                    for (int stringIndex = 0; stringIndex < strings.length; stringIndex++) {
-                        if (strings[stringIndex].equals("flame")) {
-                            p.getWorld().spawnParticle(Particle.FLAME, p.getLocation(), 10, 0, 0, 0, 0);
-                        }
-                        if (strings[stringIndex].equals("happyVillager")) {
-                            p.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, p.getLocation(), 10, 0, 0, 0, 0);
-                        }
-                        if (strings[stringIndex].equals("heart")) {
-                            p.getWorld().spawnParticle(Particle.HEART, p.getLocation(), 10, 0, 0, 0, 0);
-                        }
-                        if (strings[stringIndex].equals("rainbow")) {
-                            List<Vector> particles = ParticleUtils.getVerticalCirclePoints(1, p.getPitch(), p.getYaw(), 14);
-                            Color[] colors = {
-                                    ParticleUtils.colorFromHex("#ffc6ff"),
-                                    ParticleUtils.colorFromHex("#bdb2ff"),
-                                    ParticleUtils.colorFromHex("#a0c4ff"),
-                                    ParticleUtils.colorFromHex("#9bf6ff"),
-                                    ParticleUtils.colorFromHex("#caffbf"),
-                                    ParticleUtils.colorFromHex("#fdffb6"),
-                                    ParticleUtils.colorFromHex("#ffd6a5"),
-                                    ParticleUtils.colorFromHex("#ffadad")
-                            };
-                            for (int i = 0; i < 8; i++) {
-                                p.getWorld().spawnParticle(Particle.DUST, p.getLocation().add(0, 2, 0).add(particles.get(i)), 2, 0, 0, 0, 0, new Particle.DustOptions(colors[i], 2f));
-                            }
-                        }
-                        if (strings[stringIndex].equals("wings")) {
-                            double Ax = 0;
-                            double Ay = 0.335;
-                            double Bx = 1.8;
-                            double By = 1.9;
-                            double Cx = 0.9;
-                            double Cy = 0;
-                            double Dx = 0;
-                            double Dy = 2;
-                            double Ex = 0;
-                            double Ey = 0.7;
+//        if (!pData.getOmegaTrail().isEmpty() && p.hasPermission("minerva.omegatrail")) {
+//            new BukkitRunnable() {
+//                @Override
+//                public void run() {
+//                    if (!p.isOnline()) this.cancel();
+//
+//                    String[] strings = pData.getOmegaTrail().split(",");
+//                    for (int stringIndex = 0; stringIndex < strings.length; stringIndex++) {
+//                        if (strings[stringIndex].equals("flame")) {
+//                            p.getWorld().spawnParticle(Particle.FLAME, p.getLocation(), 10, 0, 0, 0, 0);
+//                        }
+//                        if (strings[stringIndex].equals("happyVillager")) {
+//                            p.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, p.getLocation(), 10, 0, 0, 0, 0);
+//                        }
+//                        if (strings[stringIndex].equals("heart")) {
+//                            p.getWorld().spawnParticle(Particle.HEART, p.getLocation(), 10, 0, 0, 0, 0);
+//                        }
+//                        if (strings[stringIndex].equals("rainbow")) {
+//                            List<Vector> particles = ParticleUtils.getVerticalCirclePoints(1, p.getPitch(), p.getYaw(), 14);
+//                            Color[] colors = {
+//                                    ParticleUtils.colorFromHex("#ffc6ff"),
+//                                    ParticleUtils.colorFromHex("#bdb2ff"),
+//                                    ParticleUtils.colorFromHex("#a0c4ff"),
+//                                    ParticleUtils.colorFromHex("#9bf6ff"),
+//                                    ParticleUtils.colorFromHex("#caffbf"),
+//                                    ParticleUtils.colorFromHex("#fdffb6"),
+//                                    ParticleUtils.colorFromHex("#ffd6a5"),
+//                                    ParticleUtils.colorFromHex("#ffadad")
+//                            };
+//                            for (int i = 0; i < 8; i++) {
+//                                p.getWorld().spawnParticle(Particle.DUST, p.getLocation().add(0, 2, 0).add(particles.get(i)), 2, 0, 0, 0, 0, new Particle.DustOptions(colors[i], 2f));
+//                            }
+//                        }
+//                        if (strings[stringIndex].equals("wings")) {
+//                            double Ax = 0;
+//                            double Ay = 0.335;
+//                            double Bx = 1.8;
+//                            double By = 1.9;
+//                            double Cx = 0.9;
+//                            double Cy = 0;
+//                            double Dx = 0;
+//                            double Dy = 2;
+//                            double Ex = 0;
+//                            double Ey = 0.7;
+//
+//                            Vector init = p.getLocation().getDirection().clone().setY(0).normalize().multiply(-0.4).setY(0.25);
+//                            Vector right = ParticleUtils.rotateYAxis(p.getLocation().getDirection().clone().setY(0).normalize(), 90);
+//                            Vector A1 = add(init.clone(), right.clone(), Ax, Ay);
+//                            Vector A2 = add(init.clone(), right.clone(), -Ax, Ay);
+//                            Vector B1 = add(init.clone(), right.clone(), Bx, By);
+//                            Vector B2 = add(init.clone(), right.clone(), -Bx, By);
+//                            Vector C1 = add(init.clone(), right.clone(), Cx, Cy);
+//                            Vector C2 = add(init.clone(), right.clone(), -Cx, Cy);
+//                            Vector D1 = add(init.clone(), right.clone(), Dx, Dy);
+//                            Vector D2 = add(init.clone(), right.clone(), -Dx, Dy);
+//                            Vector E1 = add(init.clone(), right.clone(), Ex, Ey);
+//                            Vector E2 = add(init.clone(), right.clone(), -Ex, Ey);
+//                            List<Vector> particles = ParticleUtils.getNthBezierPoints(20, A1, B1, C1, D1, E1);
+//
+//                            Color[] colors = {
+//                                    ParticleUtils.colorFromHex("012a36"),
+//                                    ParticleUtils.colorFromHex("29274c"),
+//                                    ParticleUtils.colorFromHex("7e52a0"),
+//                                    ParticleUtils.colorFromHex("d295bf"),
+//                                    ParticleUtils.colorFromHex("e6bccd"),
+//                                    ParticleUtils.colorFromHex("e4d9ff")
+//                            };
+//
+//                            particles.addAll(ParticleUtils.getNthBezierPoints(20, A2, B2, C2, D2, E2));
+//                            for (Vector vec : particles) {
+//                                p.getWorld().spawnParticle(Particle.DUST, p.getLocation().clone().add(vec), 2, 0, 0, 0, 0, ParticleUtils.getDustOptionsFromGradient(colors, 1f));
+//                            }
+//                        }
+//                    }
+//                }
+//            }.runTaskTimer(Minerva.getInstance(), 0L, 5L);
+//        }
 
-                            Vector init = p.getLocation().getDirection().clone().setY(0).normalize().multiply(-0.4).setY(0.25);
-                            Vector right = ParticleUtils.rotateYAxis(p.getLocation().getDirection().clone().setY(0).normalize(), 90);
-                            Vector A1 = add(init.clone(), right.clone(), Ax, Ay);
-                            Vector A2 = add(init.clone(), right.clone(), -Ax, Ay);
-                            Vector B1 = add(init.clone(), right.clone(), Bx, By);
-                            Vector B2 = add(init.clone(), right.clone(), -Bx, By);
-                            Vector C1 = add(init.clone(), right.clone(), Cx, Cy);
-                            Vector C2 = add(init.clone(), right.clone(), -Cx, Cy);
-                            Vector D1 = add(init.clone(), right.clone(), Dx, Dy);
-                            Vector D2 = add(init.clone(), right.clone(), -Dx, Dy);
-                            Vector E1 = add(init.clone(), right.clone(), Ex, Ey);
-                            Vector E2 = add(init.clone(), right.clone(), -Ex, Ey);
-                            List<Vector> particles = ParticleUtils.getNthBezierPoints(20, A1, B1, C1, D1, E1);
-
-                            Color[] colors = {
-                                    ParticleUtils.colorFromHex("012a36"),
-                                    ParticleUtils.colorFromHex("29274c"),
-                                    ParticleUtils.colorFromHex("7e52a0"),
-                                    ParticleUtils.colorFromHex("d295bf"),
-                                    ParticleUtils.colorFromHex("e6bccd"),
-                                    ParticleUtils.colorFromHex("e4d9ff")
-                            };
-
-                            particles.addAll(ParticleUtils.getNthBezierPoints(20, A2, B2, C2, D2, E2));
-                            for (Vector vec : particles) {
-                                p.getWorld().spawnParticle(Particle.DUST, p.getLocation().clone().add(vec), 2, 0, 0, 0, 0, ParticleUtils.getDustOptionsFromGradient(colors, 1f));
-                            }
-                        }
-                    }
-                }
-            }.runTaskTimer(Minerva.getInstance(), 0L, 5L);
-        }
     }
 
     private Vector add(Vector init, Vector right, double x, double y) {
