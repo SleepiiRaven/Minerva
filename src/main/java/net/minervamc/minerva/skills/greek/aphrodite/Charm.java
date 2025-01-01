@@ -10,6 +10,7 @@ import net.minervamc.minerva.utils.ParticleUtils;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.craftbukkit.entity.CraftPig;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -145,12 +146,13 @@ public class Charm extends Skill {
         Pig pig = (Pig) charmed.getWorld().spawnEntity(charmedLoc, EntityType.PIG);
         pig.setInvisible(true);
         pig.setInvulnerable(true);
+        //pig.setAI(false);
         pig.addScoreboardTag("charmedHolder");
         charmed.addScoreboardTag("charmed");
         charmed.addScoreboardTag(charmer.getUniqueId().toString());
-        int finalDuration = duration / 2;
 
-        pig.setTarget(charmer);
+        //NMS.setNavigationTarget(pig, charmer, 1f);
+        int finalDuration = duration / 2;
         new BukkitRunnable() {
             int ticks = 0;
             @Override
@@ -163,6 +165,15 @@ public class Charm extends Skill {
                     return;
                 }
 
+                if (charmed.isDead() || (charmed instanceof Player && (!((Player) charmed).isOnline()))) {
+                    charmed.removeScoreboardTag("charmed");
+                    pig.remove();
+                    this.cancel();
+                    return;
+                }
+
+                ((CraftPig) pig).getHandle().setSilent(true);
+                pig.getPathfinder().moveTo(charmer);
                 pig.addPassenger(charmed);
 
                 ticks++;
