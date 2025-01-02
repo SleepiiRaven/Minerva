@@ -1,6 +1,7 @@
 package net.minervamc.minerva.skills.greek.aphrodite;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
+import java.util.HashMap;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.Gravity;
@@ -22,20 +23,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class MirrorImage extends Skill {
+    public static HashMap<Player, NPC> mirrors = new HashMap<>();
 
     @Override
     public void cast(Player player, CooldownManager cooldownManager, int level) {
         long dur = 150;
-        double rad = 3;
-        double damage = 4;
-        int blindnessDur = 40;
-        int blindnessAmp = 1;
+        double rad = 5;
+        double damage = 7.5;
         long cooldown = 20000;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "mirrorImage")) {
@@ -53,6 +51,8 @@ public class MirrorImage extends Skill {
         npc.getOrAddTrait(Gravity.class).setHasGravity(true);
         PlayerProfile profile = player.getPlayerProfile();
         profile.getTextures();
+
+        mirrors.put(player, npc);
 
         npc.spawn(location);
         npc.getEntity().addScoreboardTag("mirrorImage");
@@ -76,15 +76,16 @@ public class MirrorImage extends Skill {
                     npc.getEntity().getWorld().playSound(npc.getEntity().getLocation(), Sound.BLOCK_BUBBLE_COLUMN_BUBBLE_POP, 2f, 0.5f);
                     PlayerStats.removeSummon(player, npc.getEntity());
                     npc.despawn();
+                    mirrors.remove(player);
                     CitizensAPI.getNPCRegistry().deregister(npc);
                     cancel();
                     return;
                 }
 
                 if (npc.getEntity().isDead()) {
-                    npc.getEntity().getWorld().spawnParticle(Particle.REVERSE_PORTAL, npc.getEntity().getLocation(), 40, 1, 1, 1, 1);
-                    npc.getEntity().getWorld().spawnParticle(Particle.INSTANT_EFFECT, npc.getEntity().getLocation(), 40, 1, 1, 1, 1);
-                    npc.getEntity().getWorld().spawnParticle(Particle.DUST, npc.getEntity().getLocation(), 40, 1, 1, 1, 1, new Particle.DustOptions(Color.fromRGB(212,16,81), 2f));
+                    npc.getEntity().getWorld().spawnParticle(Particle.REVERSE_PORTAL, npc.getEntity().getLocation(), 80, 1, 1, 1, 1);
+                    npc.getEntity().getWorld().spawnParticle(Particle.INSTANT_EFFECT, npc.getEntity().getLocation(), 80, 2, 2, 2, 1);
+                    npc.getEntity().getWorld().spawnParticle(Particle.DUST, npc.getEntity().getLocation(), 80, 1, 1, 1, 1, new Particle.DustOptions(Color.fromRGB(212,16,81), 2f));
                     npc.getEntity().getWorld().playSound(npc.getEntity().getLocation(), Sound.ENTITY_WARDEN_HEARTBEAT, 1f, 1.9f);
                     npc.getEntity().getWorld().playSound(npc.getEntity().getLocation(), Sound.BLOCK_BUBBLE_COLUMN_BUBBLE_POP, 2f, 0.5f);
                     npc.getEntity().getWorld().playSound(npc.getEntity().getLocation(), Sound.ENTITY_ALLAY_AMBIENT_WITH_ITEM, 2f, 0.95f);
@@ -94,7 +95,6 @@ public class MirrorImage extends Skill {
                             continue;
 
                         damage(livingMonster, damage, player);
-                        livingMonster.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, blindnessDur, blindnessAmp));
                     }
 
                     PlayerStats.removeSummon(player, npc.getEntity());

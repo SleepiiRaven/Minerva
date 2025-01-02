@@ -22,7 +22,7 @@ public class HeartSeeker extends Skill {
     public void cast(Player player, CooldownManager cooldownManager, int level) {
         long cooldown = 5000;
         double speed = 0.6;
-        double damage = 7.5;
+        double damage = 5;
         Color[] gradient = {
                 ParticleUtils.colorFromHex("#ffccdd"),
                 ParticleUtils.colorFromHex("#ff99bb"),

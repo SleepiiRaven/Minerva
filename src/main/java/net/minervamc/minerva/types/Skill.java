@@ -83,7 +83,7 @@ public abstract class Skill {
             case "smolder" -> Skills.SMOLDER;
             case "centerOfAttention" -> Skills.CENTER_OF_ATTENTION;
             case "charm" -> Skills.CHARM;
-            case "blindingLove" -> Skills.BLINDING_LOVE;
+            case "blindingDoves" -> Skills.BLINDING_DOVES;
             case "mirrorImage" -> Skills.MIRROR_IMAGE;
             case "heartSeeker" -> Skills.HEART_SEEKER;
             default -> Skills.DEFAULT;
@@ -169,7 +169,6 @@ public abstract class Skill {
     public abstract ItemStack getItem();
 
     public static void damage(LivingEntity livingEntity, double damage, Player damager) {
-        // if (livingEntity.hasMetadata("NPC")) return;
         if (livingEntity instanceof Player player && (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE)) {
             return;
         }
@@ -178,11 +177,7 @@ public abstract class Skill {
             return;
         }
 
-        if (livingEntity instanceof Tameable) {
-            if (((Tameable) livingEntity).getOwner() != null) {
-                return;
-            }
-        }
+        if (PlayerStats.isSummoned(damager, livingEntity)) return;
 
         if (damager.getScoreboardTags().contains("charmed") && damager.getScoreboardTags().contains(livingEntity.getUniqueId().toString())) {
             return;

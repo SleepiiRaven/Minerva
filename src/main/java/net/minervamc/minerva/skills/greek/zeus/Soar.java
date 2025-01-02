@@ -37,7 +37,7 @@ public class Soar extends Skill {
             }
             default -> {
                 cooldown = 12000;
-                duration = 20;
+                duration = 60;
             }
         }
 

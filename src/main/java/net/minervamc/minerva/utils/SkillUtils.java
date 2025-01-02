@@ -115,7 +115,7 @@ public class SkillUtils {
             case HEPHAESTUS, VULCAN ->
                     setSkills(player, Skills.SHRAPNEL_GRENADE, Skills.MAGMATISM, Skills.LIVING_FORGE, Skills.GROUND_BREAKER, Skills.SMOLDER);
             case APHRODITE, VENUS ->
-                    setSkills(player, Skills.MIRROR_IMAGE, Skills.CHARM, Skills.HEART_SEEKER, Skills.BLINDING_LOVE, Skills.CENTER_OF_ATTENTION);
+                    setSkills(player, Skills.MIRROR_IMAGE, Skills.CHARM, Skills.HEART_SEEKER, Skills.BLINDING_DOVES, Skills.CENTER_OF_ATTENTION);
         }
     }
 
