@@ -33,7 +33,7 @@ public class MirrorImage extends Skill {
     public void cast(Player player, CooldownManager cooldownManager, int level) {
         long dur = 150;
         double rad = 5;
-        double damage = 7.5;
+        double damage = 5;
         long cooldown = 20000;
 
         if (!cooldownManager.isCooldownDone(player.getUniqueId(), "mirrorImage")) {
@@ -43,6 +43,8 @@ public class MirrorImage extends Skill {
 
         cooldownManager.setCooldownFromNow(player.getUniqueId(), "mirrorImage", cooldown);
         cooldownAlarm(player, cooldown, "Mirror Image");
+
+        Skill.stack(player, "doves", 1, "Doves", 6000);
 
         Location location = player.getLocation();
         NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, player.getName());

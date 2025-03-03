@@ -10,6 +10,7 @@ import net.minervamc.minerva.utils.ParticleUtils;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.craftbukkit.entity.CraftPig;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -49,6 +50,13 @@ public class Charm extends Skill {
         cooldownManager.setCooldownFromNow(player.getUniqueId(), "charm", cooldown);
         cooldownAlarm(player, cooldown, "Charm");
 
+        Skill.stack(player, "doves", 1, "Doves", 6000);
+
+        player.getWorld().playSound(player, Sound.BLOCK_BEACON_ACTIVATE, 1.4f, 1.25f);
+        player.getWorld().playSound(player, Sound.BLOCK_CHISELED_BOOKSHELF_INSERT_ENCHANTED, 2f, 1f);
+        player.getWorld().playSound(player, Sound.BLOCK_AMETHYST_BLOCK_CHIME, 2f, 0.77f);
+        player.getWorld().playSound(player, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 0.4f, 1f);
+
         new BukkitRunnable() {
             int ticks = 0;
 
@@ -86,6 +94,11 @@ public class Charm extends Skill {
 
     private void beam(Player player, double initRadius, double distanceBetweenBeams, double radiusIncrease, long ticksBetweenBeams, int beams, double distanceStart, int charmDur) {
         List<Entity> entitiesCharmed = new ArrayList<>();
+
+        player.getWorld().playSound(player, Sound.ENTITY_ELDER_GUARDIAN_CURSE, 0.3f, 2f);
+        player.getWorld().playSound(player, Sound.BLOCK_CONDUIT_DEACTIVATE, 1f, 1.7f);
+        player.getWorld().playSound(player, Sound.ENTITY_SHULKER_BULLET_HURT, 2f, 1f);
+        player.getWorld().playSound(player, Sound.ENTITY_ELDER_GUARDIAN_HURT, 2f, 0.86f);
 
         new BukkitRunnable() {
             final float pitch = player.getPitch();
@@ -131,6 +144,13 @@ public class Charm extends Skill {
                             continue;
 
                         entitiesCharmed.add(entity);
+
+                        if (livingEntity instanceof Player playerAff) {
+                            playerAff.playSound(playerAff, Sound.ENTITY_ELDER_GUARDIAN_CURSE, 0.3f, 2f);
+                            playerAff.playSound(playerAff, Sound.BLOCK_CONDUIT_DEACTIVATE, 1f, 1.7f);
+                            playerAff.playSound(playerAff, Sound.ENTITY_SHULKER_BULLET_HURT, 2f, 1f);
+                            playerAff.playSound(playerAff, Sound.ENTITY_ELDER_GUARDIAN_HURT, 2f, 0.86f);
+                        }
                         charm(player, livingEntity, charmDur);
                     }
                 }

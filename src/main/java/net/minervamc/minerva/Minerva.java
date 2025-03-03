@@ -5,6 +5,7 @@ import java.util.Objects;
 import lombok.Getter;
 import net.minervamc.minerva.commands.CtfCommand;
 import net.minervamc.minerva.commands.FocusCommand;
+import net.minervamc.minerva.commands.NoCooldownCommand;
 import net.minervamc.minerva.commands.PartyCommand;
 import net.minervamc.minerva.commands.SkillModeToggle;
 import net.minervamc.minerva.commands.SkillsCommand;
@@ -83,6 +84,7 @@ public final class Minerva extends JavaPlugin {
         Objects.requireNonNull(getCommand("skillmode")).setExecutor(new SkillModeToggle());
         Objects.requireNonNull(getCommand("party")).setExecutor(new PartyCommand());
         CtfCommand.register(this);
+        NoCooldownCommand.register(this);
         Objects.requireNonNull(getCommand("focus")).setExecutor(new FocusCommand());
         Objects.requireNonNull(getCommand("unfocus")).setExecutor(new UnfocusCommand());
     }

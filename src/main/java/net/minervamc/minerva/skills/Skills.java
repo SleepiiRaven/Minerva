@@ -1,7 +1,7 @@
 package net.minervamc.minerva.skills;
 
-import net.minervamc.minerva.skills.greek.aphrodite.CenterOfAttention;
-import net.minervamc.minerva.skills.greek.aphrodite.BlindingDoves;
+import net.minervamc.minerva.skills.greek.aphrodite.Doves;
+import net.minervamc.minerva.skills.greek.aphrodite.Serenity;
 import net.minervamc.minerva.skills.greek.aphrodite.Charm;
 import net.minervamc.minerva.skills.greek.aphrodite.HeartSeeker;
 import net.minervamc.minerva.skills.greek.aphrodite.MirrorImage;
@@ -89,10 +89,10 @@ public interface Skills {
     Skill MAGMATISM = new Magmatism();
     Skill SHRAPNEL_GRENADE = new ShrapnelGrenade();
     Skill SMOLDER = new Smolder();
-    Skill BLINDING_DOVES = new BlindingDoves();
+    Skill SERENITY = new Serenity();
     Skill CHARM = new Charm();
     Skill HEART_SEEKER = new HeartSeeker();
     Skill MIRROR_IMAGE = new MirrorImage();
-    Skill CENTER_OF_ATTENTION = new CenterOfAttention();
+    Skill DOVES = new Doves();
     Skill DEFAULT = new DefaultSkill();
 }

@@ -39,6 +39,8 @@ public class HeartSeeker extends Skill {
         cooldownManager.setCooldownFromNow(player.getUniqueId(), "heartSeeker", cooldown);
         cooldownAlarm(player, cooldown, "Heart Seeker");
 
+        Skill.stack(player, "doves", 1, "Doves", 6000);
+
         Location loc = player.getEyeLocation();
 
         player.getWorld().playSound(player, Sound.ITEM_TRIDENT_RETURN, 1f, 2f);

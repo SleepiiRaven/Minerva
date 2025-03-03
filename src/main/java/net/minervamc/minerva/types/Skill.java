@@ -16,6 +16,7 @@ import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.party.Party;
 import net.minervamc.minerva.skills.Skills;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
+import net.minervamc.minerva.skills.greek.aphrodite.Doves;
 import net.minervamc.minerva.skills.greek.hephaestus.Smolder;
 import net.minervamc.minerva.utils.ParticleUtils;
 import org.bukkit.Bukkit;
@@ -81,9 +82,9 @@ public abstract class Skill {
             case "magmatism" -> Skills.MAGMATISM;
             case "shrapnelGrenade" -> Skills.SHRAPNEL_GRENADE;
             case "smolder" -> Skills.SMOLDER;
-            case "centerOfAttention" -> Skills.CENTER_OF_ATTENTION;
+            case "doves" -> Skills.DOVES;
             case "charm" -> Skills.CHARM;
-            case "blindingDoves" -> Skills.BLINDING_DOVES;
+            case "serenity" -> Skills.SERENITY;
             case "mirrorImage" -> Skills.MIRROR_IMAGE;
             case "heartSeeker" -> Skills.HEART_SEEKER;
             default -> Skills.DEFAULT;
@@ -310,6 +311,7 @@ public abstract class Skill {
         int newStacks = getStacks(player, ability) + increment;
         int maxStack = switch (ability) {
             case "smolder" -> ((Smolder) Skills.SMOLDER).stackSmolder(player, newStacks, timeUntilExpires);
+            case "doves" -> ((Doves) Skills.DOVES).stackDoves(player, newStacks, timeUntilExpires);
             default -> 99;
         };
         if (maxStack < newStacks) newStacks = maxStack;
