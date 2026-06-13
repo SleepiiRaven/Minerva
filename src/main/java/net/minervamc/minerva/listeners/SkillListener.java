@@ -145,8 +145,14 @@ public class SkillListener implements Listener {
             PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
             Skill passive = stats.getPassive();
             boolean passiveActive = stats.getPassiveActive();
-            if (event.getFinalDamage() > 0.1 && passive == Skills.SMOLDER && passiveActive && event.getDamageSource().getCausingEntity() != null && event.getDamageSource().getCausingEntity() != event.getEntity()) {
-                Skill.stack(player, "smolder", 1, "Smolder", 5000);
+
+            if (event.getFinalDamage() > 0.1 && passiveActive && event.getDamageSource().getCausingEntity() != null && event.getDamageSource().getCausingEntity() != event.getEntity()) {
+                if (passive == Skills.SMOLDER) {
+                    Skill.stack(player, "smolder", 1, "Smolder", 5000);
+                } else if (player.getScoreboardTags().contains("athenaParry")) {
+                    player.addScoreboardTag("athenaParrySuccess");
+                    event.setCancelled(true);
+                }
             } else if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 if (passive == Skills.PROTECTIVE_CLOUD && passiveActive) {
                     event.setCancelled(true);
