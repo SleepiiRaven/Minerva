@@ -10,10 +10,7 @@ run
 
 # IntelliJ
 out/
-gradlew
-gradlew.bat
 .gradle
-gradle
 build
 
 # Compiled class file
