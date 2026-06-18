@@ -69,11 +69,11 @@ public class GreekGodsGUI {
         inv.setItem(khioneSlot, comingSoon);
         inv.setItem(irisSlot, comingSoon);
         inv.setItem(psycheSlot, comingSoon);
-        inv.setItem(hermesSlot, comingSoon);
+        inv.setItem(hermesSlot, hermes);
         inv.setItem(artemisSlot, artemis);
-        inv.setItem(athenaSlot, comingSoon);
+        inv.setItem(athenaSlot, athena);
         inv.setItem(hephaestusSlot, hephaestus);
-        inv.setItem(demeterSlot, comingSoon);
+        inv.setItem(demeterSlot, demeter);
         inv.setItem(hestiaSlot, comingSoon);
         inv.setItem(arkeSlot, comingSoon);
         inv.setItem(hecateSlot, comingSoon);
@@ -124,19 +124,19 @@ public class GreekGodsGUI {
                 //chooseHeritage(HeritageType.PSYCHE_GREEK, "child of Psyche", (Player) event.getWhoClicked());
                 break;
             case hermesSlot:
-                //chooseHeritage(HeritageType.HERMES, "child of Hermes", (Player) event.getWhoClicked());
+                chooseHeritage(HeritageType.HERMES, "child of Hermes", (Player) event.getWhoClicked());
                 break;
             case artemisSlot:
                 chooseHeritage(HeritageType.ARTEMIS, "Huntress of Artemis", (Player) event.getWhoClicked());
                 break;
             case athenaSlot:
-                //chooseHeritage(HeritageType.ATHENA, "child of Athena", (Player) event.getWhoClicked());
+                chooseHeritage(HeritageType.ATHENA, "child of Athena", (Player) event.getWhoClicked());
                 break;
             case hephaestusSlot:
                 chooseHeritage(HeritageType.HEPHAESTUS, "child of Hephaestus", (Player) event.getWhoClicked());
                 break;
             case demeterSlot:
-                //chooseHeritage(HeritageType.DEMETER, "child of Demeter", (Player) event.getWhoClicked());
+                chooseHeritage(HeritageType.DEMETER, "child of Demeter", (Player) event.getWhoClicked());
                 break;
             case hestiaSlot:
                 //chooseHeritage(HeritageType.HESTIA, "child of Hestia", (Player) event.getWhoClicked());

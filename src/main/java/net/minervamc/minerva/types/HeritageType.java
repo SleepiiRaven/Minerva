@@ -27,6 +27,7 @@ public enum HeritageType {
     NEPTUNE,
     CERES,
     MARS,
+    MINERVA,
     APOLLO_ROMAN,
     DIANA,
     VULCAN,

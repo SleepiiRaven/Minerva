@@ -33,7 +33,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import net.minervamc.minerva.skills.greek.athena.TacticalAgility;
+import net.minervamc.minerva.skills.greek.demeter.VineGrapple;
+import net.minervamc.minerva.skills.greek.hermes.FleetFootwork;
 import org.bukkit.event.player.PlayerAnimationEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffect;
@@ -77,6 +81,9 @@ public class SkillListener implements Listener {
             return;
         }
 
+        TacticalAgility.onWeaponHit(player, player.getInventory().getItemInMainHand());
+        FleetFootwork.onWeaponHit(player, event);
+
         PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
         Skill passive = stats.getPassive();
         boolean passiveActive = stats.getPassiveActive();
@@ -117,6 +124,7 @@ public class SkillListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if (player.hasMetadata("NPC")) return;
+        FleetFootwork.onMove(event);
         if (player.getLocation().getBlock().getType() == Material.WATER || (player.getLocation().getBlock().getBlockData() instanceof Waterlogged waterlogged && waterlogged.isWaterlogged())) {
             if (PlayerStats.getStats(player.getUniqueId()).getPassive() == Skills.OCEANS_EMBRACE && PlayerStats.getStats(player.getUniqueId()).getPassiveActive()) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 60, 0));
@@ -154,7 +162,11 @@ public class SkillListener implements Listener {
                     event.setCancelled(true);
                 }
             } else if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
-                if (passive == Skills.PROTECTIVE_CLOUD && passiveActive) {
+                if (FleetFootwork.shouldCancelFall(player)) {
+                    event.setCancelled(true);
+                } else if (passive == Skills.PROTECTIVE_CLOUD && passiveActive) {
+                    event.setCancelled(true);
+                } else if (player.getScoreboardTags().contains("vineGrappleActive")) {
                     event.setCancelled(true);
                 }
             } else if (event.getCause() == EntityDamageEvent.DamageCause.POISON) {
@@ -175,9 +187,23 @@ public class SkillListener implements Listener {
 
 
     @EventHandler
+    public void onPlayerSneak(PlayerToggleSneakEvent event) {
+        if (!event.isSneaking()) return;
+        Player sneaker = event.getPlayer();
+        if (VineGrapple.isLatched(sneaker)) {
+            VineGrapple.releaseGrapple(sneaker); // release latch, stay in vine state to re-fire
+        } else {
+            VineGrapple.exitState(sneaker); // cancel state entirely when not latched
+        }
+    }
+
+    @EventHandler
     public void onPlayerPunch(PlayerAnimationEvent event) {
         Player player = event.getPlayer();
         if (event.getAnimationType() == PlayerAnimationType.ARM_SWING) {
+            if (player.getScoreboardTags().contains("vineGrappleActive")) {
+                VineGrapple.onLeftClick(player);
+            }
             if (AquaticLimbExtensions.waterBlocks.containsKey(player.getUniqueId())) {
                 Minerva.getInstance().getCdInstance().setCooldownFromNow(player.getUniqueId(), "aquaticPunching", AquaticLimbExtensions.punchDurationMillis);
             }

@@ -44,7 +44,7 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
     compileOnly("de.tr7zw:item-nbt-api-plugin:2.13.2")
-    compileOnly("io.lumine:MythicLib-dist:1.7.1-SNAPSHOT")
+    compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT")
     compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
     compileOnly("com.onarandombox.multiversecore:Multiverse-Core:4.3.1")
     compileOnly("net.citizensnpcs:citizens-main:2.0.36-SNAPSHOT")
@@ -85,6 +85,6 @@ tasks.assemble {
 tasks.shadowJar {
     archiveClassifier.set("shadow")
     //relocate ("fr.mrmicky.fastboard", "net.minervamc.minerva.fastboard")
-    destinationDirectory.set(file("D:/Servers/Minerva/plugins"))
+    destinationDirectory.set(file("/Users/emma/Downloads/server/plugins"))
     //destinationDirectory.set(file("run/plugins")) //Faceless
 }

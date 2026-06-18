@@ -116,6 +116,12 @@ public class SkillUtils {
                     setSkills(player, Skills.SHRAPNEL_GRENADE, Skills.MAGMATISM, Skills.LIVING_FORGE, Skills.GROUND_BREAKER, Skills.SMOLDER);
             case APHRODITE, VENUS ->
                     setSkills(player, Skills.MIRROR_IMAGE, Skills.CHARM, Skills.HEART_SEEKER, Skills.SERENITY, Skills.DOVES);
+            case ATHENA, MINERVA ->
+                    setSkills(player, Skills.PARRY, Skills.SPEAR_OF_ATHENA, Skills.AEGIS_RUSH, Skills.SPEAR_RAIN, Skills.TACTICAL_AGILITY);
+            case DEMETER, CERES ->
+                    setSkills(player, Skills.VINE_GRAPPLE, Skills.SEED_BARRAGE, Skills.THORN_BLIGHT, Skills.HARVEST_WRATH, Skills.HARVEST_BLESSING);
+            case HERMES, MERCURY ->
+                    setSkills(player, Skills.TALARIA_STEP, Skills.CADUCEUS_ARC, Skills.MESSENGER_WAKE, Skills.KINETIC_DISPATCH, Skills.FLEET_FOOTWORK);
         }
     }
 

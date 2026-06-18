@@ -18,6 +18,7 @@ import net.minervamc.minerva.skills.Skills;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import net.minervamc.minerva.skills.greek.aphrodite.Doves;
 import net.minervamc.minerva.skills.greek.hephaestus.Smolder;
+import net.minervamc.minerva.skills.greek.hermes.FleetFootwork;
 import net.minervamc.minerva.utils.ParticleUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -87,6 +88,22 @@ public abstract class Skill {
             case "serenity" -> Skills.SERENITY;
             case "mirrorImage" -> Skills.MIRROR_IMAGE;
             case "heartSeeker" -> Skills.HEART_SEEKER;
+            case "parry" -> Skills.PARRY;
+            case "spearOfAthena" -> Skills.SPEAR_OF_ATHENA;
+            case "aegisRush" -> Skills.AEGIS_RUSH;
+            case "spearRain" -> Skills.SPEAR_RAIN;
+            case "tacticalAgility" -> Skills.TACTICAL_AGILITY;
+            case "rootSurge" -> Skills.ROOT_SURGE;
+            case "seedBarrage" -> Skills.SEED_BARRAGE;
+            case "thornBlight" -> Skills.THORN_BLIGHT;
+            case "harvestWrath" -> Skills.HARVEST_WRATH;
+            case "harvestBlessing" -> Skills.HARVEST_BLESSING;
+            case "vineGrapple" -> Skills.VINE_GRAPPLE;
+            case "talariaStep" -> Skills.TALARIA_STEP;
+            case "caduceusArc" -> Skills.CADUCEUS_ARC;
+            case "messengerWake" -> Skills.MESSENGER_WAKE;
+            case "kineticDispatch" -> Skills.KINETIC_DISPATCH;
+            case "fleetFootwork" -> Skills.FLEET_FOOTWORK;
             default -> Skills.DEFAULT;
         };
     }
@@ -312,6 +329,7 @@ public abstract class Skill {
         int maxStack = switch (ability) {
             case "smolder" -> ((Smolder) Skills.SMOLDER).stackSmolder(player, newStacks, timeUntilExpires);
             case "doves" -> ((Doves) Skills.DOVES).stackDoves(player, newStacks, timeUntilExpires);
+            case "hermesMomentum" -> ((FleetFootwork) Skills.FLEET_FOOTWORK).stackMomentum(player, newStacks, timeUntilExpires);
             default -> 99;
         };
         if (maxStack < newStacks) newStacks = maxStack;
