@@ -21,6 +21,9 @@ public enum HeritageType {
     HESTIA,
     ARKE,
     HYPNOS,
+    NEMESIS,
+    PERSEPHONE,
+    THANATOS,
     // ROMAN:
     JUPITER,
     PLUTO,
@@ -79,6 +82,9 @@ public enum HeritageType {
             case "iris" -> IRIS;
             case "arke" -> ARKE;
             case "hypnos" -> HYPNOS;
+            case "nemesis" -> NEMESIS;
+            case "persephone" -> PERSEPHONE;
+            case "thanatos" -> THANATOS;
             case "jupiter" -> JUPITER;
             case "pluto" -> PLUTO;
             case "neptune" -> NEPTUNE;
@@ -134,6 +140,9 @@ public enum HeritageType {
             case IRIS -> "iris";
             case ARKE -> "arke";
             case HYPNOS -> "hypnos";
+            case NEMESIS -> "nemesis";
+            case PERSEPHONE -> "persephone";
+            case THANATOS -> "thanatos";
 
 
             case JUPITER -> "jupiter";

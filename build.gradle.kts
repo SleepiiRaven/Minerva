@@ -1,8 +1,8 @@
 plugins {
     id ("java")
-    id ("io.freefair.lombok") version "8.6"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
-    id ("io.papermc.paperweight.userdev") version "1.7.2"
+    id ("io.freefair.lombok") version "9.5.0"
+    id("com.gradleup.shadow") version "9.2.2"
+    id ("io.papermc.paperweight.userdev") version "2.0.0-beta.21"
 }
 
 group = "net.minervamc"
@@ -42,7 +42,6 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
     compileOnly("de.tr7zw:item-nbt-api-plugin:2.13.2")
     compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT")
     compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
@@ -50,23 +49,19 @@ dependencies {
     compileOnly("net.citizensnpcs:citizens-main:2.0.36-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0")
     implementation ("fr.mrmicky:fastboard:2.1.3")
-    paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
+    // Dev bundle bundles the Paper API, so no separate paper-api dependency is needed.
+    paperweight.paperDevBundle("26.1.2.build.+")
 }
 
-val targetJavaVersion =21
+// Minecraft 26.1+ requires Java 25 or above. paperweight runs paperclip and compiles against
+// the dev bundle using this toolchain JDK, while Gradle itself may run on an older JVM.
+val targetJavaVersion = 25
 java {
-    val javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
-    }
+    toolchain.languageVersion.set(JavaLanguageVersion.of(26))
 }
 
 tasks.withType<JavaCompile>().configureEach {
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible) {
-        options.release.set(targetJavaVersion)
-    }
+    options.release.set(targetJavaVersion)
 }
 
 tasks.processResources {

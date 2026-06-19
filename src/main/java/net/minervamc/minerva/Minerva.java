@@ -18,6 +18,13 @@ import net.minervamc.minerva.listeners.RegionListener;
 import net.minervamc.minerva.listeners.SkillListener;
 import net.minervamc.minerva.minigames.ctf.CaptureTheFlag;
 import net.minervamc.minerva.minigames.ctf.RegionManager;
+import net.minervamc.minerva.quest.QuestManager;
+import net.minervamc.minerva.quest.command.QuestsCommand;
+import net.minervamc.minerva.quest.cutscene.CutsceneEngine;
+import net.minervamc.minerva.quest.listeners.QuestListener;
+import net.minervamc.minerva.quest.listeners.QuestNpcListener;
+import net.minervamc.minerva.quest.npc.NpcRecorder;
+import net.minervamc.minerva.quest.storage.QuestProgressStorage;
 import net.minervamc.minerva.skills.cooldown.CooldownManager;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -54,14 +61,25 @@ public final class Minerva extends JavaPlugin {
         itemMessageKey = new NamespacedKey(instance, "itemMessageKey");
 
         saveDefaultConfig();
+        QuestManager.detectCapabilities();
         registerListeners();
         registerCommands();
+        net.minervamc.minerva.skills.HeritageTick.start();
 
         Lib.onEnable(); // Faceless start
         RegionManager.loadRegionsFromFile();
         CaptureTheFlag.loadDefaultsFromFile();
         RegionListener.register();
         //Faceless stop
+
+        QuestManager.loadAll();
+        getSLF4JLogger().info("Quest system enabled (Citizens={}, ProtocolLib={})",
+                QuestManager.isCitizensEnabled(), QuestManager.isProtocolEnabled());
+
+        if (QuestManager.isCitizensEnabled()) {
+            int swept = net.minervamc.minerva.listeners.PlayerListener.sweepLeakedLoadingNpcs();
+            if (swept > 0) getSLF4JLogger().info("Removed {} leaked '- Loading In' NPC(s) from a previous build.", swept);
+        }
     }
 
     @Override
@@ -70,6 +88,10 @@ public final class Minerva extends JavaPlugin {
         PlayerStats.saveAll();
         PlayerStats.removeAllSummons();
         RegionManager.saveRegionsToFile(); // not really necessary but safer
+
+        CutsceneEngine.endAll();
+        NpcRecorder.cancelAll();
+        QuestProgressStorage.saveAll();
     }
 
     public void registerListeners() {
@@ -77,6 +99,10 @@ public final class Minerva extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new SkillListener(), this);
         getServer().getPluginManager().registerEvents(new CtfListener(), this);
         getServer().getPluginManager().registerEvents(new CombatListener(), this);
+        getServer().getPluginManager().registerEvents(new QuestListener(), this);
+        if (QuestManager.isCitizensEnabled()) {
+            getServer().getPluginManager().registerEvents(new QuestNpcListener(), this);
+        }
     }
 
     public void registerCommands() {
@@ -87,6 +113,7 @@ public final class Minerva extends JavaPlugin {
         NoCooldownCommand.register(this);
         Objects.requireNonNull(getCommand("focus")).setExecutor(new FocusCommand());
         Objects.requireNonNull(getCommand("unfocus")).setExecutor(new UnfocusCommand());
+        QuestsCommand.register(this);
     }
 
 

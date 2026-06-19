@@ -80,7 +80,7 @@ public class CTFKitGUI extends Menu {
                         TextContext.formatLegacy("&7has been taken.", false),
                         TextContext.formatLegacy("&7Cooldown: 20 seconds.", false)
                 ))
-                .addAttribute(Attribute.GENERIC_ARMOR, 7.0, AttributeModifier.Operation.ADD_NUMBER)
+                .addAttribute(Attribute.ARMOR, 7.0, AttributeModifier.Operation.ADD_NUMBER)
                 .addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP)
                 .build();
     }
@@ -101,7 +101,7 @@ public class CTFKitGUI extends Menu {
                         TextContext.formatLegacy("&7manner without taking fall damage.", false),
                         TextContext.formatLegacy("&7Cooldown: 6 seconds", false)
                 ))
-                .addAttribute(Attribute.GENERIC_ATTACK_DAMAGE, 7.0, AttributeModifier.Operation.ADD_NUMBER)
+                .addAttribute(Attribute.ATTACK_DAMAGE, 7.0, AttributeModifier.Operation.ADD_NUMBER)
                 .addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP)
                 .build();
     }

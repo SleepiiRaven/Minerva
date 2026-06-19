@@ -6,6 +6,7 @@ import java.util.Set;
 import net.minervamc.minerva.Minerva;
 import net.minervamc.minerva.PlayerStats;
 import net.minervamc.minerva.party.Party;
+import net.minervamc.minerva.skills.SkillTriggers;
 import net.minervamc.minerva.skills.Skills;
 import net.minervamc.minerva.skills.greek.poseidon.AquaticLimbExtensions;
 import net.minervamc.minerva.types.Skill;
@@ -63,6 +64,18 @@ public class SkillListener implements Listener {
 
     @EventHandler
     public void onPlayerDamage(EntityDamageByEntityEvent event) {
+        // A player mid spell-cast (Q combo): left-click swings are UI input, not melee attacks.
+        if (event.getDamager() instanceof Player castingDamager && SkillTriggers.isCasting(castingDamager)) {
+            event.setCancelled(true);
+            return;
+        }
+        // Soft-CC: asleep or feared entities cannot attack.
+        if (Skill.isAsleep(event.getDamager()) || Skill.isFeared(event.getDamager())) {
+            event.setCancelled(true);
+            return;
+        }
+        // Nemesis: damage dealt by a marked enemy feeds its marker's Ledger.
+        net.minervamc.minerva.skills.greek.nemesis.MarkOfHubris.feedIfMarked(event.getDamager(), event.getFinalDamage());
         if (event.getDamager().getScoreboardTags().contains("charmed") && event.getDamager().getScoreboardTags().contains(event.getEntity().getUniqueId().toString())) {
             event.setCancelled(true);
         }
@@ -92,6 +105,24 @@ public class SkillListener implements Listener {
             if (stacks > 0) {
                 event.setDamage(event.getDamage() + event.getDamage() * 0.06 * Math.pow(stacks, 2));
                 Skill.stack(player, "smolder", -5, "Smolder", 0);
+            }
+        }
+
+        // New-heritage passives that proc on dealing damage
+        if (passiveActive && event.getEntity() instanceof LivingEntity victim) {
+            int pLevel = stats.getPassiveLevel();
+            if (passive == Skills.FROSTBITE) {
+                net.minervamc.minerva.skills.greek.khione.Frostbite.onWeaponHit(player, victim, pLevel);
+            } else if (passive == Skills.SANDMAN) {
+                net.minervamc.minerva.skills.greek.hypnos.Sandman.onWeaponHit(player, victim, pLevel);
+            } else if (passive == Skills.PRISM) {
+                net.minervamc.minerva.skills.greek.iris.Prism.onWeaponHit(player, victim, pLevel);
+            } else if (passive == Skills.THE_INEVITABLE) {
+                net.minervamc.minerva.skills.greek.thanatos.TheInevitable.onWeaponHit(player, victim, pLevel);
+            } else if (passive == Skills.SHARED_FATE) {
+                net.minervamc.minerva.skills.greek.arke.SharedFate.onOwnerDealDamage(player, victim, event.getFinalDamage(), pLevel);
+            } else if (passive == Skills.WAR_FOOTING) {
+                net.minervamc.minerva.skills.greek.bellona.WarFooting.onOwnerDealDamage(player, victim, event, pLevel);
             }
         }
 
@@ -141,6 +172,10 @@ public class SkillListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerTakeDamage(EntityDamageEvent event) {
+        // Sleep breaks instantly on any real damage (applies to all entities, not just players).
+        if (event.getFinalDamage() > 0.1) {
+            Skill.wake(event.getEntity());
+        }
         if (event.getEntity() instanceof Player player) {
             if (player.hasMetadata("NPC")) {
                 if (player.getScoreboardTags().contains("mirrorImage")) {
@@ -153,6 +188,18 @@ public class SkillListener implements Listener {
             PlayerStats stats = PlayerStats.getStats(player.getUniqueId());
             Skill passive = stats.getPassive();
             boolean passiveActive = stats.getPassiveActive();
+
+            // New-heritage passives that react to taking damage
+            if (passiveActive) {
+                int pLevel = stats.getPassiveLevel();
+                if (passive == Skills.LEDGER_OF_WRONGS) {
+                    net.minervamc.minerva.skills.greek.nemesis.LedgerOfWrongs.onTakeDamage(player, event, pLevel);
+                } else if (passive == Skills.BANKED_EMBERS) {
+                    net.minervamc.minerva.skills.greek.hestia.BankedEmbers.onTakeDamage(player);
+                } else if (passive == Skills.IRIDESCENT_SOUL) {
+                    net.minervamc.minerva.skills.greek.psyche.IridescentSoul.onTakeDamage(player, event, pLevel);
+                }
+            }
 
             if (event.getFinalDamage() > 0.1 && passiveActive && event.getDamageSource().getCausingEntity() != null && event.getDamageSource().getCausingEntity() != event.getEntity()) {
                 if (passive == Skills.SMOLDER) {

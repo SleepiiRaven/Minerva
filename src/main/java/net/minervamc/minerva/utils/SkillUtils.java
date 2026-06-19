@@ -122,6 +122,30 @@ public class SkillUtils {
                     setSkills(player, Skills.VINE_GRAPPLE, Skills.SEED_BARRAGE, Skills.THORN_BLIGHT, Skills.HARVEST_WRATH, Skills.HARVEST_BLESSING);
             case HERMES, MERCURY ->
                     setSkills(player, Skills.TALARIA_STEP, Skills.CADUCEUS_ARC, Skills.MESSENGER_WAKE, Skills.KINETIC_DISPATCH, Skills.FLEET_FOOTWORK);
+            case KHIONE, CHIONE ->
+                    setSkills(player, Skills.GLACIAL_GLIDE, Skills.RIME_NOVA, Skills.SHATTERPOINT, Skills.COLD_SNAP, Skills.FROSTBITE);
+            case BELLONA ->
+                    setSkills(player, Skills.ADVANCE_THE_LINE, Skills.PLANT_WAR_BANNER, Skills.CANNONADE, Skills.STANDARDS_CALL, Skills.WAR_FOOTING);
+            case HESTIA, VESTA ->
+                    setSkills(player, Skills.EMBER_VEIL, Skills.TEND_THE_HEARTH, Skills.PYRE_RELEASE, Skills.VESTAS_VEIL, Skills.BANKED_EMBERS);
+            case HECATE ->
+                    setSkills(player, Skills.SHIFT_FACE, Skills.CROSSROADS_TORCHES, Skills.SPECTRAL_HEX, Skills.WITCHING_HOUR, Skills.TRIPLE_GODDESS);
+            case PSYCHE_GREEK, PSYCHE_ROMAN ->
+                    setSkills(player, Skills.RELEASE_ANIMA, Skills.SOUL_THREAD, Skills.SOUL_LANCE, Skills.CHRYSALIS, Skills.IRIDESCENT_SOUL);
+            case JANUS ->
+                    setSkills(player, Skills.DOORWAY, Skills.REVERSAL, Skills.TWO_FACED_STRIKE, Skills.TRESPASS, Skills.GOD_OF_TRANSITIONS);
+            case IRIS, ARCUS ->
+                    setSkills(player, Skills.IRIS_FLIGHT, Skills.SPECTRUM_SHIFT, Skills.REFRACTION_LANCE, Skills.CHROMATIC_BURST, Skills.PRISM);
+            case ARKE, ARCE ->
+                    setSkills(player, Skills.REEL, Skills.CAST_CHAINS, Skills.TARNISHED_LASH, Skills.CINCH_THE_CHAINS, Skills.SHARED_FATE);
+            case HYPNOS, SOMNUS ->
+                    setSkills(player, Skills.DREAMDRIFT, Skills.LULLABY, Skills.NIGHTMARE, Skills.VEIL_OF_SOMNUS, Skills.SANDMAN);
+            case NEMESIS ->
+                    setSkills(player, Skills.BRACE, Skills.SCALES_OF_BALANCE, Skills.COLLECT_THE_DEBT, Skills.MARK_OF_HUBRIS, Skills.LEDGER_OF_WRONGS);
+            case PERSEPHONE ->
+                    setSkills(player, Skills.DESCENT, Skills.BLOOM, Skills.WITHER, Skills.QUEENS_DECREE, Skills.SEEDS_OF_THE_UNDERWORLD);
+            case THANATOS ->
+                    setSkills(player, Skills.SHROUD_OF_LETUS, Skills.KNELL, Skills.SCYTHE_OF_LETUS, Skills.TOLL_THE_BELL, Skills.THE_INEVITABLE);
         }
     }
 

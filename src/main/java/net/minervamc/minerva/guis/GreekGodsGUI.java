@@ -35,6 +35,11 @@ public class GreekGodsGUI {
     private static final ItemStack hestia = ItemUtils.getItem(new ItemStack(Material.CAMPFIRE), ChatColor.GOLD + "" + ChatColor.BOLD + "Hestia", ChatColor.GRAY + "Become a child of Hestia, goddess of the hearth.");
     private static final ItemStack arke = ItemUtils.getItem(new ItemStack(Material.PAPER), ChatColor.GOLD + "" + ChatColor.BOLD + "Arke", ChatColor.GRAY + "Become a child of Arke, messenger of the Titans.");
     private static final ItemStack khione = ItemUtils.getItem(new ItemStack(Material.SNOWBALL), ChatColor.GOLD + "" + ChatColor.BOLD + "Khione", ChatColor.GRAY + "Become a child of Khione, the goddess of snow.");
+    private static final ItemStack bellona = ItemUtils.getItem(new ItemStack(Material.RED_BANNER), ChatColor.GOLD + "" + ChatColor.BOLD + "Bellona", ChatColor.GRAY + "Become a child of Bellona, the goddess of war.");
+    private static final ItemStack janus = ItemUtils.getItem(new ItemStack(Material.IRON_DOOR), ChatColor.GOLD + "" + ChatColor.BOLD + "Janus", ChatColor.GRAY + "Become a child of Janus, the god of doorways and transitions.");
+    private static final ItemStack nemesis = ItemUtils.getItem(new ItemStack(Material.NETHERITE_SWORD), ChatColor.GOLD + "" + ChatColor.BOLD + "Nemesis", ChatColor.GRAY + "Become a child of Nemesis, the goddess of retribution.");
+    private static final ItemStack persephone = ItemUtils.getItem(new ItemStack(Material.SWEET_BERRIES), ChatColor.GOLD + "" + ChatColor.BOLD + "Persephone", ChatColor.GRAY + "Become a child of Persephone, queen of the underworld.");
+    private static final ItemStack thanatos = ItemUtils.getItem(new ItemStack(Material.WITHER_SKELETON_SKULL), ChatColor.GOLD + "" + ChatColor.BOLD + "Thanatos", ChatColor.GRAY + "Become a child of Thanatos, the god of death.");
     private static final ItemStack back = ItemUtils.getItem(new ItemStack(Material.ARROW), ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "Back");
     private static final int zeusSlot = 12;
     private static final int poseidonSlot = 13;
@@ -51,6 +56,11 @@ public class GreekGodsGUI {
     private static final int hestiaSlot = 34;
     private static final int arkeSlot = 35;
     private static final int hecateSlot = 38;
+    private static final int bellonaSlot = 20;
+    private static final int janusSlot = 21;
+    private static final int nemesisSlot = 22;
+    private static final int persephoneSlot = 23;
+    private static final int thanatosSlot = 24;
     private static final int aresSlot = 39;
     private static final int dionysusSlot = 31;
     private static final int aphroditeSlot = 42;
@@ -65,18 +75,23 @@ public class GreekGodsGUI {
         inv.setItem(zeusSlot, zeus);
         inv.setItem(poseidonSlot, poseidon);
         inv.setItem(hadesSlot, hades);
-        inv.setItem(hypnosSlot, comingSoon);
-        inv.setItem(khioneSlot, comingSoon);
-        inv.setItem(irisSlot, comingSoon);
-        inv.setItem(psycheSlot, comingSoon);
+        inv.setItem(hypnosSlot, hypnos);
+        inv.setItem(khioneSlot, khione);
+        inv.setItem(irisSlot, iris);
+        inv.setItem(psycheSlot, psyche);
         inv.setItem(hermesSlot, hermes);
         inv.setItem(artemisSlot, artemis);
         inv.setItem(athenaSlot, athena);
         inv.setItem(hephaestusSlot, hephaestus);
         inv.setItem(demeterSlot, demeter);
-        inv.setItem(hestiaSlot, comingSoon);
-        inv.setItem(arkeSlot, comingSoon);
-        inv.setItem(hecateSlot, comingSoon);
+        inv.setItem(hestiaSlot, hestia);
+        inv.setItem(arkeSlot, arke);
+        inv.setItem(hecateSlot, hecate);
+        inv.setItem(bellonaSlot, bellona);
+        inv.setItem(janusSlot, janus);
+        inv.setItem(nemesisSlot, nemesis);
+        inv.setItem(persephoneSlot, persephone);
+        inv.setItem(thanatosSlot, thanatos);
         inv.setItem(apolloSlot, apollo);
         inv.setItem(aresSlot, ares);
         inv.setItem(aphroditeSlot, aphrodite);
@@ -112,16 +127,16 @@ public class GreekGodsGUI {
                 }
                 break;
             case hypnosSlot:
-                //chooseHeritage(HeritageType.HYPNOS, "child of Hypnos", (Player) event.getWhoClicked());
+                chooseHeritage(HeritageType.HYPNOS, "child of Hypnos", (Player) event.getWhoClicked());
                 break;
             case khioneSlot:
-                //chooseHeritage(HeritageType.KHIONE, "child of Khione", (Player) event.getWhoClicked());
+                chooseHeritage(HeritageType.KHIONE, "child of Khione", (Player) event.getWhoClicked());
                 break;
             case irisSlot:
-                //chooseHeritage(HeritageType.IRIS, "child of Iris", (Player) event.getWhoClicked());
+                chooseHeritage(HeritageType.IRIS, "child of Iris", (Player) event.getWhoClicked());
                 break;
             case psycheSlot:
-                //chooseHeritage(HeritageType.PSYCHE_GREEK, "child of Psyche", (Player) event.getWhoClicked());
+                chooseHeritage(HeritageType.PSYCHE_GREEK, "child of Psyche", (Player) event.getWhoClicked());
                 break;
             case hermesSlot:
                 chooseHeritage(HeritageType.HERMES, "child of Hermes", (Player) event.getWhoClicked());
@@ -139,13 +154,28 @@ public class GreekGodsGUI {
                 chooseHeritage(HeritageType.DEMETER, "child of Demeter", (Player) event.getWhoClicked());
                 break;
             case hestiaSlot:
-                //chooseHeritage(HeritageType.HESTIA, "child of Hestia", (Player) event.getWhoClicked());
+                chooseHeritage(HeritageType.HESTIA, "child of Hestia", (Player) event.getWhoClicked());
                 break;
             case arkeSlot:
-                //chooseHeritage(HeritageType.ARKE, "child of Arke", (Player) event.getWhoClicked());
+                chooseHeritage(HeritageType.ARKE, "child of Arke", (Player) event.getWhoClicked());
                 break;
             case hecateSlot:
-                //chooseHeritage(HeritageType.HECATE, "child of Hecate", (Player) event.getWhoClicked());
+                chooseHeritage(HeritageType.HECATE, "child of Hecate", (Player) event.getWhoClicked());
+                break;
+            case bellonaSlot:
+                chooseHeritage(HeritageType.BELLONA, "child of Bellona", (Player) event.getWhoClicked());
+                break;
+            case janusSlot:
+                chooseHeritage(HeritageType.JANUS, "child of Janus", (Player) event.getWhoClicked());
+                break;
+            case nemesisSlot:
+                chooseHeritage(HeritageType.NEMESIS, "child of Nemesis", (Player) event.getWhoClicked());
+                break;
+            case persephoneSlot:
+                chooseHeritage(HeritageType.PERSEPHONE, "child of Persephone", (Player) event.getWhoClicked());
+                break;
+            case thanatosSlot:
+                chooseHeritage(HeritageType.THANATOS, "child of Thanatos", (Player) event.getWhoClicked());
                 break;
             case apolloSlot:
                 chooseHeritage(HeritageType.APOLLO_GREEK, "child of Apollo", (Player) event.getWhoClicked());

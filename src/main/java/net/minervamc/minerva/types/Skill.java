@@ -8,7 +8,9 @@ import io.lumine.mythic.lib.damage.AttackMetadata;
 import io.lumine.mythic.lib.damage.DamageMetadata;
 import io.lumine.mythic.lib.listener.option.DamageIndicators;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minervamc.minerva.Minerva;
@@ -31,11 +33,13 @@ import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -104,6 +108,66 @@ public abstract class Skill {
             case "messengerWake" -> Skills.MESSENGER_WAKE;
             case "kineticDispatch" -> Skills.KINETIC_DISPATCH;
             case "fleetFootwork" -> Skills.FLEET_FOOTWORK;
+            case "glacialGlide" -> Skills.GLACIAL_GLIDE;
+            case "rimeNova" -> Skills.RIME_NOVA;
+            case "shatterpoint" -> Skills.SHATTERPOINT;
+            case "coldSnap" -> Skills.COLD_SNAP;
+            case "frostbite" -> Skills.FROSTBITE;
+            case "advanceTheLine" -> Skills.ADVANCE_THE_LINE;
+            case "plantWarBanner" -> Skills.PLANT_WAR_BANNER;
+            case "cannonade" -> Skills.CANNONADE;
+            case "standardsCall" -> Skills.STANDARDS_CALL;
+            case "warFooting" -> Skills.WAR_FOOTING;
+            case "emberVeil" -> Skills.EMBER_VEIL;
+            case "tendTheHearth" -> Skills.TEND_THE_HEARTH;
+            case "pyreRelease" -> Skills.PYRE_RELEASE;
+            case "vestasVeil" -> Skills.VESTAS_VEIL;
+            case "bankedEmbers" -> Skills.BANKED_EMBERS;
+            case "shiftFace" -> Skills.SHIFT_FACE;
+            case "crossroadsTorches" -> Skills.CROSSROADS_TORCHES;
+            case "spectralHex" -> Skills.SPECTRAL_HEX;
+            case "witchingHour" -> Skills.WITCHING_HOUR;
+            case "tripleGoddess" -> Skills.TRIPLE_GODDESS;
+            case "releaseAnima" -> Skills.RELEASE_ANIMA;
+            case "soulThread" -> Skills.SOUL_THREAD;
+            case "soulLance" -> Skills.SOUL_LANCE;
+            case "chrysalis" -> Skills.CHRYSALIS;
+            case "iridescentSoul" -> Skills.IRIDESCENT_SOUL;
+            case "doorway" -> Skills.DOORWAY;
+            case "reversal" -> Skills.REVERSAL;
+            case "twoFacedStrike" -> Skills.TWO_FACED_STRIKE;
+            case "trespass" -> Skills.TRESPASS;
+            case "godOfTransitions" -> Skills.GOD_OF_TRANSITIONS;
+            case "irisFlight" -> Skills.IRIS_FLIGHT;
+            case "spectrumShift" -> Skills.SPECTRUM_SHIFT;
+            case "refractionLance" -> Skills.REFRACTION_LANCE;
+            case "chromaticBurst" -> Skills.CHROMATIC_BURST;
+            case "prism" -> Skills.PRISM;
+            case "reel" -> Skills.REEL;
+            case "castChains" -> Skills.CAST_CHAINS;
+            case "tarnishedLash" -> Skills.TARNISHED_LASH;
+            case "cinchTheChains" -> Skills.CINCH_THE_CHAINS;
+            case "sharedFate" -> Skills.SHARED_FATE;
+            case "dreamdrift" -> Skills.DREAMDRIFT;
+            case "lullaby" -> Skills.LULLABY;
+            case "nightmare" -> Skills.NIGHTMARE;
+            case "veilOfSomnus" -> Skills.VEIL_OF_SOMNUS;
+            case "sandman" -> Skills.SANDMAN;
+            case "brace" -> Skills.BRACE;
+            case "scalesOfBalance" -> Skills.SCALES_OF_BALANCE;
+            case "collectTheDebt" -> Skills.COLLECT_THE_DEBT;
+            case "markOfHubris" -> Skills.MARK_OF_HUBRIS;
+            case "ledgerOfWrongs" -> Skills.LEDGER_OF_WRONGS;
+            case "descent" -> Skills.DESCENT;
+            case "bloom" -> Skills.BLOOM;
+            case "wither" -> Skills.WITHER;
+            case "queensDecree" -> Skills.QUEENS_DECREE;
+            case "seedsOfTheUnderworld" -> Skills.SEEDS_OF_THE_UNDERWORLD;
+            case "shroudOfLetus" -> Skills.SHROUD_OF_LETUS;
+            case "knell" -> Skills.KNELL;
+            case "scytheOfLetus" -> Skills.SCYTHE_OF_LETUS;
+            case "tollTheBell" -> Skills.TOLL_THE_BELL;
+            case "theInevitable" -> Skills.THE_INEVITABLE;
             default -> Skills.DEFAULT;
         };
     }
@@ -223,7 +287,7 @@ public abstract class Skill {
             livingEntity.setHealth(0);
             livingEntity.setKiller(damager);
             if (livingEntity instanceof Player p) {
-                Bukkit.getPluginManager().callEvent(new PlayerDeathEvent(p, DamageSource.builder(DamageType.MAGIC).build(), Arrays.asList(p.getInventory().getStorageContents()), 0, Component.text(p.getName() + " was killed by " + damager.getName() + "'s heritage skill.")));
+                Bukkit.getPluginManager().callEvent(new PlayerDeathEvent(p, DamageSource.builder(DamageType.MAGIC).build(), Arrays.asList(p.getInventory().getStorageContents()), 0, Component.text(p.getName() + " was killed by " + damager.getName() + "'s heritage skill."), false));
             }
         } else {
             livingEntity.setHealth(livingEntity.getHealth() - damage);
@@ -288,7 +352,7 @@ public abstract class Skill {
             livingEntity.setHealth(0);
             livingEntity.setKiller(damager);
             if (livingEntity instanceof Player p) {
-                Bukkit.getPluginManager().callEvent(new PlayerDeathEvent(p, DamageSource.builder(DamageType.MAGIC).build(), Arrays.asList(p.getInventory().getStorageContents()), 0, Component.text(p.getName() + " was killed by " + damager.getName() + "'s heritage skill.")));
+                Bukkit.getPluginManager().callEvent(new PlayerDeathEvent(p, DamageSource.builder(DamageType.MAGIC).build(), Arrays.asList(p.getInventory().getStorageContents()), 0, Component.text(p.getName() + " was killed by " + damager.getName() + "'s heritage skill."), false));
             }
         } else {
             livingEntity.setHealth(livingEntity.getHealth() - damage);
@@ -356,6 +420,126 @@ public abstract class Skill {
             return 0;
         } else {
             return stackingAbilities.getOrDefault(ability, 0);
+        }
+    }
+
+    // ===================================================================================
+    // Shared soft-CC: SLEEP and FEAR (used by Hypnos, Hecate, Arke, Bellona, etc.)
+    // Sleep: the target is slumped and cannot act; it BREAKS instantly on damage.
+    // Fear:  the target is forced to flee from the source and cannot attack.
+    // Both are friendly-fire safe and obey the no-strobe particle rule.
+    // ===================================================================================
+    public static final Map<UUID, BukkitRunnable> SLEEP_TASKS = new HashMap<>();
+    public static final Map<UUID, BukkitRunnable> FEAR_TASKS = new HashMap<>();
+
+    public static boolean isAsleep(Entity e) {
+        return e != null && e.getScoreboardTags().contains("asleep");
+    }
+
+    public static boolean isFeared(Entity e) {
+        return e != null && e.getScoreboardTags().contains("feared");
+    }
+
+    private static boolean cannotSoftCC(Player inflictor, LivingEntity target) {
+        if (target.hasMetadata("NPC")) return true;
+        if (PlayerStats.isSummoned(inflictor, target)) return true;
+        if (target instanceof Player p) {
+            if (p.getGameMode() == GameMode.SPECTATOR || p.getGameMode() == GameMode.CREATIVE) return true;
+            if (Party.isPlayerInPlayerParty(inflictor, p)) return true;
+        }
+        return false;
+    }
+
+    public static void sleep(Player inflictor, LivingEntity target, long sleepTicks) {
+        if (cannotSoftCC(inflictor, target)) return;
+        wake(target);
+        target.addScoreboardTag("asleep");
+        if (target instanceof Mob mob) mob.setTarget(null);
+        if (target instanceof Player p) {
+            p.sendActionBar(Component.text("ASLEEP", TextColor.color(150, 170, 255)));
+        }
+        target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, (int) sleepTicks, 6));
+        target.addPotionEffect(new PotionEffect(PotionEffectType.MINING_FATIGUE, (int) sleepTicks, 3));
+        target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, (int) sleepTicks, 2));
+
+        Color[] dream = {Color.fromRGB(120, 150, 255), Color.fromRGB(150, 170, 255), Color.fromRGB(95, 120, 220)};
+        BukkitRunnable task = new BukkitRunnable() {
+            int t = 0;
+            @Override
+            public void run() {
+                if (t >= sleepTicks || target.isDead() || !isAsleep(target)) {
+                    wake(target);
+                    cancel();
+                    return;
+                }
+                Vector v = target.getVelocity();
+                target.setVelocity(new Vector(0, Math.min(0, v.getY()), 0));
+                if (target instanceof Mob mob) mob.setTarget(null);
+                if (t % 6 == 0) {
+                    Location loc = target.getLocation().clone().add(0, target.getHeight() + 0.4, 0);
+                    target.getWorld().spawnParticle(Particle.DUST, loc, 4, 0.25, 0.12, 0.25, 0,
+                            new Particle.DustOptions(dream[(int) (Math.random() * dream.length)], 1f));
+                }
+                t++;
+            }
+        };
+        task.runTaskTimer(Minerva.getInstance(), 0L, 1L);
+        SLEEP_TASKS.put(target.getUniqueId(), task);
+    }
+
+    public static void wake(Entity target) {
+        if (target == null) return;
+        target.removeScoreboardTag("asleep");
+        BukkitRunnable r = SLEEP_TASKS.remove(target.getUniqueId());
+        if (r != null) {
+            try { r.cancel(); } catch (IllegalStateException ignored) {}
+        }
+    }
+
+    public static void fear(Player inflictor, LivingEntity target, long fearTicks) {
+        if (cannotSoftCC(inflictor, target)) return;
+        unfear(target);
+        target.addScoreboardTag("feared");
+        if (target instanceof Player p) {
+            p.sendActionBar(Component.text("FEARED", TextColor.color(150, 40, 160)));
+        }
+        target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, (int) fearTicks, 1));
+        final Location source = inflictor.getLocation().clone();
+        Color[] dread = {Color.fromRGB(90, 30, 110), Color.fromRGB(60, 20, 80), Color.fromRGB(120, 50, 140)};
+        BukkitRunnable task = new BukkitRunnable() {
+            int t = 0;
+            @Override
+            public void run() {
+                if (t >= fearTicks || target.isDead() || !isFeared(target)) {
+                    unfear(target);
+                    cancel();
+                    return;
+                }
+                Vector away = target.getLocation().toVector().subtract(source.toVector()).setY(0);
+                if (away.lengthSquared() > 0.04) {
+                    away.normalize().multiply(0.34);
+                    away.setY(Math.max(target.getVelocity().getY(), -0.2));
+                    target.setVelocity(away);
+                }
+                if (target instanceof Mob mob) mob.setTarget(null);
+                if (t % 5 == 0) {
+                    Location loc = target.getLocation().clone().add(0, target.getHeight() + 0.3, 0);
+                    target.getWorld().spawnParticle(Particle.DUST, loc, 5, 0.25, 0.2, 0.25, 0,
+                            new Particle.DustOptions(dread[(int) (Math.random() * dread.length)], 1f));
+                }
+                t++;
+            }
+        };
+        task.runTaskTimer(Minerva.getInstance(), 0L, 1L);
+        FEAR_TASKS.put(target.getUniqueId(), task);
+    }
+
+    public static void unfear(Entity target) {
+        if (target == null) return;
+        target.removeScoreboardTag("feared");
+        BukkitRunnable r = FEAR_TASKS.remove(target.getUniqueId());
+        if (r != null) {
+            try { r.cancel(); } catch (IllegalStateException ignored) {}
         }
     }
 }

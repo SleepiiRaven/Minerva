@@ -645,7 +645,7 @@ public class CaptureTheFlag extends Minigame {
                 TextContext.formatLegacy("&7as well as blocks placed", false),
                 TextContext.formatLegacy("&7by either team.", false)
         ));
-        blueFlagBreakerCr.addAttribute(Attribute.GENERIC_ATTACK_DAMAGE, 0, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
+        blueFlagBreakerCr.addAttribute(Attribute.ATTACK_DAMAGE, 0, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
         blueFlagBreakerCr.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         return ItemCreator.getBreakable(blueFlagBreakerCr.build(), Material.RED_BANNER, Material.RED_WALL_BANNER, Material.BAMBOO_MOSAIC);
     }
@@ -659,7 +659,7 @@ public class CaptureTheFlag extends Minigame {
                 TextContext.formatLegacy("&7as well as blocks placed", false),
                 TextContext.formatLegacy("&7by either team.", false)
         ));
-        redFlagBreakerCr.addAttribute(Attribute.GENERIC_ATTACK_DAMAGE, 0, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
+        redFlagBreakerCr.addAttribute(Attribute.ATTACK_DAMAGE, 0, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
         redFlagBreakerCr.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         return ItemCreator.getBreakable(redFlagBreakerCr.build(), Material.BLUE_BANNER, Material.BLUE_WALL_BANNER, Material.BAMBOO_MOSAIC);
     }
@@ -883,14 +883,14 @@ public class CaptureTheFlag extends Minigame {
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FISHING_BOBBER_THROW, 1.2f, 1.3f);
         player.setVelocity(dir.setY(1).normalize().multiply(1.5));
 
-        if (player.getAttribute(Attribute.GENERIC_FALL_DAMAGE_MULTIPLIER) == null) return;
-        double currAttribute = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_FALL_DAMAGE_MULTIPLIER)).getBaseValue();
-        Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_FALL_DAMAGE_MULTIPLIER)).setBaseValue(0);
+        if (player.getAttribute(Attribute.FALL_DAMAGE_MULTIPLIER) == null) return;
+        double currAttribute = Objects.requireNonNull(player.getAttribute(Attribute.FALL_DAMAGE_MULTIPLIER)).getBaseValue();
+        Objects.requireNonNull(player.getAttribute(Attribute.FALL_DAMAGE_MULTIPLIER)).setBaseValue(0);
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (player.isOnGround()) {
-                    Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_FALL_DAMAGE_MULTIPLIER)).setBaseValue(currAttribute);
+                    Objects.requireNonNull(player.getAttribute(Attribute.FALL_DAMAGE_MULTIPLIER)).setBaseValue(currAttribute);
                 }
             }
         }.runTaskTimer(Minerva.getInstance(), 5L, 5L);

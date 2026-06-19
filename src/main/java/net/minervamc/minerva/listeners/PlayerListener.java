@@ -1,9 +1,12 @@
 package net.minervamc.minerva.listeners;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.MemoryNPCDataStore;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.trait.Gravity;
 import net.citizensnpcs.trait.SkinTrait;
 import net.minervamc.minerva.Minerva;
@@ -33,8 +36,10 @@ import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -45,33 +50,66 @@ public class PlayerListener implements Listener {
 
     // public static Map<Player, NPC> npcs = new HashMap<>();
 
+    /** A non-persistent, in-memory NPC registry for short-lived NPCs. Never written to saves.yml, so these
+     * NPCs can never be resurrected after a restart — even if the server is killed before they despawn. */
+    private static final String TRANSIENT_REGISTRY = "minerva-transient";
+
+    private static NPCRegistry transientRegistry() {
+        NPCRegistry registry = CitizensAPI.getNamedNPCRegistry(TRANSIENT_REGISTRY);
+        if (registry == null) {
+            registry = CitizensAPI.createNamedNPCRegistry(TRANSIENT_REGISTRY, new MemoryNPCDataStore());
+        }
+        return registry;
+    }
+
     @EventHandler
     public void prePlayerLogIn(PlayerPreLoginEvent e) {
-        // load in player's skin:-)
+        // Warm the player's skin by briefly spawning a Citizens NPC with it. PlayerPreLoginEvent can fire off
+        // the main thread, so hop onto it before touching Citizens.
+        if (!Bukkit.getPluginManager().isPluginEnabled("Citizens")) return;
+        final String name = e.getName();
+        Bukkit.getScheduler().runTask(Minerva.getInstance(), () -> warmSkin(name));
+    }
 
-        NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, e.getName() + " - Loading In");
-        npc.getOrAddTrait(SkinTrait.class).setSkinName(e.getName());
+    private void warmSkin(String name) {
+        NPCRegistry registry = transientRegistry();
+        NPC npc = registry.createNPC(EntityType.PLAYER, name + " - Loading In");
+        npc.getOrAddTrait(SkinTrait.class).setSkinName(name);
         npc.getOrAddTrait(SkinTrait.class).setShouldUpdateSkins(true);
         npc.getOrAddTrait(Gravity.class).setHasGravity(true);
 
         npc.spawn(Bukkit.getWorlds().getFirst().getSpawnLocation());
         npc.setProtected(false);
 
-
         new BukkitRunnable() {
             int ticks = 0;
             @Override
             public void run() {
-                if (ticks >= 20) {
-                    npc.despawn();
-                    CitizensAPI.getNPCRegistry().deregister(npc);
+                if (ticks++ >= 20) {
+                    if (npc.isSpawned()) npc.despawn();
+                    registry.deregister(npc);
                     this.cancel();
-                    return;
                 }
-
-                ticks++;
             }
         }.runTaskTimer(Minerva.getInstance(), 0L, 1L);
+    }
+
+    /** Remove any "&lt;player&gt; - Loading In" NPCs that leaked into the persistent registry from older builds
+     * (before these were made non-persistent) and got resurrected on restart. Call once on enable. */
+    public static int sweepLeakedLoadingNpcs() {
+        // Copy first: destroy() deregisters, which would mutate the registry mid-iteration.
+        ArrayList<NPC> all = new ArrayList<>();
+        for (NPC npc : CitizensAPI.getNPCRegistry()) all.add(npc);
+
+        int removed = 0;
+        for (NPC npc : all) {
+            String npcName = npc.getName();
+            if (npcName != null && ChatColor.stripColor(npcName).endsWith(" - Loading In")) {
+                npc.destroy();
+                removed++;
+            }
+        }
+        return removed;
     }
 
     @EventHandler
@@ -199,6 +237,7 @@ public class PlayerListener implements Listener {
             pData.setLogoutLoc(p.getLocation());
         }
         pData.save();
+        cooldownManager.removeContainer(p.getUniqueId());
     }
 
     @EventHandler
@@ -209,23 +248,14 @@ public class PlayerListener implements Listener {
 
         PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
 
-        if (playerStats.skillMode) {
-            // PlayerInteractEvent doesn't work with LEFT_CLICK_BLOCK in adventure mode, so using this for that.
-            if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") ||
-                event.getAnimationType() != PlayerAnimationType.ARM_SWING ||
-                !SkillUtils.isFocus(player.getInventory().getItemInMainHand()))
-                    return;
-            long cooldown = 50;
+        if (event.getAnimationType() != PlayerAnimationType.ARM_SWING) return;
 
-            if (playerStats.skillTriggers.spellMode) {
-                playerStats.skillTriggers.continueNormalSpell(Action.LEFT_CLICK_AIR, player.getInventory().getItemInMainHand().getType() == Material.BOW || player.getInventory().getItemInMainHand().getType() == Material.TRIDENT);
-                cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
-                return;
-            }
-
-            if (player.getInventory().getItemInMainHand().getType() == Material.BOW || player.getInventory().getItemInMainHand().getType() == Material.TRIDENT) {
-                playerStats.skillTriggers.enterSpellMode(player, true);
-            }
+        // While casting (spell mode entered via Q), left-click = "L" combo input.
+        if (playerStats.skillMode && playerStats.skillTriggers.spellMode) {
+            if (playerStats.skillTriggers.consumeEntrySwing()) return; // swallow the Q-drop's own arm-swing
+            if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click")) return;
+            cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", 50L);
+            playerStats.skillTriggers.click(false); // left = L
         }
     }
 
@@ -235,19 +265,31 @@ public class PlayerListener implements Listener {
         if (player.hasMetadata("NPC")) return;
         PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
         Action action = event.getAction();
-        if (playerStats.skillMode) {
-            if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click") || !(action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) || !SkillUtils.isFocus(player.getInventory().getItemInMainHand()))
-                return;
-            long cooldown = 50;
-            cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", cooldown);
-            if (playerStats.skillTriggers.spellMode) {
-                playerStats.skillTriggers.continueNormalSpell(action, player.getInventory().getItemInMainHand().getType() == Material.BOW || player.getInventory().getItemInMainHand().getType() == Material.TRIDENT);
-                return;
-            }
+        if (!(action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)) return;
+        if (event.getHand() != EquipmentSlot.HAND) return; // ignore off-hand duplicate fire
 
-            if (player.getInventory().getItemInMainHand().getType() != Material.BOW || player.getInventory().getItemInMainHand().getType() == Material.TRIDENT) {
-                playerStats.skillTriggers.enterSpellMode(player, false);
-            }
+        // While casting, right-click = "R" combo input (and suppress item use, e.g. bow draw).
+        if (playerStats.skillMode && playerStats.skillTriggers.spellMode) {
+            if (!cooldownManager.isCooldownDone(player.getUniqueId(), "Spell Click")) return;
+            cooldownManager.setCooldownFromNow(player.getUniqueId(), "Spell Click", 50L);
+            event.setCancelled(true);
+            playerStats.skillTriggers.click(true); // right = R
+        }
+    }
+
+    @EventHandler
+    public void onDropKey(PlayerDropItemEvent event) {
+        Player player = event.getPlayer();
+        if (player.hasMetadata("NPC")) return;
+        PlayerStats playerStats = PlayerStats.getStats(player.getUniqueId());
+        if (!playerStats.skillMode) return; // skill system off → normal drops allowed
+
+        event.setCancelled(true); // Q is the cast key — never drop items while skill mode is on
+
+        if (playerStats.skillTriggers.spellMode) {
+            playerStats.skillTriggers.cancelSpellMode(); // Q again → exit
+        } else {
+            playerStats.skillTriggers.enterSpellMode(player); // Q → enter spell mode
         }
     }
 

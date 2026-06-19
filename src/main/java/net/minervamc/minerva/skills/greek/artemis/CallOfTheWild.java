@@ -40,7 +40,7 @@ public class CallOfTheWild extends Skill {
         cooldownManager.setCooldownFromNow(player.getUniqueId(), "callOfTheWild", cooldown);
         cooldownAlarm(player, cooldown, "Call of the Wild");
 
-        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WOLF_HOWL, 1f, 1f);
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WOLF_AMBIENT, 1f, 1f);
 
         List<Wolf> wolves = new ArrayList<>();
 
